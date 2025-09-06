@@ -1,0 +1,118 @@
+/* Lightweight Farmer Dashboard styles */
+
+:root {
+  --ac-gap: 1rem;
+  --ac-bg: #fff;
+  --ac-muted: #f6f7f6;
+  --ac-green: #0b6b2e;
+  --ac-text: #223;
+  --ac-muted-text: #6b6f6b;
+  --radius: 10px;
+}
+
+/* container / header */
+.ac-farmer-dashboard { padding-bottom: 2.5rem; }
+.ac-page-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:1rem;
+  margin-bottom: 0.75rem;
+}
+.ac-page-actions { display:flex; gap:0.6rem; align-items:center; }
+
+/* stats */
+.ac-summary-stats {
+  display:flex;
+  gap:1rem;
+  margin-top:0.5rem;
+  flex-wrap:wrap;
+}
+.ac-stat {
+  background: linear-gradient(180deg,#fff,#fbfbfb);
+  border: 1px solid rgba(34,34,34,0.04);
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
+  min-width: 160px;
+  flex: 1 1 220px;
+  display:flex;
+  flex-direction:column;
+  gap:0.25rem;
+  box-shadow: 0 6px 14px rgba(10,20,10,0.02);
+}
+.ac-stat-number { font-size:1.35rem; font-weight:700; color:var(--ac-green); }
+.ac-stat-label { font-size:0.95rem; color:var(--ac-muted-text); }
+.ac-stat-hint { font-size:0.82rem; color:var(--ac-muted-text); }
+
+/* layout grid */
+.ac-dashboard-grid {
+  display:grid;
+  grid-template-columns: 1fr 320px;
+  gap: 1.5rem;
+  margin-top:1.5rem;
+  align-items:start;
+}
+
+/* cards */
+.ac-card {
+  background: var(--ac-bg);
+  border-radius: 12px;
+  padding: 0.85rem;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 8px 20px rgba(8,30,15,0.03);
+}
+.ac-card-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; }
+.ac-card h3 { margin:0; font-size:1.05rem; color:var(--ac-text); }
+.ac-link-sm { font-size:0.85rem; color:var(--ac-muted-text); text-decoration:none; }
+
+/* top products list */
+.ac-top-products { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:0.5rem; }
+.ac-top-product { display:flex; justify-content:space-between; padding:0.6rem; border-radius:8px; background:#fff; border:1px solid #f6f6f6; }
+
+/* recent orders table */
+.ac-recent-orders { overflow:auto; }
+.ac-table { width:100%; border-collapse:collapse; }
+.ac-table th, .ac-table td {
+  text-align:left;
+  padding:0.6rem 0.5rem;
+  border-bottom:1px solid #f3f3f3;
+  font-size:0.95rem;
+}
+.ac-table thead th { color:var(--ac-muted-text); font-weight:600; font-size:0.85rem; }
+.ac-order-link { color:var(--ac-green); text-decoration:none; }
+
+/* status badges */
+.ac-badge-status {
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-size:0.82rem;
+  display:inline-block;
+}
+.ac-badge-status.delivered { background: rgba(11,107,46,0.08); color:var(--ac-green); }
+.ac-badge-status.pending { background: rgba(250,180,20,0.08); color:#b36a00; }
+.ac-badge-status.info { background: rgba(0,120,255,0.06); color:#0b64d6; }
+
+/* side lists */
+.ac-low-stock { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:0.5rem; }
+.ac-low-stock-item { display:flex; justify-content:space-between; padding:0.55rem; border-radius:8px; background:#fff; border:1px solid #f6f6f6; }
+.ac-low-stock-count { font-weight:700; color:#b35a00; }
+
+/* quick actions */
+.ac-quick-actions .ac-quick-actions-grid { display:grid; gap:0.6rem; }
+.ac-quick-actions .ac-btn { width:100%; }
+
+/* responsive */
+@media (max-width: 980px) {
+  .ac-dashboard-grid { grid-template-columns: 1fr; }
+  .ac-page-head { flex-direction:column; align-items:flex-start; gap:0.75rem; }
+  .ac-card { padding:0.75rem; }
+}
+
+/* focus / accessibility */
+.ac-stat:focus, .ac-card:focus-within, .ac-table tr:focus-within {
+  outline: 3px solid rgba(11,107,46,0.06);
+  outline-offset: 3px;
+}
+
+/* small utilities (used across pages) */
+.ac-link-sm:hover { text-decoration:underline; color:var(--ac-green); }

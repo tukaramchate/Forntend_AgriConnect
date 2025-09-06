@@ -1,0 +1,111 @@
+/* Lightweight Admin Dashboard styles for AgriConnect */
+
+:root {
+  --ac-gap: 1rem;
+  --ac-bg: #fff;
+  --ac-muted: #f1f3f2;
+  --ac-green: #0b6b2e;
+  --ac-text: #223;
+  --ac-muted-text: #6b6f6b;
+  --radius: 10px;
+}
+
+/* Page container */
+.ac-container {
+  max-width: 1200px;
+  margin: 1.25rem auto;
+  padding: 1rem;
+  color: var(--ac-text);
+}
+
+/* Headings */
+.ac-page-title {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.ac-page-subtitle {
+  margin: 0;
+  color: var(--ac-muted-text);
+  font-size: 0.95rem;
+}
+
+/* Summary stats row */
+.ac-summary-stats {
+  display: flex;
+  gap: var(--ac-gap);
+  margin-top: 1rem;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+.ac-stat {
+  background: linear-gradient(180deg, #fff, #fbfbfb);
+  border: 1px solid rgba(34,34,34,0.04);
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
+  min-width: 180px;
+  flex: 1 1 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.25rem;
+  box-shadow: 0 6px 14px rgba(10,20,10,0.03);
+}
+.ac-stat-number {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--ac-green);
+}
+.ac-stat-label {
+  font-size: 0.92rem;
+  color: var(--ac-muted-text);
+}
+
+/* Action grid (links/buttons) */
+.ac-container > div[style] {
+  margin-top: 1.25rem;
+}
+.ac-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 0.9rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid rgba(34,34,34,0.06);
+  background: transparent;
+  color: var(--ac-text);
+  cursor: pointer;
+}
+.ac-btn:hover {
+  background: var(--ac-muted);
+}
+.ac-btn--outline {
+  border: 1px solid rgba(11,107,46,0.12);
+  color: var(--ac-green);
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 820px) {
+  .ac-summary-stats { gap: 0.75rem; }
+  .ac-stat { flex: 1 1 45%; min-width: 160px; }
+  .ac-container > div[style] { display: grid; grid-template-columns: repeat(2,1fr); gap: 0.75rem; }
+}
+
+@media (max-width: 520px) {
+  .ac-summary-stats { flex-direction: column; }
+  .ac-stat { flex: 1 1 auto; min-width: 0; }
+  .ac-container > div[style] { grid-template-columns: 1fr; }
+  .ac-page-title { font-size: 1.25rem; }
+}
+
+/* Small utilities used on this page */
+.u-muted { color: var(--ac-muted-text); }
+.u-stack { display:flex; flex-direction:column; gap:0.5rem; }
+
+/* Accessibility */
+.ac-stat:focus-within, .ac-btn:focus {
+  outline: 3px solid rgba(11,107,46,0.08);
+  outline-offset: 2px;
+}

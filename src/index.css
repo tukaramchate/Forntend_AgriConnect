@@ -1,0 +1,31 @@
+/* CSS Custom Properties */
+:root {
+  --ac-green: #0b6b2e;
+  --ac-text: #222222;
+  --ac-danger: #dc3545;
+  --ac-radius: 8px;
+  --ac-muted: #e9ecef;
+  --ac-bg: #ffffff;
+}
+
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8f9fa;
+  color: #222;
+  line-height: 1.6;
+}
+
+#root {
+  min-height: 100vh;
+}

@@ -1,0 +1,220 @@
+/* Checkout Page Styles */
+.ac-checkout-page {
+    min-height: calc(100vh - 200px);
+  }
+  
+  .ac-checkout-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 3rem;
+    margin-top: 2rem;
+  }
+  
+  .ac-checkout-form {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    border: 1px solid #f0f0f0;
+  }
+  
+  .ac-form-section {
+    margin-bottom: 2rem;
+  }
+  
+  .ac-form-section h3 {
+    margin: 0 0 1.5rem 0;
+    color: var(--ac-text);
+    font-size: 1.3rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #f0f0f0;
+  }
+  
+  .ac-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  
+  .ac-form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .ac-form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--ac-text);
+  }
+  
+  .ac-form-input,
+  .ac-form-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #dcdcdc;
+    border-radius: var(--ac-radius);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s ease;
+  }
+  
+  .ac-form-input:focus,
+  .ac-form-textarea:focus {
+    outline: none;
+    border-color: var(--ac-green);
+    box-shadow: 0 0 0 3px rgba(11, 107, 46, 0.1);
+  }
+  
+  .ac-form-textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  
+  .ac-payment-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .ac-payment-option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid #dcdcdc;
+    border-radius: var(--ac-radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .ac-payment-option:hover {
+    border-color: var(--ac-green);
+    background: #f8f9fa;
+  }
+  
+  .ac-payment-option input[type="radio"] {
+    margin: 0;
+  }
+  
+  .ac-payment-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+  }
+  
+  .ac-payment-icon {
+    font-size: 1.2rem;
+  }
+  
+  .ac-form-actions {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #f0f0f0;
+  }
+  
+  .ac-order-summary {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    border: 1px solid #f0f0f0;
+    height: fit-content;
+    position: sticky;
+    top: 2rem;
+  }
+  
+  .ac-order-summary h3 {
+    margin: 0 0 1.5rem 0;
+    color: var(--ac-text);
+    font-size: 1.3rem;
+  }
+  
+  .ac-order-items {
+    margin-bottom: 1.5rem;
+  }
+  
+  .ac-order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .ac-order-item:last-child {
+    border-bottom: none;
+  }
+  
+  .ac-order-item__details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .ac-item-name {
+    font-weight: 500;
+    color: var(--ac-text);
+  }
+  
+  .ac-item-quantity {
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  .ac-item-price {
+    font-weight: 600;
+    color: var(--ac-green);
+  }
+  
+  .ac-order-totals {
+    border-top: 1px solid #f0f0f0;
+    padding-top: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .ac-delivery-info h4,
+  .ac-security-info h4 {
+    margin: 0 0 1rem 0;
+    color: var(--ac-text);
+    font-size: 1.1rem;
+  }
+  
+  .ac-delivery-info p,
+  .ac-security-info p {
+    margin: 0 0 0.5rem 0;
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
+  /* Responsive improvements and small error styles */
+  
+  .ac-form-input[aria-invalid="true"],
+  .ac-form-textarea[aria-invalid="true"] {
+    border-color: #b00020;
+    box-shadow: 0 0 0 3px rgba(176,0,32,0.06);
+  }
+  
+  .ac-field-error {
+    color: #b00020;
+    font-size: 0.85rem;
+    margin-top: 0.4rem;
+  }
+  
+  /* make layout stack on narrow screens */
+  @media (max-width: 920px) {
+    .ac-checkout-layout {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    .ac-order-summary {
+      position: relative;
+      top: 0;
+    }
+  }
+  
+  /* reduce paddings on very small screens */
+  @media (max-width: 420px) {
+    .ac-checkout-form, .ac-order-summary {
+      padding: 1rem;
+    }
+    .ac-form-row { grid-template-columns: 1fr; gap: 0.75rem; }
+  }

@@ -1,0 +1,251 @@
+/* Polished, accessible Login styles */
+
+.ac-login-page {
+  min-height: calc(100vh - 160px);
+  display: flex;
+  align-items: center;
+  padding: 2rem 0;
+}
+
+.ac-container {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.ac-login-container {
+  max-width: 720px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 12px 36px rgba(8, 30, 15, 0.06);
+}
+
+.ac-login-header {
+  margin-bottom: 0.75rem;
+}
+
+.ac-login-title {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--ac-text, #182);
+}
+
+.ac-login-subtitle {
+  margin: 0.25rem 0 0;
+  color: var(--ac-muted-text, #6b6f6b);
+  font-size: 0.95rem;
+}
+
+.ac-error-wrap {
+  min-height: 36px;
+}
+
+.ac-error-wrap.visible {
+  margin-bottom: 0.5rem;
+}
+
+.ac-error-message {
+  background: #fff4f4;
+  color: #8b0000;
+  border: 1px solid rgba(176, 0, 32, 0.1);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.ac-role-fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 0.6rem 0;
+}
+
+.ac-role-options {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.ac-role-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 10px;
+  border: 1px solid #f0f0f0;
+  background: #fff;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ac-role-option.active {
+  border-color: rgba(11, 107, 46, 0.18);
+  background: #f6fbf6;
+  box-shadow: 0 8px 20px rgba(11, 107, 46, 0.04);
+}
+
+.ac-role-option input {
+  display: none;
+}
+
+.ac-role-icon {
+  font-size: 1.1rem;
+}
+
+.ac-form-group {
+  margin-bottom: 0.65rem;
+}
+
+.ac-form-input {
+  width: 100%;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #e6e6e6;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.ac-form-input:focus {
+  box-shadow: 0 8px 24px rgba(11, 107, 46, 0.06);
+  border-color: rgba(11, 107, 46, 0.12);
+}
+
+.ac-password-input {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.ac-password-toggle {
+  background: transparent;
+  border: 1px solid #eee;
+  padding: 0.4rem 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.ac-pw-strength {
+  margin-top: 0.35rem;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.ac-pw-strength.weak {
+  color: #b00020;
+}
+
+.ac-pw-strength.fair {
+  color: #b36a00;
+}
+
+.ac-pw-strength.good {
+  color: #2b7a2f;
+}
+
+.ac-pw-strength.strong {
+  color: #0b6b2e;
+}
+
+.ac-form-row.ac-form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.ac-checkbox {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ac-forgot-password {
+  color: var(--ac-green, #0b6b2e);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.ac-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 0.95rem;
+  border-radius: 10px;
+  border: 0;
+  cursor: pointer;
+}
+
+.ac-btn--primary {
+  background: var(--ac-green, #0b6b2e);
+  color: #fff;
+  font-weight: 700;
+  width: 100%;
+}
+
+.ac-btn--full {
+  width: 100%;
+}
+
+.ac-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.ac-divider span {
+  color: #7b7b7b;
+  font-size: 0.9rem;
+}
+
+.ac-social-login {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.ac-btn--social {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #eee;
+}
+
+.ac-btn--google {
+  color: #d93b2b;
+}
+
+.ac-btn--facebook {
+  color: #315fa6;
+}
+
+.ac-signup-link {
+  margin-top: 0.8rem;
+  text-align: center;
+  color: #444;
+}
+
+.ac-demo-credentials {
+  margin-top: 0.9rem;
+  font-size: 0.9rem;
+  color: #666;
+  background: #fafafa;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+}
+
+@media (max-width: 640px) {
+  .ac-role-options {
+    gap: 0.4rem;
+  }
+
+  .ac-login-container {
+    padding: 1rem;
+  }
+
+  .ac-social-login {
+    flex-direction: column;
+  }
+}
