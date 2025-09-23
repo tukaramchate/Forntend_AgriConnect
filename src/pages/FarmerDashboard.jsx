@@ -26,27 +26,27 @@ function FarmerDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-secondary-50 p-8">
-      <h1 className="text-3xl font-bold text-secondary-900 mb-4">
+    <div className='min-h-screen bg-secondary-50 p-8'>
+      <h1 className='text-3xl font-bold text-secondary-900 mb-4'>
         Farmer Dashboard
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded shadow">
-          <h2 className="text-xl font-semibold">Total Sales</h2>
-          <p className="text-2xl">0</p>
+      <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+        <div className='bg-white p-4 rounded shadow'>
+          <h2 className='text-xl font-semibold'>Total Sales</h2>
+          <p className='text-2xl'>0</p>
         </div>
-        <div className="bg-white p-4 rounded shadow">
-          <h2 className="text-xl font-semibold">Orders Received</h2>
-          <p className="text-2xl">0</p>
+        <div className='bg-white p-4 rounded shadow'>
+          <h2 className='text-xl font-semibold'>Orders Received</h2>
+          <p className='text-2xl'>0</p>
         </div>
-        <div className="bg-white p-4 rounded shadow">
-          <h2 className="text-xl font-semibold">Pending Deliveries</h2>
-          <p className="text-2xl">0</p>
+        <div className='bg-white p-4 rounded shadow'>
+          <h2 className='text-xl font-semibold'>Pending Deliveries</h2>
+          <p className='text-2xl'>0</p>
         </div>
       </div>
-      <div className="mt-8 bg-white p-6 rounded shadow">
-        <h3 className="text-2xl font-bold mb-4">Performance Chart</h3>
-        <div className="h-64 bg-gray-200 flex items-center justify-center">
+      <div className='mt-8 bg-white p-6 rounded shadow'>
+        <h3 className='text-2xl font-bold mb-4'>Performance Chart</h3>
+        <div className='h-64 bg-gray-200 flex items-center justify-center'>
           Chart Placeholder
         </div>
       </div>

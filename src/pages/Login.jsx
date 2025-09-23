@@ -92,57 +92,53 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      {isSubmitting && <Loader overlay size="small" text="Signing in..." />}
-      <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-md">
-        <h2 className="mb-6 text-2xl font-bold text-center text-secondary-900">
+    <div className='min-h-screen bg-gray-50 flex items-center justify-center px-4'>
+      {isSubmitting && <Loader overlay size='small' text='Signing in...' />}
+      <div className='max-w-md w-full bg-white p-8 rounded-xl shadow-md'>
+        <h2 className='mb-6 text-2xl font-bold text-center text-secondary-900'>
           Login to AgriConnect
         </h2>
-        {error && (
-          <div className="mb-4 text-red-600 text-center">{error}</div>
-        )}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        {error && <div className='mb-4 text-red-600 text-center'>{error}</div>}
+        <form onSubmit={handleSubmit} className='space-y-5'>
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className='block text-sm font-medium text-gray-700'>
               Email
             </label>
             <input
               ref={emailRef}
-              type="email"
-              name="email"
-              className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-600 focus:border-primary-600"
-              placeholder="you@example.com"
+              type='email'
+              name='email'
+              className='mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-600 focus:border-primary-600'
+              placeholder='you@example.com'
               value={formData.email}
               onChange={handleChange}
-              autoComplete="email"
+              autoComplete='email'
               aria-invalid={!!error && !EMAIL_RE.test(formData.email)}
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className='block text-sm font-medium text-gray-700'>
               Password
             </label>
-            <div className="ac-password-input">
+            <div className='ac-password-input'>
               <input
-                id="password"
-                name="password"
+                id='password'
+                name='password'
                 type={showPassword ? 'text' : 'password'}
-                className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-600 focus:border-primary-600"
-                placeholder="Enter password"
+                className='mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-600 focus:border-primary-600'
+                placeholder='Enter password'
                 value={formData.password}
                 onChange={handleChange}
-                autoComplete="current-password"
+                autoComplete='current-password'
                 aria-invalid={!!error && formData.password.length < 6}
                 required
               />
               <button
-                type="button"
-                className="ac-password-toggle"
+                type='button'
+                className='ac-password-toggle'
                 onClick={() => setShowPassword((s) => !s)}
-                aria-label={
-                  showPassword ? 'Hide password' : 'Show password'
-                }
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? '🙈' : '👁️'}
               </button>
@@ -150,60 +146,60 @@ export default function Login() {
             {pwStrength && (
               <div
                 className={`ac-pw-strength ${pwStrength}`}
-                aria-hidden="true"
+                aria-hidden='true'
               >
-                <span className="label">Password: </span>
+                <span className='label'>Password: </span>
                 <strong>{pwStrength}</strong>
               </div>
             )}
           </div>
-          <div className="mt-6 flex items-center justify-between">
-            <div className="text-sm">
+          <div className='mt-6 flex items-center justify-between'>
+            <div className='text-sm'>
               <Link
-                to="/forgot-password"
-                className="font-medium text-primary-600 hover:text-primary-500"
+                to='/forgot-password'
+                className='font-medium text-primary-600 hover:text-primary-500'
               >
                 Forgot password?
               </Link>
             </div>
-            <div className="text-sm">
+            <div className='text-sm'>
               <Link
-                to="/register"
-                className="font-medium text-primary-600 hover:text-primary-500"
+                to='/register'
+                className='font-medium text-primary-600 hover:text-primary-500'
               >
                 Create an account
               </Link>
             </div>
           </div>
           <button
-            type="submit"
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 transition-colors duration-200"
+            type='submit'
+            className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 transition-colors duration-200'
             disabled={isSubmitting}
           >
             {isSubmitting ? 'Signing in...' : 'Login'}
           </button>
         </form>
-        <div className="mt-6 border-t pt-6 text-center">
-          <p className="text-sm text-gray-500">Or login with</p>
-          <div className="mt-4 flex justify-center space-x-4">
+        <div className='mt-6 border-t pt-6 text-center'>
+          <p className='text-sm text-gray-500'>Or login with</p>
+          <div className='mt-4 flex justify-center space-x-4'>
             <button
-              className="p-2 rounded-full border border-gray-300 hover:bg-gray-50"
-              title="Login with Google"
+              className='p-2 rounded-full border border-gray-300 hover:bg-gray-50'
+              title='Login with Google'
             >
               <img
-                src="/path/to/google-icon.svg"
-                alt="Google"
-                className="h-6 w-6"
+                src='/path/to/google-icon.svg'
+                alt='Google'
+                className='h-6 w-6'
               />
             </button>
             <button
-              className="p-2 rounded-full border border-gray-300 hover:bg-gray-50"
-              title="Login with Facebook"
+              className='p-2 rounded-full border border-gray-300 hover:bg-gray-50'
+              title='Login with Facebook'
             >
               <img
-                src="/path/to/facebook-icon.svg"
-                alt="Facebook"
-                className="h-6 w-6"
+                src='/path/to/facebook-icon.svg'
+                alt='Facebook'
+                className='h-6 w-6'
               />
             </button>
           </div>

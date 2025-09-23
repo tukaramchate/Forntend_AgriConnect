@@ -5,7 +5,7 @@ const SpinnerVariant = {
   DOTS: 'dots',
   CIRCLE: 'circle',
   PULSE: 'pulse',
-  BOUNCE: 'bounce'
+  BOUNCE: 'bounce',
 };
 
 // Size configurations
@@ -13,41 +13,57 @@ const sizeConfig = {
   small: {
     spinner: 'w-4 h-4',
     text: 'text-xs',
-    gap: 'gap-2'
+    gap: 'gap-2',
   },
   medium: {
     spinner: 'w-6 h-6',
     text: 'text-sm',
-    gap: 'gap-3'
+    gap: 'gap-3',
   },
   large: {
     spinner: 'w-8 h-8',
     text: 'text-base',
-    gap: 'gap-4'
+    gap: 'gap-4',
   },
   xlarge: {
     spinner: 'w-12 h-12',
     text: 'text-lg',
-    gap: 'gap-5'
-  }
+    gap: 'gap-5',
+  },
 };
 
 // Spinner components
 const DotsSpinner = ({ size = 'medium' }) => {
-  const dotSize = size === 'small' ? 'w-1.5 h-1.5' : size === 'large' ? 'w-2.5 h-2.5' : size === 'xlarge' ? 'w-3 h-3' : 'w-2 h-2';
-  
+  const dotSize =
+    size === 'small'
+      ? 'w-1.5 h-1.5'
+      : size === 'large'
+        ? 'w-2.5 h-2.5'
+        : size === 'xlarge'
+          ? 'w-3 h-3'
+          : 'w-2 h-2';
+
   return (
     <div className='flex items-center justify-center gap-1'>
-      <div className={`${dotSize} bg-primary-600 rounded-full animate-bounce`} style={{ animationDelay: '0ms' }}></div>
-      <div className={`${dotSize} bg-primary-600 rounded-full animate-bounce`} style={{ animationDelay: '150ms' }}></div>
-      <div className={`${dotSize} bg-primary-600 rounded-full animate-bounce`} style={{ animationDelay: '300ms' }}></div>
+      <div
+        className={`${dotSize} bg-primary-600 rounded-full animate-bounce`}
+        style={{ animationDelay: '0ms' }}
+      ></div>
+      <div
+        className={`${dotSize} bg-primary-600 rounded-full animate-bounce`}
+        style={{ animationDelay: '150ms' }}
+      ></div>
+      <div
+        className={`${dotSize} bg-primary-600 rounded-full animate-bounce`}
+        style={{ animationDelay: '300ms' }}
+      ></div>
     </div>
   );
 };
 
 const CircleSpinner = ({ size = 'medium' }) => {
   const { spinner } = sizeConfig[size] || sizeConfig.medium;
-  
+
   return (
     <div className={`${spinner} relative`}>
       <div className='absolute inset-0 border-2 border-secondary-200 rounded-full'></div>
@@ -58,20 +74,38 @@ const CircleSpinner = ({ size = 'medium' }) => {
 
 const PulseSpinner = ({ size = 'medium' }) => {
   const { spinner } = sizeConfig[size] || sizeConfig.medium;
-  
+
   return (
-    <div className={`${spinner} bg-primary-600 rounded-full animate-pulse`}></div>
+    <div
+      className={`${spinner} bg-primary-600 rounded-full animate-pulse`}
+    ></div>
   );
 };
 
 const BounceSpinner = ({ size = 'medium' }) => {
-  const ballSize = size === 'small' ? 'w-2 h-2' : size === 'large' ? 'w-4 h-4' : size === 'xlarge' ? 'w-5 h-5' : 'w-3 h-3';
-  
+  const ballSize =
+    size === 'small'
+      ? 'w-2 h-2'
+      : size === 'large'
+        ? 'w-4 h-4'
+        : size === 'xlarge'
+          ? 'w-5 h-5'
+          : 'w-3 h-3';
+
   return (
     <div className='flex items-end justify-center gap-1'>
-      <div className={`${ballSize} bg-primary-600 rounded-full animate-bounce`} style={{ animationDelay: '0ms' }}></div>
-      <div className={`${ballSize} bg-primary-600 rounded-full animate-bounce`} style={{ animationDelay: '100ms' }}></div>
-      <div className={`${ballSize} bg-primary-600 rounded-full animate-bounce`} style={{ animationDelay: '200ms' }}></div>
+      <div
+        className={`${ballSize} bg-primary-600 rounded-full animate-bounce`}
+        style={{ animationDelay: '0ms' }}
+      ></div>
+      <div
+        className={`${ballSize} bg-primary-600 rounded-full animate-bounce`}
+        style={{ animationDelay: '100ms' }}
+      ></div>
+      <div
+        className={`${ballSize} bg-primary-600 rounded-full animate-bounce`}
+        style={{ animationDelay: '200ms' }}
+      ></div>
     </div>
   );
 };
@@ -87,17 +121,17 @@ function Loader({
   ariaLabel,
 }) {
   const { text: textSize, gap } = sizeConfig[size] || sizeConfig.medium;
-  
+
   // Color variants for different backgrounds
   const colorClasses = {
     primary: 'text-primary-600',
-    secondary: 'text-secondary-600', 
+    secondary: 'text-secondary-600',
     white: 'text-white',
   };
 
   const renderSpinner = () => {
     const spinnerProps = { size };
-    
+
     switch (variant) {
       case SpinnerVariant.DOTS:
         return <DotsSpinner {...spinnerProps} />;
@@ -120,12 +154,12 @@ function Loader({
       aria-live='polite'
       aria-label={ariaLabel || text || 'Loading'}
     >
-      <div aria-hidden='true'>
-        {renderSpinner()}
-      </div>
+      <div aria-hidden='true'>{renderSpinner()}</div>
 
       {text && (
-        <div className={`${textSize} font-medium text-center ${colorClasses[color]}`}>
+        <div
+          className={`${textSize} font-medium text-center ${colorClasses[color]}`}
+        >
           <span className='sr-only'>{text}</span>
           <span aria-hidden='true'>{text}</span>
         </div>
@@ -147,15 +181,15 @@ function Loader({
 }
 
 // Skeleton loader for content placeholders
-export function SkeletonLoader({ 
-  className = '', 
+export function SkeletonLoader({
+  className = '',
   variant = 'text', // 'text' | 'circular' | 'rectangular'
   width,
   height,
-  lines = 1
+  lines = 1,
 }) {
   const baseClasses = 'bg-secondary-200 animate-pulse';
-  
+
   const variantClasses = {
     text: 'h-4 rounded',
     circular: 'rounded-full',
@@ -194,7 +228,9 @@ export function SkeletonLoader({
 // Card skeleton for product cards
 export function CardSkeleton({ className = '' }) {
   return (
-    <div className={`bg-white rounded-xl border border-secondary-200 overflow-hidden ${className}`}>
+    <div
+      className={`bg-white rounded-xl border border-secondary-200 overflow-hidden ${className}`}
+    >
       <SkeletonLoader variant='rectangular' className='aspect-square' />
       <div className='p-4 space-y-3'>
         <SkeletonLoader variant='text' lines={2} />

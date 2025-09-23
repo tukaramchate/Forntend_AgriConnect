@@ -25,7 +25,7 @@ export default defineConfig({
           vendor: ['react', 'react-dom'],
           router: ['react-router-dom'],
           redux: ['@reduxjs/toolkit', 'react-redux'],
-          ui: ['react-bootstrap', 'bootstrap'],
+          // ui: ['react-bootstrap'], // removed: react-bootstrap not installed in this project
         }
       }
     },

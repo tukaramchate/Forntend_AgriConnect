@@ -8,7 +8,7 @@ function Register() {
     name: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -35,65 +35,76 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <div className='min-h-screen bg-gray-50 flex items-center justify-center px-4'>
       {loading && <Loader overlay text='Creating your account...' />}
-      <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-md">
-        <h2 className="mb-6 text-2xl font-bold text-center text-secondary-900">
+      <div className='max-w-md w-full bg-white p-8 rounded-xl shadow-md'>
+        <h2 className='mb-6 text-2xl font-bold text-center text-secondary-900'>
           Create an Account
         </h2>
-        {error && <div className="mb-4 text-red-600 text-center">{error}</div>}
-        <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+        {error && <div className='mb-4 text-red-600 text-center'>{error}</div>}
+        <form onSubmit={handleSubmit} className='space-y-5' noValidate>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Full Name</label>
+            <label className='block text-sm font-medium text-gray-700'>
+              Full Name
+            </label>
             <input
-              type="text"
-              name="name"
+              type='text'
+              name='name'
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-600 focus:border-primary-600"
+              className='mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-600 focus:border-primary-600'
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <label className='block text-sm font-medium text-gray-700'>
+              Email
+            </label>
             <input
-              type="email"
-              name="email"
+              type='email'
+              name='email'
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-600 focus:border-primary-600"
+              className='mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-600 focus:border-primary-600'
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Password</label>
+            <label className='block text-sm font-medium text-gray-700'>
+              Password
+            </label>
             <input
-              type="password"
-              name="password"
+              type='password'
+              name='password'
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-600 focus:border-primary-600"
+              className='mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-600 focus:border-primary-600'
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
+            <label className='block text-sm font-medium text-gray-700'>
+              Confirm Password
+            </label>
             <input
-              type="password"
-              name="confirmPassword"
+              type='password'
+              name='confirmPassword'
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-600 focus:border-primary-600"
+              className='mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-600 focus:border-primary-600'
             />
           </div>
           <button
-            type="submit"
+            type='submit'
             disabled={loading}
-            className="w-full flex justify-center py-2 px-4 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors duration-200"
+            className='w-full flex justify-center py-2 px-4 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors duration-200'
           >
             {loading ? 'Registering...' : 'Register'}
           </button>
         </form>
-        <p className="mt-6 text-center text-sm text-gray-500">
+        <p className='mt-6 text-center text-sm text-gray-500'>
           Already have an account?{' '}
-          <Link to="/login" className="font-medium text-primary-600 hover:text-primary-500">
+          <Link
+            to='/login'
+            className='font-medium text-primary-600 hover:text-primary-500'
+          >
             Login
           </Link>
         </p>

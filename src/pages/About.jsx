@@ -30,9 +30,9 @@ function About() {
         <div className='container mx-auto px-4'>
           <h2 className='text-4xl font-bold text-center mb-8'>Our Vision</h2>
           <p className='max-w-2xl mx-auto text-center text-lg text-secondary-700'>
-            We envision a world where every community has direct access to fresh,
-            organic produce from local farmers, fostering sustainability and
-            mutual growth.
+            We envision a world where every community has direct access to
+            fresh, organic produce from local farmers, fostering sustainability
+            and mutual growth.
           </p>
         </div>
       </section>
@@ -40,7 +40,9 @@ function About() {
       {/* Our Team Section */}
       <section className='py-16 bg-white'>
         <div className='container mx-auto px-4'>
-          <h2 className='text-4xl font-bold text-center mb-12'>Meet Our Team</h2>
+          <h2 className='text-4xl font-bold text-center mb-12'>
+            Meet Our Team
+          </h2>
           <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
             <div className='bg-secondary-50 p-6 rounded-lg shadow'>
               <img
@@ -58,7 +60,9 @@ function About() {
                 className='w-24 h-24 rounded-full mx-auto mb-4'
               />
               <h3 className='text-2xl font-semibold text-center'>Jane Smith</h3>
-              <p className='text-center text-secondary-600'>Operations Director</p>
+              <p className='text-center text-secondary-600'>
+                Operations Director
+              </p>
             </div>
             <div className='bg-secondary-50 p-6 rounded-lg shadow'>
               <img
@@ -66,7 +70,9 @@ function About() {
                 alt='Emily Johnson'
                 className='w-24 h-24 rounded-full mx-auto mb-4'
               />
-              <h3 className='text-2xl font-semibold text-center'>Emily Johnson</h3>
+              <h3 className='text-2xl font-semibold text-center'>
+                Emily Johnson
+              </h3>
               <p className='text-center text-secondary-600'>CTO</p>
             </div>
           </div>
@@ -89,8 +95,8 @@ function About() {
             </div>
             <div className='bg-white p-8 rounded-lg shadow'>
               <p className='italic text-secondary-700'>
-                "A revolutionary platform connecting communities with local farmers
-                effectively."
+                "A revolutionary platform connecting communities with local
+                farmers effectively."
               </p>
               <p className='mt-4 font-semibold text-secondary-900'>
                 - Maria Garcia

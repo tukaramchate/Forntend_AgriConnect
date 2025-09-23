@@ -41,7 +41,8 @@ api.interceptors.request.use(
     }
 
     // Add authentication token
-    const token = Cookies.get('auth-token') || localStorage.getItem('authToken');
+    const token =
+      Cookies.get('auth-token') || localStorage.getItem('authToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

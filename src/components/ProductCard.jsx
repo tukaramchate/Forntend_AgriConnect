@@ -2,7 +2,10 @@ import React, { memo, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../store/slices/cartSlice';
-import { addToWishlist, removeFromWishlist } from '../store/slices/wishlistSlice';
+import {
+  addToWishlist,
+  removeFromWishlist,
+} from '../store/slices/wishlistSlice';
 
 // Format currency for Indian market
 function formatINR(value) {
@@ -21,16 +24,20 @@ function formatINR(value) {
 // Star rating component
 const StarRating = ({ rating = 0, maxStars = 5 }) => {
   return (
-    <div className='flex items-center gap-1' role='img' aria-label={`${rating} out of ${maxStars} stars`}>
+    <div
+      className='flex items-center gap-1'
+      role='img'
+      aria-label={`${rating} out of ${maxStars} stars`}
+    >
       {[...Array(maxStars)].map((_, index) => (
         <svg
           key={index}
           className={`w-4 h-4 ${
-            index < Math.floor(rating) 
-              ? 'text-yellow-400 fill-current' 
-              : index < rating 
-              ? 'text-yellow-400 fill-current opacity-50' 
-              : 'text-secondary-300'
+            index < Math.floor(rating)
+              ? 'text-yellow-400 fill-current'
+              : index < rating
+                ? 'text-yellow-400 fill-current opacity-50'
+                : 'text-secondary-300'
           }`}
           viewBox='0 0 24 24'
           stroke='currentColor'
@@ -43,7 +50,9 @@ const StarRating = ({ rating = 0, maxStars = 5 }) => {
           />
         </svg>
       ))}
-      <span className='ml-1 text-sm text-secondary-600'>({rating.toFixed(1)})</span>
+      <span className='ml-1 text-sm text-secondary-600'>
+        ({rating.toFixed(1)})
+      </span>
     </div>
   );
 };
@@ -56,7 +65,7 @@ function ProductCard({
 }) {
   const dispatch = useDispatch();
   const { items: wishlistItems } = useSelector((state) => state.wishlist);
-  
+
   const {
     id,
     name,
@@ -76,16 +85,19 @@ function ProductCard({
   } = product;
 
   const [imgSrc, setImgSrc] = useState(
-    image || `https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop&auto=format`
+    image ||
+      `https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop&auto=format`
   );
   const [imageLoading, setImageLoading] = useState(true);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  const isInWishlist = wishlistItems?.some(item => item.id === id) || false;
+  const isInWishlist = wishlistItems?.some((item) => item.id === id) || false;
 
   const handleImgError = useCallback(() => {
-    setImgSrc('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop&auto=format');
+    setImgSrc(
+      'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop&auto=format'
+    );
     setImageLoading(false);
   }, []);
 
@@ -98,10 +110,10 @@ function ProductCard({
 
     setIsAddingToCart(true);
     setIsAnimating(true);
-    
+
     try {
       dispatch(addToCart({ ...product, quantity: 1 }));
-      
+
       // Visual feedback animation
       setTimeout(() => {
         setIsAnimating(false);
@@ -122,9 +134,10 @@ function ProductCard({
     }
   }, [dispatch, isInWishlist, id, product]);
 
-  const discountPercentage = originalPrice && price 
-    ? Math.round(((originalPrice - price) / originalPrice) * 100)
-    : discount;
+  const discountPercentage =
+    originalPrice && price
+      ? Math.round(((originalPrice - price) / originalPrice) * 100)
+      : discount;
 
   return (
     <article
@@ -132,6 +145,7 @@ function ProductCard({
         hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${className} 
         ${!inStock ? 'opacity-75' : ''}`}
       data-product-id={id}
+      data-layout={layout}
       role='article'
       aria-label={`Product: ${name}`}
     >
@@ -166,23 +180,23 @@ function ProductCard({
           onClick={handleWishlistToggle}
           className={`absolute top-3 right-3 z-10 w-9 h-9 rounded-full flex items-center justify-center 
             transition-all duration-200 ${
-            isInWishlist 
-              ? 'bg-red-100 text-red-600 hover:bg-red-200' 
-              : 'bg-white/80 backdrop-blur-sm text-secondary-600 hover:bg-white hover:text-red-600'
-          }`}
+              isInWishlist
+                ? 'bg-red-100 text-red-600 hover:bg-red-200'
+                : 'bg-white/80 backdrop-blur-sm text-secondary-600 hover:bg-white hover:text-red-600'
+            }`}
           aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
         >
-          <svg 
-            className={`w-5 h-5 transition-transform ${isInWishlist ? 'scale-110' : 'group-hover:scale-110'}`} 
-            fill={isInWishlist ? 'currentColor' : 'none'} 
-            stroke='currentColor' 
+          <svg
+            className={`w-5 h-5 transition-transform ${isInWishlist ? 'scale-110' : 'group-hover:scale-110'}`}
+            fill={isInWishlist ? 'currentColor' : 'none'}
+            stroke='currentColor'
             viewBox='0 0 24 24'
           >
-            <path 
-              strokeLinecap='round' 
-              strokeLinejoin='round' 
-              strokeWidth={2} 
-              d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z' 
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth={2}
+              d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'
             />
           </svg>
         </button>
@@ -192,8 +206,16 @@ function ProductCard({
           <div className='relative w-full h-full'>
             {imageLoading && (
               <div className='absolute inset-0 bg-secondary-200 animate-pulse flex items-center justify-center'>
-                <svg className='w-12 h-12 text-secondary-400' fill='currentColor' viewBox='0 0 20 20'>
-                  <path fillRule='evenodd' d='M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z' clipRule='evenodd' />
+                <svg
+                  className='w-12 h-12 text-secondary-400'
+                  fill='currentColor'
+                  viewBox='0 0 20 20'
+                >
+                  <path
+                    fillRule='evenodd'
+                    d='M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z'
+                    clipRule='evenodd'
+                  />
                 </svg>
               </div>
             )}
@@ -210,42 +232,69 @@ function ProductCard({
           </div>
         </Link>
 
-        {/* Quick Action Overlay */}
-        <div className='absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center'>
-          <div className='transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300'>
-            <button
-              onClick={handleAddToCart}
-              disabled={!inStock || isAddingToCart}
-              className={`px-6 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 ${
-                !inStock 
-                  ? 'bg-secondary-400 text-secondary-200 cursor-not-allowed'
-                  : isAddingToCart
-                  ? 'bg-primary-700 text-white cursor-wait'
-                  : 'bg-primary-600 text-white hover:bg-primary-700 active:scale-95'
-              }`}
-              aria-label={inStock ? 'Add to cart' : 'Out of stock'}
-            >
-              {isAddingToCart ? (
-                <>
-                  <svg className='w-4 h-4 animate-spin' fill='none' viewBox='0 0 24 24'>
-                    <circle className='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4' />
-                    <path className='opacity-75' fill='currentColor' d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z' />
-                  </svg>
-                  Adding...
-                </>
-              ) : !inStock ? (
-                'Out of Stock'
-              ) : (
-                <>
-                  <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01' />
-                  </svg>
-                  Add to Cart
-                </>
-              )}
-            </button>
+        {/* Quick Action Overlay (optional) */}
+        {showQuickActions && (
+          <div className='absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center'>
+            <div className='transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300'>
+              <button
+                onClick={handleAddToCart}
+                disabled={!inStock || isAddingToCart}
+                className={`px-6 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 ${
+                  !inStock
+                    ? 'bg-secondary-400 text-secondary-200 cursor-not-allowed'
+                    : isAddingToCart
+                      ? 'bg-primary-700 text-white cursor-wait'
+                      : 'bg-primary-600 text-white hover:bg-primary-700 active:scale-95'
+                } ${isAnimating ? 'ring-2 ring-primary-300' : ''}`}
+                aria-label={inStock ? 'Add to cart' : 'Out of stock'}
+              >
+                {isAddingToCart ? (
+                  <>
+                    <svg
+                      className='w-4 h-4 animate-spin'
+                      fill='none'
+                      viewBox='0 0 24 24'
+                    >
+                      <circle
+                        className='opacity-25'
+                        cx='12'
+                        cy='12'
+                        r='10'
+                        stroke='currentColor'
+                        strokeWidth='4'
+                      />
+                      <path
+                        className='opacity-75'
+                        fill='currentColor'
+                        d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
+                      />
+                    </svg>
+                    Adding...
+                  </>
+                ) : !inStock ? (
+                  'Out of Stock'
+                ) : (
+                  <>
+                    <svg
+                      className='w-4 h-4'
+                      fill='none'
+                      stroke='currentColor'
+                      viewBox='0 0 24 24'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01'
+                      />
+                    </svg>
+                    Add to Cart
+                  </>
+                )}
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Product Info */}
@@ -312,22 +361,47 @@ function ProductCard({
             onClick={handleAddToCart}
             disabled={!inStock || isAddingToCart}
             className={`md:hidden w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 ${
-              !inStock 
+              !inStock
                 ? 'bg-secondary-200 text-secondary-400 cursor-not-allowed'
                 : isAddingToCart
-                ? 'bg-primary-700 text-white cursor-wait'
-                : 'bg-primary-600 text-white hover:bg-primary-700 active:scale-95'
+                  ? 'bg-primary-700 text-white cursor-wait'
+                  : 'bg-primary-600 text-white hover:bg-primary-700 active:scale-95'
             }`}
             aria-label={inStock ? 'Add to cart' : 'Out of stock'}
           >
             {isAddingToCart ? (
-              <svg className='w-4 h-4 animate-spin' fill='none' viewBox='0 0 24 24'>
-                <circle className='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4' />
-                <path className='opacity-75' fill='currentColor' d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z' />
+              <svg
+                className='w-4 h-4 animate-spin'
+                fill='none'
+                viewBox='0 0 24 24'
+              >
+                <circle
+                  className='opacity-25'
+                  cx='12'
+                  cy='12'
+                  r='10'
+                  stroke='currentColor'
+                  strokeWidth='4'
+                />
+                <path
+                  className='opacity-75'
+                  fill='currentColor'
+                  d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
+                />
               </svg>
             ) : (
-              <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 6v6m0 0v6m0-6h6m-6 0H6' />
+              <svg
+                className='w-5 h-5'
+                fill='none'
+                stroke='currentColor'
+                viewBox='0 0 24 24'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth={2}
+                  d='M12 6v6m0 0v6m0-6h6m-6 0H6'
+                />
               </svg>
             )}
           </button>

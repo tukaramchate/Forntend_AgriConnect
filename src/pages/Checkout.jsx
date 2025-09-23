@@ -81,7 +81,6 @@ function Checkout() {
 
   const isFormValid = () => Object.keys(validate()).length === 0;
 
-
   return (
     <div className='ac-checkout-page'>
       {isSubmitting && (

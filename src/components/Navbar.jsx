@@ -11,19 +11,20 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  
+
   const location = useLocation();
   const navigate = useNavigate();
   const menuRef = useRef(null);
   const searchRef = useRef(null);
   const debounceRef = useRef(null);
-  
+
   // Get state from Redux store
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const { items: cartItems } = useSelector((state) => state.cart);
   const { items: wishlistItems } = useSelector((state) => state.wishlist);
-  
-  const cartCount = cartItems?.reduce((total, item) => total + item.quantity, 0) || 0;
+
+  const cartCount =
+    cartItems?.reduce((total, item) => total + item.quantity, 0) || 0;
   const wishlistCount = wishlistItems?.length || 0;
 
   // Navigation menu items
@@ -113,12 +114,14 @@ export default function Navbar() {
             <NavLink
               key={item.to}
               to={item.to}
-              className={({ isActive }) => 
+              className={({ isActive }) =>
                 `ac-navbar__link ${isActive ? 'ac-navbar__link--active' : ''}`
               }
               aria-current={location.pathname === item.to ? 'page' : undefined}
             >
-              <span className='mr-2 text-lg' aria-hidden='true'>{item.icon}</span>
+              <span className='mr-2 text-lg' aria-hidden='true'>
+                {item.icon}
+              </span>
               {item.label}
             </NavLink>
           ))}
@@ -141,13 +144,23 @@ export default function Navbar() {
               onChange={(e) => handleSearchChange(e.target.value)}
               aria-label='Search products'
             />
-            <button 
-              type='submit' 
-              className='absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary-400 hover:text-primary-600 transition-colors' 
+            <button
+              type='submit'
+              className='absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary-400 hover:text-primary-600 transition-colors'
               aria-label='Search'
             >
-              <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' />
+              <svg
+                className='w-5 h-5'
+                fill='none'
+                stroke='currentColor'
+                viewBox='0 0 24 24'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth={2}
+                  d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
+                />
               </svg>
             </button>
           </div>
@@ -156,37 +169,61 @@ export default function Navbar() {
         {/* Action Buttons */}
         <div className='ac-navbar__actions'>
           {/* Wishlist */}
-          <Link 
-            to='/wishlist' 
+          <Link
+            to='/wishlist'
             className='ac-navbar__action group'
             aria-label={`Wishlist (${wishlistCount} items)`}
           >
-            <svg className='w-6 h-6 group-hover:text-red-500 transition-colors' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-              <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z' />
+            <svg
+              className='w-6 h-6 group-hover:text-red-500 transition-colors'
+              fill='none'
+              stroke='currentColor'
+              viewBox='0 0 24 24'
+            >
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth={2}
+                d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'
+              />
             </svg>
             {wishlistCount > 0 && (
-              <span className='ac-navbar__badge bg-red-500'>{wishlistCount}</span>
+              <span className='ac-navbar__badge bg-red-500'>
+                {wishlistCount}
+              </span>
             )}
           </Link>
 
           {/* Cart */}
-          <Link 
-            to='/cart' 
+          <Link
+            to='/cart'
             className='ac-navbar__action group'
             aria-label={`Shopping cart (${cartCount} items)`}
           >
-            <svg className='w-6 h-6 group-hover:text-primary-600 transition-colors' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-              <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01' />
+            <svg
+              className='w-6 h-6 group-hover:text-primary-600 transition-colors'
+              fill='none'
+              stroke='currentColor'
+              viewBox='0 0 24 24'
+            >
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth={2}
+                d='M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01'
+              />
             </svg>
             {cartCount > 0 && (
-              <span className='ac-navbar__badge bg-primary-600'>{cartCount}</span>
+              <span className='ac-navbar__badge bg-primary-600'>
+                {cartCount}
+              </span>
             )}
           </Link>
 
           {/* User Menu */}
           {isAuthenticated ? (
             <div className='relative'>
-              <button 
+              <button
                 onClick={toggleUserMenu}
                 className='ac-navbar__action'
                 aria-label={`User menu for ${user?.name || 'User'}`}
@@ -197,54 +234,58 @@ export default function Navbar() {
                   {user?.name?.[0]?.toUpperCase() || 'U'}
                 </div>
               </button>
-              
+
               {/* User Dropdown */}
               {isUserMenuOpen && (
                 <div className='absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-secondary-200 z-50'>
                   <div className='py-2'>
                     <div className='px-4 py-3 border-b border-secondary-100'>
-                      <p className='text-sm font-medium text-secondary-900'>Hi, {user?.name || 'User'}</p>
-                      <p className='text-xs text-secondary-500'>{user?.email}</p>
+                      <p className='text-sm font-medium text-secondary-900'>
+                        Hi, {user?.name || 'User'}
+                      </p>
+                      <p className='text-xs text-secondary-500'>
+                        {user?.email}
+                      </p>
                     </div>
-                    
+
                     {user?.role === 'farmer' && (
-                      <Link 
-                        to='/farmer-dashboard' 
+                      <Link
+                        to='/farmer-dashboard'
                         className='block px-4 py-2 text-sm text-secondary-700 hover:bg-secondary-50 transition-colors'
                         onClick={() => setIsUserMenuOpen(false)}
                       >
                         <span className='mr-3'>🌾</span>Dashboard
                       </Link>
                     )}
-                    
+
                     {user?.role === 'admin' && (
-                      <Link 
-                        to='/admin-dashboard' 
+                      <Link
+                        to='/admin-dashboard'
                         className='block px-4 py-2 text-sm text-secondary-700 hover:bg-secondary-50 transition-colors'
                         onClick={() => setIsUserMenuOpen(false)}
                       >
                         <span className='mr-3'>⚙️</span>Admin Panel
                       </Link>
                     )}
-                    
-                    <Link 
-                      to='/orders' 
+
+                    <Link
+                      to='/orders'
                       className='block px-4 py-2 text-sm text-secondary-700 hover:bg-secondary-50 transition-colors'
                       onClick={() => setIsUserMenuOpen(false)}
                     >
                       <span className='mr-3'>📦</span>My Orders
                     </Link>
-                    
-                    <Link 
-                      to='/profile' 
+
+                    <Link
+                      to='/profile'
                       className='block px-4 py-2 text-sm text-secondary-700 hover:bg-secondary-50 transition-colors'
                       onClick={() => setIsUserMenuOpen(false)}
                     >
                       <span className='mr-3'>👤</span>Profile Settings
                     </Link>
-                    
+
                     <div className='border-t border-secondary-100 mt-2'>
-                      <button 
+                      <button
                         onClick={handleLogout}
                         className='w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors'
                       >
@@ -260,7 +301,10 @@ export default function Navbar() {
               <Link to='/login' className='ac-btn ac-btn--ghost ac-btn--sm'>
                 Login
               </Link>
-              <Link to='/register' className='ac-btn ac-btn--primary ac-btn--sm'>
+              <Link
+                to='/register'
+                className='ac-btn ac-btn--primary ac-btn--sm'
+              >
                 Register
               </Link>
             </div>
@@ -274,11 +318,26 @@ export default function Navbar() {
             aria-expanded={isMobileMenuOpen}
             aria-controls='mobile-navigation'
           >
-            <svg className='w-6 h-6' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+            <svg
+              className='w-6 h-6'
+              fill='none'
+              stroke='currentColor'
+              viewBox='0 0 24 24'
+            >
               {isMobileMenuOpen ? (
-                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M6 18L18 6M6 6l12 12' />
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth={2}
+                  d='M6 18L18 6M6 6l12 12'
+                />
               ) : (
-                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M4 6h16M4 12h16M4 18h16' />
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth={2}
+                  d='M4 6h16M4 12h16M4 18h16'
+                />
               )}
             </svg>
           </button>
@@ -287,7 +346,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           className='ac-navbar__mobile-menu'
           id='mobile-navigation'
           role='region'
@@ -310,8 +369,18 @@ export default function Navbar() {
                   className='absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary-400 hover:text-primary-600 transition-colors'
                   aria-label='Search'
                 >
-                  <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' />
+                  <svg
+                    className='w-5 h-5'
+                    fill='none'
+                    stroke='currentColor'
+                    viewBox='0 0 24 24'
+                  >
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      strokeWidth={2}
+                      d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
+                    />
                   </svg>
                 </button>
               </div>
@@ -326,13 +395,17 @@ export default function Navbar() {
                 to={item.to}
                 className='ac-navbar__mobile-link'
                 onClick={() => setIsMobileMenuOpen(false)}
-                aria-current={location.pathname === item.to ? 'page' : undefined}
+                aria-current={
+                  location.pathname === item.to ? 'page' : undefined
+                }
               >
-                <span className='mr-3' aria-hidden='true'>{item.icon}</span>
+                <span className='mr-3' aria-hidden='true'>
+                  {item.icon}
+                </span>
                 {item.label}
               </NavLink>
             ))}
-            
+
             {!isAuthenticated && (
               <>
                 <NavLink
@@ -340,7 +413,9 @@ export default function Navbar() {
                   className='ac-navbar__mobile-link'
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <span className='mr-3' aria-hidden='true'>🔑</span>
+                  <span className='mr-3' aria-hidden='true'>
+                    🔑
+                  </span>
                   Login
                 </NavLink>
                 <NavLink
@@ -348,7 +423,9 @@ export default function Navbar() {
                   className='ac-navbar__mobile-link'
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <span className='mr-3' aria-hidden='true'>📝</span>
+                  <span className='mr-3' aria-hidden='true'>
+                    📝
+                  </span>
                   Register
                 </NavLink>
               </>

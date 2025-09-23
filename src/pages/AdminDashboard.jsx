@@ -10,7 +10,9 @@ function AdminDashboard() {
 
   return (
     <div className='min-h-screen bg-secondary-50 p-8'>
-      <h1 className='text-3xl font-bold text-secondary-900 mb-6'>Admin Dashboard</h1>
+      <h1 className='text-3xl font-bold text-secondary-900 mb-6'>
+        Admin Dashboard
+      </h1>
       <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
         {/* Analytics Cards */}
         <div className='bg-white p-6 rounded shadow'>
@@ -24,7 +26,9 @@ function AdminDashboard() {
         {/* Management Cards */}
         <div className='bg-white p-6 rounded shadow'>
           <h2 className='text-xl font-semibold mb-2'>Manage Products</h2>
-          <p className='text-secondary-600'>Edit, update, or remove products.</p>
+          <p className='text-secondary-600'>
+            Edit, update, or remove products.
+          </p>
         </div>
         <div className='bg-white p-6 rounded shadow'>
           <h2 className='text-xl font-semibold mb-2'>Manage Orders</h2>
