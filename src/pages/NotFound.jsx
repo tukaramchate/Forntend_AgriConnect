@@ -1,33 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './NotFound.css';
 
 function NotFound() {
   return (
-    <div className="ac-not-found">
-      <div className="ac-container">
-        <div className="ac-not-found__content">
-          <div className="ac-not-found__illustration">
-            <span className="ac-not-found__emoji" role="img" aria-hidden="true">🌾</span>
-            <span className="ac-not-found__404">404</span>
-          </div>
-          
-          <h1 className="ac-not-found__title">Page Not Found</h1>
-          <p className="ac-not-found__message">
-            We couldn't find the page you're looking for. 
-            Let's get you back on track.
-          </p>
-          
-          <div className="ac-not-found__actions">
-            <Link to="/" className="ac-btn ac-btn--primary">
-              Return Home
-            </Link>
-            <Link to="/products" className="ac-btn ac-btn--outline">
-              Browse Products
-            </Link>
-          </div>
-        </div>
-      </div>
+    <div className="min-h-screen bg-secondary-50 flex flex-col items-center justify-center p-4">
+      <h1 className="text-6xl font-extrabold text-primary-600 mb-4">404</h1>
+      <p className="text-2xl text-secondary-900 mb-6">Oops! Page not found.</p>
+      <p className="text-lg text-secondary-700 mb-8 text-center">
+        The page you're looking for might have been removed or is temporarily unavailable.
+      </p>
+      <Link to="/" className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-200">
+        Go Home
+      </Link>
     </div>
   );
 }

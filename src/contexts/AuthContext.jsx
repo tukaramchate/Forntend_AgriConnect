@@ -14,15 +14,15 @@ export function AuthProvider({ children }) {
       try {
         setIsLoading(true);
         setError(null);
-        
+
         // Simulate API call
         // In a real implementation, this would be:
         // const userData = await getCurrentUser();
-        
+
         // For now, just check localStorage
         const token = localStorage.getItem('auth_token');
         const userData = localStorage.getItem('user');
-        
+
         if (token && userData) {
           setUser(JSON.parse(userData));
           setIsAuthenticated(true);
@@ -37,7 +37,7 @@ export function AuthProvider({ children }) {
         setIsLoading(false);
       }
     };
-    
+
     checkAuthStatus();
   }, []);
 
@@ -45,25 +45,25 @@ export function AuthProvider({ children }) {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       // Simulate API call
       // In a real implementation: const data = await loginUser(email, password);
-      
+
       // Mock login for demonstration
       if (email === 'user@example.com' && password === 'password') {
         const mockUser = {
           id: '123',
           name: 'Test User',
           email: 'user@example.com',
-          role: 'customer'
+          role: 'customer',
         };
-        
+
         const mockToken = 'mock-jwt-token';
-        
+
         // Save to localStorage
         localStorage.setItem('auth_token', mockToken);
         localStorage.setItem('user', JSON.stringify(mockUser));
-        
+
         setUser(mockUser);
         setIsAuthenticated(true);
         return mockUser;
@@ -83,24 +83,24 @@ export function AuthProvider({ children }) {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       // Simulate API call
       // In a real implementation: const data = await registerUser(userData);
-      
+
       // Mock registration
       const mockUser = {
         id: '123',
         name: userData.name,
         email: userData.email,
-        role: 'customer'
+        role: 'customer',
       };
-      
+
       const mockToken = 'mock-jwt-token';
-      
+
       // Save to localStorage
       localStorage.setItem('auth_token', mockToken);
       localStorage.setItem('user', JSON.stringify(mockUser));
-      
+
       setUser(mockUser);
       setIsAuthenticated(true);
       return mockUser;
@@ -116,14 +116,14 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     try {
       setIsLoading(true);
-      
+
       // Simulate API call
       // In a real implementation: await logoutUser();
-      
+
       // Clear localStorage
       localStorage.removeItem('auth_token');
       localStorage.removeItem('user');
-      
+
       setUser(null);
       setIsAuthenticated(false);
     } catch (err) {
@@ -134,15 +134,17 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      isAuthenticated,
-      isLoading,
-      error,
-      login,
-      register,
-      logout
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated,
+        isLoading,
+        error,
+        login,
+        register,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

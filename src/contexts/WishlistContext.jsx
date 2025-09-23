@@ -4,7 +4,7 @@ const WishlistContext = createContext(null);
 
 export function WishlistProvider({ children }) {
   const [items, setItems] = useState([]);
-  
+
   // Load wishlist from localStorage on mount
   useEffect(() => {
     try {
@@ -16,7 +16,7 @@ export function WishlistProvider({ children }) {
       console.error('Error loading wishlist from localStorage:', error);
     }
   }, []);
-  
+
   // Save wishlist to localStorage when it changes
   useEffect(() => {
     try {
@@ -27,9 +27,9 @@ export function WishlistProvider({ children }) {
   }, [items]);
 
   const addItem = (product) => {
-    setItems(prevItems => {
-      const exists = prevItems.some(item => item.id === product.id);
-      
+    setItems((prevItems) => {
+      const exists = prevItems.some((item) => item.id === product.id);
+
       if (exists) {
         return prevItems;
       } else {
@@ -39,15 +39,15 @@ export function WishlistProvider({ children }) {
   };
 
   const removeItem = (productId) => {
-    setItems(prevItems => prevItems.filter(item => item.id !== productId));
+    setItems((prevItems) => prevItems.filter((item) => item.id !== productId));
   };
 
   const toggleItem = (product) => {
-    setItems(prevItems => {
-      const exists = prevItems.some(item => item.id === product.id);
-      
+    setItems((prevItems) => {
+      const exists = prevItems.some((item) => item.id === product.id);
+
       if (exists) {
-        return prevItems.filter(item => item.id !== product.id);
+        return prevItems.filter((item) => item.id !== product.id);
       } else {
         return [...prevItems, product];
       }
@@ -59,21 +59,23 @@ export function WishlistProvider({ children }) {
   };
 
   const itemCount = items.length;
-  
+
   const isInWishlist = (productId) => {
-    return items.some(item => item.id === productId);
+    return items.some((item) => item.id === productId);
   };
 
   return (
-    <WishlistContext.Provider value={{
-      items,
-      addItem,
-      removeItem,
-      toggleItem,
-      clearWishlist,
-      itemCount,
-      isInWishlist
-    }}>
+    <WishlistContext.Provider
+      value={{
+        items,
+        addItem,
+        removeItem,
+        toggleItem,
+        clearWishlist,
+        itemCount,
+        isInWishlist,
+      }}
+    >
       {children}
     </WishlistContext.Provider>
   );

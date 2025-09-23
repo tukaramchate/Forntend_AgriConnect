@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Loader from '../components/Loader';
-import './Login.css';
+// Tailwind-only styling
 
 const EMAIL_RE = /^\S+@\S+\.\S+$/;
 
@@ -54,7 +54,8 @@ export default function Login() {
 
   function validate() {
     if (!EMAIL_RE.test(formData.email)) return 'Enter a valid email address.';
-    if (formData.password.trim().length < 6) return 'Password must be at least 6 characters.';
+    if (formData.password.trim().length < 6)
+      return 'Password must be at least 6 characters.';
     return '';
   }
 
@@ -70,7 +71,8 @@ export default function Login() {
     setError('');
 
     // persist remember-me email
-    if (formData.remember) localStorage.setItem('ac_remember_email', formData.email);
+    if (formData.remember)
+      localStorage.setItem('ac_remember_email', formData.email);
     else localStorage.removeItem('ac_remember_email');
 
     // fake auth delay (replace with real API)
@@ -79,7 +81,8 @@ export default function Login() {
     // Demo auth routes (replace logic with real auth)
     const creds = `${formData.email}:${formData.password}`;
     if (creds.startsWith('admin@agriconnect.com')) navigate('/admin/dashboard');
-    else if (creds.startsWith('farmer@example.com')) navigate('/farmer/dashboard');
+    else if (creds.startsWith('farmer@example.com'))
+      navigate('/farmer/dashboard');
     else if (creds.startsWith('customer@example.com')) navigate('/');
     else {
       setError('Invalid credentials. Use demo creds shown below.');
@@ -89,150 +92,121 @@ export default function Login() {
   }
 
   return (
-    <div className="ac-login-page">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       {isSubmitting && <Loader overlay size="small" text="Signing in..." />}
-      <div className="ac-container">
-        <div className="ac-login-container" aria-labelledby="login-title">
-          <header className="ac-login-header">
-            <h1 id="login-title" className="ac-login-title">Sign in to AgriConnect</h1>
-            <p className="ac-login-subtitle">Access your account — customers, farmers and admin</p>
-          </header>
-
-          <form className="ac-login-form" onSubmit={handleSubmit} noValidate>
-            <div
-              tabIndex={-1}
-              ref={errRef}
-              aria-live="assertive"
-              className={`ac-error-wrap ${error ? 'visible' : ''}`}
-            >
-              {error && <div className="ac-error-message" role="alert">{error}</div>}
-            </div>
-
-            <fieldset className="ac-role-fieldset" aria-label="Role">
-              <legend className="ac-visually-hidden">Choose role</legend>
-              <div className="ac-role-options" role="radiogroup" aria-label="I am a">
-                {[
-                  { key: 'customer', label: 'Customer', icon: '🛒' },
-                  { key: 'farmer', label: 'Farmer', icon: '🌾' },
-                  { key: 'admin', label: 'Admin', icon: '⚙️' },
-                ].map((r) => (
-                  <label
-                    key={r.key}
-                    className={`ac-role-option ${formData.role === r.key ? 'active' : ''}`}
-                    role="radio"
-                    aria-checked={formData.role === r.key}
-                    tabIndex={0}
-                    onKeyDown={(ev) => {
-                      if (ev.key === ' ' || ev.key === 'Enter') {
-                        setFormData((p) => ({ ...p, role: r.key }));
-                      }
-                    }}
-                  >
-                    <input
-                      type="radio"
-                      name="role"
-                      value={r.key}
-                      checked={formData.role === r.key}
-                      onChange={handleChange}
-                      aria-hidden="true"
-                    />
-                    <span className="ac-role-icon" aria-hidden>{r.icon}</span>
-                    <span className="ac-role-label">{r.label}</span>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-
-            <div className="ac-form-group">
-              <label htmlFor="email">Email</label>
+      <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-md">
+        <h2 className="mb-6 text-2xl font-bold text-center text-secondary-900">
+          Login to AgriConnect
+        </h2>
+        {error && (
+          <div className="mb-4 text-red-600 text-center">{error}</div>
+        )}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <input
+              ref={emailRef}
+              type="email"
+              name="email"
+              className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-600 focus:border-primary-600"
+              placeholder="you@example.com"
+              value={formData.email}
+              onChange={handleChange}
+              autoComplete="email"
+              aria-invalid={!!error && !EMAIL_RE.test(formData.email)}
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <div className="ac-password-input">
               <input
-                ref={emailRef}
-                id="email"
-                name="email"
-                type="email"
-                className="ac-form-input"
-                placeholder="you@example.com"
-                value={formData.email}
+                id="password"
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-600 focus:border-primary-600"
+                placeholder="Enter password"
+                value={formData.password}
                 onChange={handleChange}
-                autoComplete="email"
-                aria-invalid={!!error && !EMAIL_RE.test(formData.email)}
+                autoComplete="current-password"
+                aria-invalid={!!error && formData.password.length < 6}
                 required
               />
+              <button
+                type="button"
+                className="ac-password-toggle"
+                onClick={() => setShowPassword((s) => !s)}
+                aria-label={
+                  showPassword ? 'Hide password' : 'Show password'
+                }
+              >
+                {showPassword ? '🙈' : '👁️'}
+              </button>
             </div>
-
-            <div className="ac-form-group">
-              <label htmlFor="password">Password</label>
-              <div className="ac-password-input">
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? 'text' : 'password'}
-                  className="ac-form-input"
-                  placeholder="Enter password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  autoComplete="current-password"
-                  aria-invalid={!!error && formData.password.length < 6}
-                  required
-                />
-                <button
-                  type="button"
-                  className="ac-password-toggle"
-                  onClick={() => setShowPassword((s) => !s)}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showPassword ? '🙈' : '👁️'}
-                </button>
+            {pwStrength && (
+              <div
+                className={`ac-pw-strength ${pwStrength}`}
+                aria-hidden="true"
+              >
+                <span className="label">Password: </span>
+                <strong>{pwStrength}</strong>
               </div>
-              {pwStrength && (
-                <div className={`ac-pw-strength ${pwStrength}`} aria-hidden="true">
-                  <span className="label">Password: </span><strong>{pwStrength}</strong>
-                </div>
-              )}
+            )}
+          </div>
+          <div className="mt-6 flex items-center justify-between">
+            <div className="text-sm">
+              <Link
+                to="/forgot-password"
+                className="font-medium text-primary-600 hover:text-primary-500"
+              >
+                Forgot password?
+              </Link>
             </div>
-
-            <div className="ac-form-row ac-form-options">
-              <label className="ac-checkbox">
-                <input
-                  name="remember"
-                  type="checkbox"
-                  checked={formData.remember}
-                  onChange={handleChange}
-                />
-                <span>Remember me</span>
-              </label>
-
-              <Link to="/forgot-password" className="ac-forgot-password">Forgot?</Link>
+            <div className="text-sm">
+              <Link
+                to="/register"
+                className="font-medium text-primary-600 hover:text-primary-500"
+              >
+                Create an account
+              </Link>
             </div>
-
+          </div>
+          <button
+            type="submit"
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 transition-colors duration-200"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Signing in...' : 'Login'}
+          </button>
+        </form>
+        <div className="mt-6 border-t pt-6 text-center">
+          <p className="text-sm text-gray-500">Or login with</p>
+          <div className="mt-4 flex justify-center space-x-4">
             <button
-              type="submit"
-              className="ac-btn ac-btn--primary ac-btn--full"
-              disabled={isSubmitting}
+              className="p-2 rounded-full border border-gray-300 hover:bg-gray-50"
+              title="Login with Google"
             >
-              {isSubmitting ? 'Signing in…' : 'Sign in'}
+              <img
+                src="/path/to/google-icon.svg"
+                alt="Google"
+                className="h-6 w-6"
+              />
             </button>
-          </form>
-
-          <div className="ac-divider"><span>Or continue with</span></div>
-
-          <div className="ac-social-login">
-            <button className="ac-btn ac-btn--social ac-btn--google" type="button" aria-label="Continue with Google">Google</button>
-            <button className="ac-btn ac-btn--social ac-btn--facebook" type="button" aria-label="Continue with Facebook">Facebook</button>
+            <button
+              className="p-2 rounded-full border border-gray-300 hover:bg-gray-50"
+              title="Login with Facebook"
+            >
+              <img
+                src="/path/to/facebook-icon.svg"
+                alt="Facebook"
+                className="h-6 w-6"
+              />
+            </button>
           </div>
-
-          <div className="ac-signup-link">
-            <p>New here? <Link to="/register" className="ac-link">Create account</Link></p>
-          </div>
-
-          <section className="ac-demo-credentials" aria-hidden={isSubmitting}>
-            <h4>Demo accounts</h4>
-            <ul>
-              <li>Admin — admin@agriconnect.com / admin123</li>
-              <li>Farmer — farmer@example.com / password123</li>
-              <li>Customer — customer@example.com / password123</li>
-            </ul>
-          </section>
         </div>
       </div>
     </div>

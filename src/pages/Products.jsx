@@ -1,239 +1,329 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import ProductCard from '../components/ProductCard';
-import './Products.css';
+import Loader, { CardSkeleton } from '../components/Loader';
 
-// Mock data for development
+// Mock data for development - TODO: Replace with API calls
 const mockProducts = [
   {
     id: 1,
-    name: "Fresh Organic Tomatoes",
+    name: 'Fresh Organic Tomatoes',
     price: 45,
-    image: "https://via.placeholder.com/300x200/0b6b2e/ffffff?text=Tomatoes",
+    originalPrice: 60,
+    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop&auto=format',
     rating: 4.5,
-    category: "vegetables"
+    description: 'Fresh organic tomatoes grown without pesticides from local farms',
+    category: 'Vegetables',
+    farmer: 'Ramesh Kumar',
+    unit: 'kg',
+    inStock: true,
+    isOrganic: true,
+    freshness: 'Fresh Today'
   },
   {
     id: 2,
-    name: "Sweet Corn",
+    name: 'Sweet Golden Corn',
     price: 30,
-    image: "https://via.placeholder.com/300x200/0b6b2e/ffffff?text=Corn",
+    image: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=400&h=300&fit=crop&auto=format',
     rating: 4.2,
-    category: "vegetables"
+    description: 'Sweet and juicy corn perfect for grilling or boiling',
+    category: 'Vegetables',
+    farmer: 'Sunita Devi',
+    unit: 'kg',
+    inStock: true,
+    isOrganic: false,
+    freshness: 'Harvested Today'
   },
   {
     id: 3,
-    name: "Fresh Milk",
+    name: 'Pure Farm Fresh Milk',
     price: 60,
-    image: "https://via.placeholder.com/300x200/0b6b2e/ffffff?text=Milk",
+    image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&h=300&fit=crop&auto=format',
     rating: 4.8,
-    category: "dairy"
+    description: 'Pure farm fresh milk from grass-fed cows',
+    category: 'Dairy',
+    farmer: 'Gopal Singh',
+    unit: 'liter',
+    inStock: true,
+    isOrganic: true,
+    freshness: 'Fresh Morning'
   },
   {
     id: 4,
-    name: "Organic Apples",
+    name: 'Organic Red Apples',
     price: 120,
-    image: "https://via.placeholder.com/300x200/0b6b2e/ffffff?text=Apples",
+    originalPrice: 150,
+    image: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=400&h=300&fit=crop&auto=format',
     rating: 4.6,
-    category: "fruits"
+    description: 'Crisp organic apples from the valleys of Kashmir',
+    category: 'Fruits',
+    farmer: 'Mohammad Ali',
+    unit: 'kg',
+    inStock: true,
+    isOrganic: true,
+    freshness: 'Premium Quality'
+  },
+];
+
+const heroFeatures = [
+  { icon: '🌿', text: 'Organic & Fresh' },
+  { icon: '🚛', text: 'Fast Delivery' },
+  { icon: '💰', text: 'Fair Prices' },
+  { icon: '🤝', text: 'Direct from Farmers' }
+];
+
+const whyChooseUs = [
+  {
+    icon: '🌾',
+    title: 'Direct from Farmers',
+    description: 'Cut out middlemen and get better prices. Support local farmers while getting the freshest produce.',
+    highlight: 'Better Prices'
   },
   {
-    id: 5,
-    name: "Basmati Rice",
-    price: 85,
-    image: "https://via.placeholder.com/300x200/0b6b2e/ffffff?text=Rice",
-    rating: 4.3,
-    category: "grains"
+    icon: '🥬',
+    title: 'Fresh & Organic',
+    description: 'Fresh produce harvested and delivered within 24 hours. Certified organic options available.',
+    highlight: '24-hour Fresh'
   },
   {
-    id: 6,
-    name: "Pure Honey",
-    price: 200,
-    image: "https://via.placeholder.com/300x200/0b6b2e/ffffff?text=Honey",
-    rating: 4.7,
-    category: "organic"
+    icon: '🚚',
+    title: 'Fast Delivery',
+    description: 'Same-day delivery for local orders, next-day for nearby areas. Track your order in real-time.',
+    highlight: 'Same-day Delivery'
+  },
+  {
+    icon: '🛡️',
+    title: 'Quality Assured',
+    description: 'Every product is quality checked before delivery. 100% satisfaction guaranteed or money back.',
+    highlight: '100% Guarantee'
   }
 ];
 
-const categories = [
-  { id: "all", name: "All Products" },
-  { id: "vegetables", name: "Vegetables" },
-  { id: "fruits", name: "Fruits" },
-  { id: "dairy", name: "Dairy" },
-  { id: "grains", name: "Grains" },
-  { id: "organic", name: "Organic" }
-];
-
-const MAX_PRICE = 250;
-
-function Products({ onAddToCart, onAddToWishlist }) {
-  const [products, setProducts] = useState([]);
+function Home() {
+  const [featuredProducts, setFeaturedProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Filters State
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [priceRange, setPriceRange] = useState(MAX_PRICE);
-  const [minRating, setMinRating] = useState(0);
-  const [sortBy, setSortBy] = useState("name");
+  const { isAuthenticated } = useSelector((state) => state.auth || {});
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setProducts(mockProducts);
-      setIsLoading(false);
-    }, 800);
+    // Simulate API call for featured products
+    const fetchFeaturedProducts = async () => {
+      try {
+        // Simulate loading time
+        await new Promise(resolve => setTimeout(resolve, 800));
+        setFeaturedProducts(mockProducts);
+      } catch (error) {
+        console.error('Error fetching featured products:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchFeaturedProducts();
   }, []);
 
-  const filteredAndSortedProducts = useMemo(() => {
-    return products
-      .filter(product => {
-        const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
-        const matchesSearch = searchQuery === "" || product.name.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesPrice = product.price <= priceRange;
-        const matchesRating = product.rating >= minRating;
-        return matchesCategory && matchesSearch && matchesPrice && matchesRating;
-      })
-      .sort((a, b) => {
-        switch (sortBy) {
-          case "price-low": return a.price - b.price;
-          case "price-high": return b.price - a.price;
-          case "rating": return b.rating - a.rating;
-          default: return a.name.localeCompare(b.name);
-        }
-      });
-  }, [products, selectedCategory, searchQuery, priceRange, minRating, sortBy]);
-
-  const handleViewProduct = (product) => {
-    console.log('Viewing product:', product);
-  };
-
-  const resetFilters = () => {
-    setSelectedCategory("all");
-    setSearchQuery("");
-    setPriceRange(MAX_PRICE);
-    setMinRating(0);
-    setSortBy("name");
-  };
-
   return (
-    <div className="ac-products-page">
-      <div className="ac-container">
-        <div className="ac-products-header">
-          <h1 className="ac-page-title">Our Products</h1>
-          <p className="ac-page-subtitle">Discover fresh, high-quality produce direct from local farms.</p>
+    <main className='min-h-screen' role='main'>
+      {/* Hero Section */}
+      <section className='relative bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 overflow-hidden'>
+        {/* Background Pattern */}
+        <div className='absolute inset-0 opacity-5'>
+          <div className='absolute top-10 left-10 w-20 h-20 bg-green-500 rounded-full'></div>
+          <div className='absolute bottom-10 right-10 w-32 h-32 bg-emerald-500 rounded-full'></div>
+          <div className='absolute top-1/2 left-1/4 w-16 h-16 bg-teal-500 rounded-full'></div>
         </div>
 
-        <div className="ac-products-layout">
-          {/* Filters Sidebar */}
-          <aside className="ac-products-sidebar">
-            <div className="ac-filter-group">
-              <h3 className="ac-filter-title">Categories</h3>
-              <div className="ac-category-list">
-                {categories.map(category => (
-                  <button
-                    key={category.id}
-                    className={`ac-category-btn ${selectedCategory === category.id ? 'active' : ''}`}
-                    onClick={() => setSelectedCategory(category.id)}
-                  >
-                    {category.name}
-                  </button>
+        <div className='relative max-w-7xl mx-auto px-4 py-16 lg:py-24'>
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center'>
+            
+            {/* Hero Content */}
+            <div className='text-center lg:text-left'>
+              <div className='mb-6'>
+                <span className='inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium'>
+                  🌱 Fresh & Organic
+                </span>
+              </div>
+              
+              <h1 className='text-4xl lg:text-6xl font-bold text-secondary-900 mb-6 leading-tight'>
+                Fresh From
+                <span className='text-primary-600 block'>Farm to Table</span>
+              </h1>
+              
+              <p className='text-lg lg:text-xl text-secondary-700 mb-8 leading-relaxed max-w-2xl'>
+                Connect directly with local farmers and get fresh, organic produce 
+                delivered to your doorstep. Supporting farmers, serving freshness.
+              </p>
+
+              {/* Hero Features */}
+              <div className='flex flex-wrap justify-center lg:justify-start gap-4 mb-8'>
+                {heroFeatures.map((feature, index) => (
+                  <div key={index} className='flex items-center gap-2 bg-white/70 backdrop-blur-sm px-3 py-2 rounded-lg'>
+                    <span className='text-lg'>{feature.icon}</span>
+                    <span className='text-sm font-medium text-secondary-700'>{feature.text}</span>
+                  </div>
                 ))}
               </div>
-            </div>
 
-            <div className="ac-filter-group">
-              <h3 className="ac-filter-title">Price Range</h3>
-              <label htmlFor="price-range">Up to ₹{priceRange}</label>
-              <input
-                type="range"
-                id="price-range"
-                min="0"
-                max={MAX_PRICE}
-                value={priceRange}
-                onChange={(e) => setPriceRange(Number(e.target.value))}
-                className="ac-price-slider"
-              />
-            </div>
-
-            <div className="ac-filter-group">
-              <h3 className="ac-filter-title">Rating</h3>
-              <div className="ac-rating-filter">
-                {[4, 3, 2, 1].map(star => (
-                  <button
-                    key={star}
-                    className={`ac-rating-btn ${minRating === star ? 'active' : ''}`}
-                    onClick={() => setMinRating(minRating === star ? 0 : star)}
-                  >
-                    {star} ★ & up
-                  </button>
-                ))}
-              </div>
-            </div>
-            <button onClick={resetFilters} className="ac-btn ac-btn--ghost ac-btn--full">Reset Filters</button>
-          </aside>
-
-          {/* Main Content */}
-          <main className="ac-products-main">
-            <div className="ac-products-controls">
-              <div className="ac-search-filter">
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="ac-search-input"
-                  aria-label="Search products"
-                />
-              </div>
-              <div className="ac-sort-filter">
-                <label htmlFor="sort-by">Sort by:</label>
-                <select
-                  id="sort-by"
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="ac-sort-select"
+              {/* CTA Buttons */}
+              <div className='flex flex-col sm:flex-row gap-4 justify-center lg:justify-start'>
+                <Link
+                  to='/products'
+                  className='inline-flex items-center justify-center px-8 py-4 bg-primary-600 text-white rounded-xl font-semibold text-lg hover:bg-primary-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl'
                 >
-                  <option value="name">Name</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
-                  <option value="rating">Rating</option>
-                </select>
+                  <svg className='w-5 h-5 mr-2' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M16 11V7a4 4 0 00-8 0v4M5 9h14l-1 12H6L5 9z' />
+                  </svg>
+                  Shop Now
+                </Link>
+                <Link
+                  to='/about'
+                  className='inline-flex items-center justify-center px-8 py-4 bg-white text-secondary-900 rounded-xl font-semibold text-lg border-2 border-secondary-200 hover:border-primary-300 hover:bg-primary-50 transition-all duration-200'
+                >
+                  <svg className='w-5 h-5 mr-2' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' />
+                  </svg>
+                  Learn More
+                </Link>
               </div>
             </div>
 
-            <div className="ac-results-info">
-              <p>Showing {filteredAndSortedProducts.length} of {products.length} products</p>
-            </div>
-
-            <div className="ac-products-grid">
-              {isLoading ? (
-                Array.from({ length: 6 }).map((_, i) => <div key={i} className="ac-skeleton-card" />)
-              ) : filteredAndSortedProducts.length > 0 ? (
-                filteredAndSortedProducts.map(product => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    onAddToCart={onAddToCart}
-                    onAddToWishlist={onAddToWishlist}
-                    onView={handleViewProduct}
-                  />
-                ))
-              ) : (
-                <div className="ac-no-products">
-                  <h3>No Products Found</h3>
-                  <p>Try adjusting your filters to find what you're looking for.</p>
-                  <button onClick={resetFilters} className="ac-btn ac-btn--primary">
-                    Clear All Filters
-                  </button>
+            {/* Hero Image */}
+            <div className='relative'>
+              <div className='relative bg-white rounded-3xl shadow-2xl overflow-hidden transform rotate-3 hover:rotate-0 transition-transform duration-500'>
+                <img
+                  src='https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&h=400&fit=crop&auto=format'
+                  alt='Fresh vegetables and fruits'
+                  className='w-full h-80 lg:h-96 object-cover'
+                />
+                <div className='absolute inset-0 bg-gradient-to-t from-black/20 to-transparent'></div>
+                <div className='absolute bottom-4 left-4 right-4'>
+                  <div className='bg-white/90 backdrop-blur-sm rounded-lg p-4'>
+                    <p className='text-sm font-medium text-secondary-900'>✨ Fresh delivery in 24 hours</p>
+                  </div>
                 </div>
-              )}
+              </div>
+              
+              {/* Floating Stats */}
+              <div className='absolute -top-4 -left-4 bg-primary-600 text-white rounded-xl p-4 shadow-lg'>
+                <div className='text-2xl font-bold'>500+</div>
+                <div className='text-sm opacity-90'>Happy Farmers</div>
+              </div>
+              <div className='absolute -bottom-4 -right-4 bg-green-600 text-white rounded-xl p-4 shadow-lg'>
+                <div className='text-2xl font-bold'>1000+</div>
+                <div className='text-sm opacity-90'>Products</div>
+              </div>
             </div>
-          </main>
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
+
+      {/* Featured Products Section */}
+      <section className='py-16 lg:py-24 bg-white' aria-labelledby='featured-heading'>
+        <div className='max-w-7xl mx-auto px-4'>
+          <div className='text-center mb-12'>
+            <span className='text-primary-600 font-semibold text-lg'>Best Sellers</span>
+            <h2 id='featured-heading' className='text-3xl lg:text-4xl font-bold text-secondary-900 mt-2 mb-4'>
+              Featured Products
+            </h2>
+            <p className='text-secondary-600 text-lg max-w-2xl mx-auto'>
+              Discover our most popular and freshest products, hand-picked by our farmers
+            </p>
+          </div>
+
+          {/* Products Grid */}
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-12' role='list' aria-live='polite'>
+            {isLoading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <CardSkeleton key={i} />
+              ))
+            ) : (
+              featuredProducts.map((product) => (
+                <div key={product.id} role='listitem'>
+                  <ProductCard product={product} />
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* View All CTA */}
+          <div className='text-center'>
+            <Link
+              to='/products'
+              className='inline-flex items-center gap-2 px-8 py-4 bg-secondary-100 text-secondary-900 rounded-xl font-semibold hover:bg-secondary-200 transition-colors duration-200'
+            >
+              Browse All Products
+              <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M17 8l4 4m0 0l-4 4m4-4H3' />
+              </svg>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us Section */}
+      <section className='py-16 lg:py-24 bg-secondary-50' aria-labelledby='features-heading'>
+        <div className='max-w-7xl mx-auto px-4'>
+          <div className='text-center mb-12'>
+            <span className='text-primary-600 font-semibold text-lg'>Our Promise</span>
+            <h2 id='features-heading' className='text-3xl lg:text-4xl font-bold text-secondary-900 mt-2 mb-4'>
+              Why Choose AgriConnect?
+            </h2>
+            <p className='text-secondary-600 text-lg max-w-2xl mx-auto'>
+              We're committed to connecting you with the finest local produce while supporting our farming community
+            </p>
+          </div>
+
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8'>
+            {whyChooseUs.map((feature, index) => (
+              <div
+                key={index}
+                className='bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow duration-300 text-center group'
+                role='article'
+                aria-label={feature.title}
+              >
+                <div className='w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-primary-200 transition-colors duration-300'>
+                  <span className='text-3xl'>{feature.icon}</span>
+                </div>
+                <h3 className='text-xl font-bold text-secondary-900 mb-2'>{feature.title}</h3>
+                <p className='text-secondary-600 mb-3 leading-relaxed'>{feature.description}</p>
+                <span className='inline-block text-primary-600 font-semibold text-sm bg-primary-50 px-3 py-1 rounded-full'>
+                  {feature.highlight}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      {!isAuthenticated && (
+        <section className='py-16 lg:py-24 bg-gradient-to-r from-primary-600 to-primary-700 text-white'>
+          <div className='max-w-4xl mx-auto px-4 text-center'>
+            <h2 className='text-3xl lg:text-4xl font-bold mb-4'>
+              Ready to taste the freshness?
+            </h2>
+            <p className='text-xl mb-8 opacity-90'>
+              Join thousands of satisfied customers who trust AgriConnect for their daily fresh produce needs.
+            </p>
+            <div className='flex flex-col sm:flex-row gap-4 justify-center'>
+              <Link
+                to='/register'
+                className='inline-flex items-center justify-center px-8 py-4 bg-white text-primary-600 rounded-xl font-semibold text-lg hover:bg-secondary-100 transition-colors duration-200'
+              >
+                Get Started Today
+              </Link>
+              <Link
+                to='/products'
+                className='inline-flex items-center justify-center px-8 py-4 border-2 border-white text-white rounded-xl font-semibold text-lg hover:bg-white/10 transition-colors duration-200'
+              >
+                Browse Products
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+    </main>
   );
 }
 
-export default Products;
+export default Home;

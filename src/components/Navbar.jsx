@@ -1,165 +1,361 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
-import logo from "../assets/logo.png";
-import "./Navbar.css";
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import logo from '../assets/logo.png';
 
 /**
- * Accessible, responsive Navbar
- * Props:
- *  - cartCount (number)
- *  - wishlistCount (number)
- *  - onSearch(query: string)
+ * Modern, accessible Navbar with enhanced UI/UX
+ * Features: Search, cart/wishlist indicators, user menu, responsive design
  */
-export default function Navbar({ cartCount = 0, wishlistCount = 0, onSearch = () => {} }) {
-  const [q, setQ] = useState("");
-  const [open, setOpen] = useState(false);
-  const [focusedIndex, setFocusedIndex] = useState(-1);
+export default function Navbar() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  
   const location = useLocation();
+  const navigate = useNavigate();
   const menuRef = useRef(null);
-  const inputRef = useRef(null);
+  const searchRef = useRef(null);
   const debounceRef = useRef(null);
+  
+  // Get state from Redux store
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const { items: cartItems } = useSelector((state) => state.cart);
+  const { items: wishlistItems } = useSelector((state) => state.wishlist);
+  
+  const cartCount = cartItems?.reduce((total, item) => total + item.quantity, 0) || 0;
+  const wishlistCount = wishlistItems?.length || 0;
 
-  // close mobile menu on route change
-  useEffect(() => setOpen(false), [location.pathname]);
+  // Navigation menu items
+  const menuItems = [
+    { to: '/', label: 'Home', icon: '🏠' },
+    { to: '/products', label: 'Products', icon: '🌾' },
+    { to: '/categories', label: 'Categories', icon: '📦' },
+    { to: '/about', label: 'About', icon: 'ℹ️' },
+  ];
 
-  // ESC to close
+  // Close mobile menu on route change
   useEffect(() => {
-    function onKey(e) {
-      if (e.key === "Escape") setOpen(false);
-    }
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    setIsMobileMenuOpen(false);
+    setIsUserMenuOpen(false);
+  }, [location.pathname]);
+
+  // Handle escape key
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        setIsMobileMenuOpen(false);
+        setIsUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
   }, []);
 
-  // click outside to close mobile menu
+  // Handle click outside to close menus
   useEffect(() => {
-    function onClick(e) {
-      if (open && menuRef.current && !menuRef.current.contains(e.target)) setOpen(false);
-    }
-    document.addEventListener("click", onClick);
-    return () => document.removeEventListener("click", onClick);
-  }, [open]);
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setIsMobileMenuOpen(false);
+        setIsUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
 
-  // Debounced search to avoid spamming parent
+  // Debounced search
   const handleSearchChange = (value) => {
-    setQ(value);
+    setSearchQuery(value);
     clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => onSearch(value.trim()), 300);
+    debounceRef.current = setTimeout(() => {
+      if (value.trim()) {
+        navigate(`/products?search=${encodeURIComponent(value.trim())}`);
+      }
+    }, 300);
   };
 
-  const submit = (e) => {
-    e?.preventDefault();
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
     clearTimeout(debounceRef.current);
-    onSearch(q.trim());
-  };
-
-  // keyboard nav for mobile menu items (simple)
-  const menuItems = [
-    { to: "/products", label: "Products" },
-    { to: "/categories", label: "Categories" },
-    { to: "/orders", label: "Orders" },
-    { to: "/about", label: "About" },
-  ];
-  const focusNext = useCallback((dir = 1) => {
-    setFocusedIndex(i => {
-      const next = i + dir;
-      if (next < 0) return menuItems.length - 1;
-      if (next >= menuItems.length) return 0;
-      return next;
-    });
-  }, [menuItems.length]);
-
-  useEffect(() => {
-    if (focusedIndex >= 0 && menuRef.current) {
-      const els = menuRef.current.querySelectorAll('.ac-navbar__menu a');
-      if (els[focusedIndex]) els[focusedIndex].focus();
+    if (searchQuery.trim()) {
+      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
     }
-  }, [focusedIndex]);
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+    setIsUserMenuOpen(false);
+  };
+
+  const toggleUserMenu = () => {
+    setIsUserMenuOpen(!isUserMenuOpen);
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleLogout = () => {
+    // TODO: Implement logout functionality
+    console.log('Logout clicked');
+  };
 
   return (
-    <div className="ac-navbar" role="navigation" aria-label="Main">
-      <div className="ac-navbar__inner ac-container" ref={menuRef}>
-        <Link to="/" className="ac-logo" aria-label="AgriConnect home">
-          <img src={logo} alt="" className="ac-logo__img" />
-          <span className="ac-logo__text">AgriConnect</span>
+    <nav className='ac-navbar' role='navigation' aria-label='Main navigation'>
+      <div className='ac-navbar__container' ref={menuRef}>
+        {/* Brand Logo */}
+        <Link to='/' className='ac-navbar__brand' aria-label='AgriConnect home'>
+          <img src={logo} alt='' className='ac-navbar__logo' />
+          <span className='ac-navbar__brand-text'>AgriConnect</span>
         </Link>
 
-        <form className="ac-search" role="search" onSubmit={submit} aria-label="Search products">
-          <label htmlFor="ac-search-input" className="ac-visually-hidden">Search products</label>
-          <input
-            id="ac-search-input"
-            ref={inputRef}
-            className="ac-search__input"
-            type="search"
-            placeholder="Search products, seeds, tools..."
-            value={q}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            aria-label="Search products"
-          />
-          <button type="submit" className="ac-search__btn" aria-label="Search">
-            <svg className="ac-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-              <circle cx="11" cy="11" r="7" />
-              <path d="M21 21l-4.35-4.35" />
-            </svg>
-          </button>
+        {/* Desktop Navigation */}
+        <div className='hidden md:flex items-center gap-8'>
+          {menuItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) => 
+                `ac-navbar__link ${isActive ? 'ac-navbar__link--active' : ''}`
+              }
+              aria-current={location.pathname === item.to ? 'page' : undefined}
+            >
+              <span className='mr-2 text-lg' aria-hidden='true'>{item.icon}</span>
+              {item.label}
+            </NavLink>
+          ))}
+        </div>
+
+        {/* Search Bar (Desktop) */}
+        <form
+          className='ac-navbar__search hidden lg:flex'
+          role='search'
+          onSubmit={handleSearchSubmit}
+          aria-label='Search products'
+        >
+          <div className='relative w-full'>
+            <input
+              ref={searchRef}
+              className='ac-navbar__search-input'
+              type='search'
+              placeholder='Search products, seeds, tools...'
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              aria-label='Search products'
+            />
+            <button 
+              type='submit' 
+              className='absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary-400 hover:text-primary-600 transition-colors' 
+              aria-label='Search'
+            >
+              <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' />
+              </svg>
+            </button>
+          </div>
         </form>
 
-        <button
-          className="ac-navbar__toggle"
-          aria-expanded={open}
-          aria-controls="ac-navbar-menu"
-          onClick={() => setOpen(s => !s)}
-          aria-label={open ? "Close menu" : "Open menu"}
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-            <path d={open ? "M6 18L18 6M6 6l12 12" : "M3 6h18M3 12h18M3 18h18"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-          </svg>
-        </button>
+        {/* Action Buttons */}
+        <div className='ac-navbar__actions'>
+          {/* Wishlist */}
+          <Link 
+            to='/wishlist' 
+            className='ac-navbar__action group'
+            aria-label={`Wishlist (${wishlistCount} items)`}
+          >
+            <svg className='w-6 h-6 group-hover:text-red-500 transition-colors' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+              <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z' />
+            </svg>
+            {wishlistCount > 0 && (
+              <span className='ac-navbar__badge bg-red-500'>{wishlistCount}</span>
+            )}
+          </Link>
 
-        <ul id="ac-navbar-menu" className={`ac-navbar__menu ${open ? "open" : ""}`}>
-          {menuItems.map((m, idx) => (
-            <li key={m.to}>
-              <NavLink
-                to={m.to}
-                className="ac-link"
-                onKeyDown={(e) => {
-                  if (e.key === "ArrowDown") { e.preventDefault(); focusNext(1); }
-                  if (e.key === "ArrowUp") { e.preventDefault(); focusNext(-1); }
-                }}
-                onFocus={() => setFocusedIndex(idx)}
+          {/* Cart */}
+          <Link 
+            to='/cart' 
+            className='ac-navbar__action group'
+            aria-label={`Shopping cart (${cartCount} items)`}
+          >
+            <svg className='w-6 h-6 group-hover:text-primary-600 transition-colors' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+              <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01' />
+            </svg>
+            {cartCount > 0 && (
+              <span className='ac-navbar__badge bg-primary-600'>{cartCount}</span>
+            )}
+          </Link>
+
+          {/* User Menu */}
+          {isAuthenticated ? (
+            <div className='relative'>
+              <button 
+                onClick={toggleUserMenu}
+                className='ac-navbar__action'
+                aria-label={`User menu for ${user?.name || 'User'}`}
+                aria-expanded={isUserMenuOpen}
+                aria-haspopup='true'
               >
-                {m.label}
-              </NavLink>
-            </li>
-          ))}
+                <div className='w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white font-medium'>
+                  {user?.name?.[0]?.toUpperCase() || 'U'}
+                </div>
+              </button>
+              
+              {/* User Dropdown */}
+              {isUserMenuOpen && (
+                <div className='absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-secondary-200 z-50'>
+                  <div className='py-2'>
+                    <div className='px-4 py-3 border-b border-secondary-100'>
+                      <p className='text-sm font-medium text-secondary-900'>Hi, {user?.name || 'User'}</p>
+                      <p className='text-xs text-secondary-500'>{user?.email}</p>
+                    </div>
+                    
+                    {user?.role === 'farmer' && (
+                      <Link 
+                        to='/farmer-dashboard' 
+                        className='block px-4 py-2 text-sm text-secondary-700 hover:bg-secondary-50 transition-colors'
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <span className='mr-3'>🌾</span>Dashboard
+                      </Link>
+                    )}
+                    
+                    {user?.role === 'admin' && (
+                      <Link 
+                        to='/admin-dashboard' 
+                        className='block px-4 py-2 text-sm text-secondary-700 hover:bg-secondary-50 transition-colors'
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <span className='mr-3'>⚙️</span>Admin Panel
+                      </Link>
+                    )}
+                    
+                    <Link 
+                      to='/orders' 
+                      className='block px-4 py-2 text-sm text-secondary-700 hover:bg-secondary-50 transition-colors'
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      <span className='mr-3'>📦</span>My Orders
+                    </Link>
+                    
+                    <Link 
+                      to='/profile' 
+                      className='block px-4 py-2 text-sm text-secondary-700 hover:bg-secondary-50 transition-colors'
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      <span className='mr-3'>👤</span>Profile Settings
+                    </Link>
+                    
+                    <div className='border-t border-secondary-100 mt-2'>
+                      <button 
+                        onClick={handleLogout}
+                        className='w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors'
+                      >
+                        <span className='mr-3'>🚪</span>Logout
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className='hidden sm:flex items-center gap-3'>
+              <Link to='/login' className='ac-btn ac-btn--ghost ac-btn--sm'>
+                Login
+              </Link>
+              <Link to='/register' className='ac-btn ac-btn--primary ac-btn--sm'>
+                Register
+              </Link>
+            </div>
+          )}
 
-          <li>
-            <Link to="/cart" className="ac-cart" aria-label={`Cart with ${cartCount} items`}>
-              <svg className="ac-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-                <path d="M6 6h15l-1.5 9h-11z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <circle cx="9" cy="20" r="1" />
-                <circle cx="18" cy="20" r="1" />
-              </svg>
-              <span className="ac-cart__label">Cart</span>
-              {cartCount > 0 && <span className="ac-cart__count" aria-hidden="false">{cartCount}</span>}
-            </Link>
-          </li>
-
-          <li>
-            <Link to="/wishlist" className="ac-wishlist" aria-label={`Wishlist with ${wishlistCount} items`}>
-              <svg className="ac-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-                <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8L12 22l8.8-9.6a5.5 5.5 0 0 0 0-7.8z" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-              <span className="ac-cart__label">Wishlist</span>
-              {wishlistCount > 0 && <span className="ac-cart__count" aria-hidden="false">{wishlistCount}</span>}
-            </Link>
-          </li>
-
-          <li className="ac-login-li">
-            <Link to="/login" className="ac-link ac-link--cta">Login</Link>
-          </li>
-        </ul>
+          {/* Mobile menu toggle */}
+          <button
+            className='ac-navbar__mobile-toggle'
+            onClick={toggleMobileMenu}
+            aria-label='Toggle mobile menu'
+            aria-expanded={isMobileMenuOpen}
+            aria-controls='mobile-navigation'
+          >
+            <svg className='w-6 h-6' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+              {isMobileMenuOpen ? (
+                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M6 18L18 6M6 6l12 12' />
+              ) : (
+                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M4 6h16M4 12h16M4 18h16' />
+              )}
+            </svg>
+          </button>
+        </div>
       </div>
-    </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div 
+          className='ac-navbar__mobile-menu'
+          id='mobile-navigation'
+          role='region'
+          aria-label='Mobile navigation menu'
+        >
+          {/* Mobile Search */}
+          <div className='ac-navbar__mobile-search lg:hidden'>
+            <form onSubmit={handleSearchSubmit} role='search'>
+              <div className='relative'>
+                <input
+                  type='search'
+                  placeholder='Search products...'
+                  value={searchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  className='ac-navbar__search-input'
+                  aria-label='Search products'
+                />
+                <button
+                  type='submit'
+                  className='absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary-400 hover:text-primary-600 transition-colors'
+                  aria-label='Search'
+                >
+                  <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' />
+                  </svg>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          {/* Mobile Navigation Links */}
+          <nav className='ac-navbar__mobile-nav'>
+            {menuItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className='ac-navbar__mobile-link'
+                onClick={() => setIsMobileMenuOpen(false)}
+                aria-current={location.pathname === item.to ? 'page' : undefined}
+              >
+                <span className='mr-3' aria-hidden='true'>{item.icon}</span>
+                {item.label}
+              </NavLink>
+            ))}
+            
+            {!isAuthenticated && (
+              <>
+                <NavLink
+                  to='/login'
+                  className='ac-navbar__mobile-link'
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <span className='mr-3' aria-hidden='true'>🔑</span>
+                  Login
+                </NavLink>
+                <NavLink
+                  to='/register'
+                  className='ac-navbar__mobile-link'
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <span className='mr-3' aria-hidden='true'>📝</span>
+                  Register
+                </NavLink>
+              </>
+            )}
+          </nav>
+        </div>
+      )}
+    </nav>
   );
 }

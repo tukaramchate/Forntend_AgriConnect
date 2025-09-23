@@ -9,7 +9,7 @@ export const getCompanyStats = async () => {
     // This would normally call an actual API endpoint
     // const response = await api.get('/company/stats');
     // return response.data;
-    
+
     // For now, return mock data
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -19,7 +19,7 @@ export const getCompanyStats = async () => {
           customers: 25000,
           orders: 100000,
           year_founded: 2020,
-          sustainable_farms: 3500
+          sustainable_farms: 3500,
         });
       }, 500);
     });
@@ -38,7 +38,7 @@ export const getTeamMembers = async () => {
     // This would normally call an actual API endpoint
     // const response = await api.get('/company/team');
     // return response.data;
-    
+
     // For now, return mock data
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -51,8 +51,8 @@ export const getTeamMembers = async () => {
             bio: 'Former agricultural engineer with 15+ years experience in sustainable farming.',
             social: {
               linkedin: '#',
-              twitter: '#'
-            }
+              twitter: '#',
+            },
           },
           {
             id: 2,
@@ -62,8 +62,8 @@ export const getTeamMembers = async () => {
             bio: 'Tech expert specializing in agricultural technology and digital solutions.',
             social: {
               linkedin: '#',
-              twitter: '#'
-            }
+              twitter: '#',
+            },
           },
           {
             id: 3,
@@ -73,8 +73,8 @@ export const getTeamMembers = async () => {
             bio: 'Supply chain specialist ensuring quality from farm to consumer.',
             social: {
               linkedin: '#',
-              twitter: '#'
-            }
+              twitter: '#',
+            },
           },
           {
             id: 4,
@@ -84,9 +84,9 @@ export const getTeamMembers = async () => {
             bio: 'Brand strategist passionate about connecting farmers with consumers.',
             social: {
               linkedin: '#',
-              twitter: '#'
-            }
-          }
+              twitter: '#',
+            },
+          },
         ]);
       }, 500);
     });
