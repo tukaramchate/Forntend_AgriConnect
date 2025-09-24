@@ -10,23 +10,34 @@ export default function Categories() {
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
-    categoryAPI.getCategories({ activeOnly: true, includeSubcategories: true, sort: 'name' })
+    categoryAPI
+      .getCategories({
+        activeOnly: true,
+        includeSubcategories: true,
+        sort: 'name',
+      })
       .then((data) => {
         if (isMounted) {
-          setCategories(Array.isArray(data) && data.length ? data : mockCategories);
+          setCategories(
+            Array.isArray(data) && data.length ? data : mockCategories
+          );
           setError(null);
         }
       })
       .catch((err) => {
         if (isMounted) {
-          setError(err?.message || 'Failed to load categories. Showing mock data.');
+          setError(
+            err?.message || 'Failed to load categories. Showing mock data.'
+          );
           setCategories(mockCategories);
         }
       })
       .finally(() => {
         if (isMounted) setLoading(false);
       });
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
@@ -46,7 +57,9 @@ export default function Categories() {
       {/* Categories Grid */}
       <div className='max-w-7xl mx-auto px-4 py-12'>
         {loading ? (
-          <div className='text-center py-12 text-lg text-secondary-600'>Loading categories...</div>
+          <div className='text-center py-12 text-lg text-secondary-600'>
+            Loading categories...
+          </div>
         ) : error ? (
           <div className='text-center py-6 text-red-600'>{error}</div>
         ) : (

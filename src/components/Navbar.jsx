@@ -177,7 +177,11 @@ const Navbar = () => {
   };
 
   return (
-  <nav className='bg-white shadow-md sticky top-0 z-50' role='navigation' aria-label='Main navigation'>
+    <nav
+      className='bg-white shadow-md sticky top-0 z-50'
+      role='navigation'
+      aria-label='Main navigation'
+    >
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='flex justify-between h-16 items-center'>
           {/* Logo */}
@@ -214,7 +218,9 @@ const Navbar = () => {
                 navigate(`/products?search=${encodeURIComponent(searchQuery)}`);
               }}
             >
-              <label htmlFor='nav-search' className='sr-only'>Search products</label>
+              <label htmlFor='nav-search' className='sr-only'>
+                Search products
+              </label>
               <input
                 id='nav-search'
                 name='search'
@@ -291,7 +297,12 @@ const Navbar = () => {
                   <IconUser className='h-6 w-6' />
                 </button>
                 {isUserMenuOpen && (
-                  <div id='user-menu' className='absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg py-1 z-50' role='menu' aria-label='User menu'>
+                  <div
+                    id='user-menu'
+                    className='absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg py-1 z-50'
+                    role='menu'
+                    aria-label='User menu'
+                  >
                     <Link
                       to='/profile'
                       className='block px-4 py-2 text-gray-700 hover:bg-gray-100'
@@ -371,7 +382,9 @@ const Navbar = () => {
                 setIsMobileMenuOpen(false);
               }}
             >
-              <label htmlFor='mobile-search' className='sr-only'>Search products</label>
+              <label htmlFor='mobile-search' className='sr-only'>
+                Search products
+              </label>
               <input
                 id='mobile-search'
                 type='search'

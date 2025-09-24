@@ -13,7 +13,7 @@ export const useIntersectionObserver = (options = {}) => {
     threshold = 0.1,
     root = null,
     rootMargin = '0px',
-    triggerOnce = false
+    triggerOnce = false,
   } = options;
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export const useIntersectionObserver = (options = {}) => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         const isElementIntersecting = entry.isIntersecting;
-        
+
         if (isElementIntersecting) {
           setIsIntersecting(true);
           if (!hasIntersected) {
@@ -56,9 +56,9 @@ export const useScrollAnimation = (options = {}) => {
   const [scrollDirection, setScrollDirection] = useState('down');
   const elementRef = useRef();
 
-  const { 
+  const {
     offset = 0,
-    throttle = 16 // ~60fps
+    throttle = 16, // ~60fps
   } = options;
 
   useEffect(() => {
@@ -81,9 +81,10 @@ export const useScrollAnimation = (options = {}) => {
         // Calculate progress (0 to 1)
         const startPoint = elementTop - windowHeight + offset;
         const endPoint = elementTop + elementHeight - offset;
-        const progress = Math.max(0, Math.min(1, 
-          (currentScrollY - startPoint) / (endPoint - startPoint)
-        ));
+        const progress = Math.max(
+          0,
+          Math.min(1, (currentScrollY - startPoint) / (endPoint - startPoint))
+        );
 
         setScrollProgress(progress);
       }
@@ -122,7 +123,7 @@ export const useScrollAnimation = (options = {}) => {
     elementRef,
     scrollY,
     scrollProgress,
-    scrollDirection
+    scrollDirection,
   };
 };
 
@@ -137,15 +138,18 @@ export const useParallax = (speed = 0.5, direction = 'vertical') => {
     const handleScroll = () => {
       const scrolled = window.pageYOffset;
       const element = elementRef.current;
-      
+
       if (element) {
         const rect = element.getBoundingClientRect();
         const elementTop = rect.top + scrolled;
         const elementHeight = rect.height;
         const windowHeight = window.innerHeight;
-        
+
         // Only apply parallax when element is in viewport
-        if (scrolled + windowHeight > elementTop && scrolled < elementTop + elementHeight) {
+        if (
+          scrolled + windowHeight > elementTop &&
+          scrolled < elementTop + elementHeight
+        ) {
           const parallaxOffset = (scrolled - elementTop) * speed;
           setOffset(parallaxOffset);
         }
@@ -161,7 +165,7 @@ export const useParallax = (speed = 0.5, direction = 'vertical') => {
   }, [speed]);
 
   const getTransform = () => {
-    return direction === 'vertical' 
+    return direction === 'vertical'
       ? `translate3d(0, ${offset}px, 0)`
       : `translate3d(${offset}px, 0, 0)`;
   };
@@ -169,7 +173,7 @@ export const useParallax = (speed = 0.5, direction = 'vertical') => {
   return {
     elementRef,
     offset,
-    transform: getTransform()
+    transform: getTransform(),
   };
 };
 
@@ -230,7 +234,7 @@ export const useHover = (enterDelay = 0, leaveDelay = 0) => {
     isPending,
     hoverProps: {
       onMouseEnter: handleMouseEnter,
-      onMouseLeave: handleMouseLeave
-    }
+      onMouseLeave: handleMouseLeave,
+    },
   };
 };

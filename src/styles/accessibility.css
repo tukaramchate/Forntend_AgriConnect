@@ -61,7 +61,7 @@
   --primary-700: #000000;
   --primary-800: #000000;
   --primary-900: #000000;
-  
+
   --secondary-50: #ffffff;
   --secondary-100: #f8f8f8;
   --secondary-200: #e8e8e8;
@@ -72,12 +72,12 @@
   --secondary-700: #222222;
   --secondary-800: #111111;
   --secondary-900: #000000;
-  
+
   --success: #000000;
   --warning: #000000;
   --error: #000000;
   --info: #000000;
-  
+
   --background: #ffffff;
   --surface: #ffffff;
   --text-primary: #000000;
@@ -150,17 +150,37 @@ body {
   font-size: calc(1rem * var(--font-scale, 1));
 }
 
-h1 { font-size: calc(2.25rem * var(--font-scale, 1)); }
-h2 { font-size: calc(1.875rem * var(--font-scale, 1)); }
-h3 { font-size: calc(1.5rem * var(--font-scale, 1)); }
-h4 { font-size: calc(1.25rem * var(--font-scale, 1)); }
-h5 { font-size: calc(1.125rem * var(--font-scale, 1)); }
-h6 { font-size: calc(1rem * var(--font-scale, 1)); }
+h1 {
+  font-size: calc(2.25rem * var(--font-scale, 1));
+}
+h2 {
+  font-size: calc(1.875rem * var(--font-scale, 1));
+}
+h3 {
+  font-size: calc(1.5rem * var(--font-scale, 1));
+}
+h4 {
+  font-size: calc(1.25rem * var(--font-scale, 1));
+}
+h5 {
+  font-size: calc(1.125rem * var(--font-scale, 1));
+}
+h6 {
+  font-size: calc(1rem * var(--font-scale, 1));
+}
 
-.text-sm { font-size: calc(0.875rem * var(--font-scale, 1)); }
-.text-xs { font-size: calc(0.75rem * var(--font-scale, 1)); }
-.text-lg { font-size: calc(1.125rem * var(--font-scale, 1)); }
-.text-xl { font-size: calc(1.25rem * var(--font-scale, 1)); }
+.text-sm {
+  font-size: calc(0.875rem * var(--font-scale, 1));
+}
+.text-xs {
+  font-size: calc(0.75rem * var(--font-scale, 1));
+}
+.text-lg {
+  font-size: calc(1.125rem * var(--font-scale, 1));
+}
+.text-xl {
+  font-size: calc(1.25rem * var(--font-scale, 1));
+}
 
 /* Font Size Adjuster Component Styles */
 .font-size-adjuster {
@@ -274,7 +294,7 @@ h6 { font-size: calc(1rem * var(--font-scale, 1)); }
   outline-offset: 2px;
 }
 
-.high-contrast-toggle[aria-pressed="true"] {
+.high-contrast-toggle[aria-pressed='true'] {
   background-color: var(--primary-600, #2563eb);
   color: white;
   border-color: var(--primary-600, #2563eb);
@@ -299,8 +319,9 @@ h6 { font-size: calc(1rem * var(--font-scale, 1)); }
     --text-secondary: #000000;
     --border: #000000;
   }
-  
-  button, .btn {
+
+  button,
+  .btn {
     border: 2px solid #000000 !important;
   }
 }
@@ -318,7 +339,8 @@ textarea:focus-visible,
 }
 
 /* Ensure sufficient color contrast for interactive elements */
-button, .btn {
+button,
+.btn {
   min-height: 44px; /* WCAG 2.1 AA touch target size */
   min-width: 44px;
 }
@@ -360,7 +382,7 @@ label {
 
 /* Required field indicators */
 .required::after {
-  content: " *";
+  content: ' *';
   color: var(--error, #dc2626);
   font-weight: bold;
 }
@@ -550,7 +572,7 @@ label {
   .accessibility-toolbar {
     display: none !important;
   }
-  
+
   * {
     background: white !important;
     color: black !important;

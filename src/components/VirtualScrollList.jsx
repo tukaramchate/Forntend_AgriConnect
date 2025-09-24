@@ -17,7 +17,10 @@ const VirtualScrollList = ({
   ...props
 }) => {
   const [scrollTop, setScrollTop] = useState(0);
-  const [containerRect, setContainerRect] = useState({ width: 0, height: containerHeight });
+  const [containerRect, setContainerRect] = useState({
+    width: 0,
+    height: containerHeight,
+  });
   const containerRef = useRef(null);
   const scrollElementRef = useRef(null);
 
@@ -41,9 +44,14 @@ const VirtualScrollList = ({
 
         // Check if we need to load more items
         if (onEndReached) {
-          const { scrollTop: currentScrollTop, scrollHeight, clientHeight } = e.target;
-          const scrollPercentage = (currentScrollTop + clientHeight) / scrollHeight;
-          
+          const {
+            scrollTop: currentScrollTop,
+            scrollHeight,
+            clientHeight,
+          } = e.target;
+          const scrollPercentage =
+            (currentScrollTop + clientHeight) / scrollHeight;
+
           if (scrollPercentage >= endReachedThreshold && !loading) {
             onEndReached();
           }
@@ -83,7 +91,7 @@ const VirtualScrollList = ({
     return (
       <div className={`virtual-scroll-list empty ${className}`} {...props}>
         {emptyState || (
-          <div className="empty-state">
+          <div className='empty-state'>
             <p>No items to display</p>
           </div>
         )}
@@ -100,12 +108,12 @@ const VirtualScrollList = ({
     >
       <div
         ref={scrollElementRef}
-        className="virtual-scroll-content"
+        className='virtual-scroll-content'
         style={{ height: totalHeight }}
         onScroll={handleScroll}
       >
         <div
-          className="virtual-scroll-items"
+          className='virtual-scroll-items'
           style={{
             transform: `translateY(${offsetY}px)`,
             position: 'relative',
@@ -116,7 +124,7 @@ const VirtualScrollList = ({
             return (
               <div
                 key={item.id || itemIndex}
-                className="virtual-scroll-item"
+                className='virtual-scroll-item'
                 style={{
                   height: itemHeight,
                   position: 'relative',
@@ -127,10 +135,10 @@ const VirtualScrollList = ({
             );
           })}
         </div>
-        
+
         {loading && (
-          <div className="virtual-scroll-loading">
-            <div className="loading-spinner"></div>
+          <div className='virtual-scroll-loading'>
+            <div className='loading-spinner'></div>
             <span>Loading more items...</span>
           </div>
         )}
@@ -139,15 +147,13 @@ const VirtualScrollList = ({
   );
 };
 
-
-
 // Performance optimized list item wrapper
-export const VirtualListItem = ({ 
-  children, 
-  index, 
-  onHeightChange, 
+export const VirtualListItem = ({
+  children,
+  index,
+  onHeightChange,
   style = {},
-  ...props 
+  ...props
 }) => {
   const itemRef = useRef(null);
 

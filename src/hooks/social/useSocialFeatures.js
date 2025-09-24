@@ -10,134 +10,161 @@ export const useSocialActions = (initialData = {}) => {
     following: initialData.following || [],
     likedItems: initialData.likedItems || [],
     bookmarkedItems: initialData.bookmarkedItems || [],
-    ...initialData
+    ...initialData,
   });
-  
+
   const [loading, setLoading] = useState(false);
   const { handleError } = useErrorHandler();
   const { showToast } = useToast();
 
   // Follow/Unfollow a user
-  const toggleFollow = useCallback(async (userId, userType = 'farmer') => {
-    const isFollowing = socialState.following.includes(userId);
-    
-    try {
-      setLoading(true);
-      
-      // Optimistic update
-      setSocialState(prev => ({
-        ...prev,
-        following: isFollowing 
-          ? prev.following.filter(id => id !== userId)
-          : [...prev.following, userId]
-      }));
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      showToast(
-        isFollowing ? `Unfollowed ${userType}` : `Following ${userType}`,
-        'success'
-      );
-      
-      return !isFollowing;
-    } catch (error) {
-      // Revert optimistic update
-      setSocialState(prev => ({
-        ...prev,
-        following: isFollowing 
-          ? [...prev.following, userId]
-          : prev.following.filter(id => id !== userId)
-      }));
-      
-      handleError(error, `Failed to ${isFollowing ? 'unfollow' : 'follow'} ${userType}`);
-      return isFollowing;
-    } finally {
-      setLoading(false);
-    }
-  }, [socialState.following, handleError, showToast]);
+  const toggleFollow = useCallback(
+    async (userId, userType = 'farmer') => {
+      const isFollowing = socialState.following.includes(userId);
+
+      try {
+        setLoading(true);
+
+        // Optimistic update
+        setSocialState((prev) => ({
+          ...prev,
+          following: isFollowing
+            ? prev.following.filter((id) => id !== userId)
+            : [...prev.following, userId],
+        }));
+
+        // Simulate API call
+        await new Promise((resolve) => setTimeout(resolve, 800));
+
+        showToast(
+          isFollowing ? `Unfollowed ${userType}` : `Following ${userType}`,
+          'success'
+        );
+
+        return !isFollowing;
+      } catch (error) {
+        // Revert optimistic update
+        setSocialState((prev) => ({
+          ...prev,
+          following: isFollowing
+            ? [...prev.following, userId]
+            : prev.following.filter((id) => id !== userId),
+        }));
+
+        handleError(
+          error,
+          `Failed to ${isFollowing ? 'unfollow' : 'follow'} ${userType}`
+        );
+        return isFollowing;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [socialState.following, handleError, showToast]
+  );
 
   // Like/Unlike an item (post, product, etc.)
-  const toggleLike = useCallback(async (itemId, itemType = 'post') => {
-    const isLiked = socialState.likedItems.includes(itemId);
-    
-    try {
-      // Optimistic update
-      setSocialState(prev => ({
-        ...prev,
-        likedItems: isLiked 
-          ? prev.likedItems.filter(id => id !== itemId)
-          : [...prev.likedItems, itemId]
-      }));
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      return !isLiked;
-    } catch (error) {
-      // Revert optimistic update
-      setSocialState(prev => ({
-        ...prev,
-        likedItems: isLiked 
-          ? [...prev.likedItems, itemId]
-          : prev.likedItems.filter(id => id !== itemId)
-      }));
-      
-      handleError(error, `Failed to ${isLiked ? 'unlike' : 'like'} ${itemType}`);
-      return isLiked;
-    }
-  }, [socialState.likedItems, handleError]);
+  const toggleLike = useCallback(
+    async (itemId, itemType = 'post') => {
+      const isLiked = socialState.likedItems.includes(itemId);
+
+      try {
+        // Optimistic update
+        setSocialState((prev) => ({
+          ...prev,
+          likedItems: isLiked
+            ? prev.likedItems.filter((id) => id !== itemId)
+            : [...prev.likedItems, itemId],
+        }));
+
+        // Simulate API call
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        return !isLiked;
+      } catch (error) {
+        // Revert optimistic update
+        setSocialState((prev) => ({
+          ...prev,
+          likedItems: isLiked
+            ? [...prev.likedItems, itemId]
+            : prev.likedItems.filter((id) => id !== itemId),
+        }));
+
+        handleError(
+          error,
+          `Failed to ${isLiked ? 'unlike' : 'like'} ${itemType}`
+        );
+        return isLiked;
+      }
+    },
+    [socialState.likedItems, handleError]
+  );
 
   // Bookmark/Unbookmark an item
-  const toggleBookmark = useCallback(async (itemId) => {
-    const isBookmarked = socialState.bookmarkedItems.includes(itemId);
-    
-    try {
-      // Optimistic update
-      setSocialState(prev => ({
-        ...prev,
-        bookmarkedItems: isBookmarked 
-          ? prev.bookmarkedItems.filter(id => id !== itemId)
-          : [...prev.bookmarkedItems, itemId]
-      }));
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      showToast(
-        isBookmarked ? `Removed from bookmarks` : `Added to bookmarks`,
-        'success'
-      );
-      
-      return !isBookmarked;
-    } catch (error) {
-      // Revert optimistic update
-      setSocialState(prev => ({
-        ...prev,
-        bookmarkedItems: isBookmarked 
-          ? [...prev.bookmarkedItems, itemId]
-          : prev.bookmarkedItems.filter(id => id !== itemId)
-      }));
-      
-      handleError(error, `Failed to ${isBookmarked ? 'remove from' : 'add to'} bookmarks`);
-      return isBookmarked;
-    }
-  }, [socialState.bookmarkedItems, handleError, showToast]);
+  const toggleBookmark = useCallback(
+    async (itemId) => {
+      const isBookmarked = socialState.bookmarkedItems.includes(itemId);
+
+      try {
+        // Optimistic update
+        setSocialState((prev) => ({
+          ...prev,
+          bookmarkedItems: isBookmarked
+            ? prev.bookmarkedItems.filter((id) => id !== itemId)
+            : [...prev.bookmarkedItems, itemId],
+        }));
+
+        // Simulate API call
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        showToast(
+          isBookmarked ? `Removed from bookmarks` : `Added to bookmarks`,
+          'success'
+        );
+
+        return !isBookmarked;
+      } catch (error) {
+        // Revert optimistic update
+        setSocialState((prev) => ({
+          ...prev,
+          bookmarkedItems: isBookmarked
+            ? [...prev.bookmarkedItems, itemId]
+            : prev.bookmarkedItems.filter((id) => id !== itemId),
+        }));
+
+        handleError(
+          error,
+          `Failed to ${isBookmarked ? 'remove from' : 'add to'} bookmarks`
+        );
+        return isBookmarked;
+      }
+    },
+    [socialState.bookmarkedItems, handleError, showToast]
+  );
 
   // Check if user is following
-  const isFollowing = useCallback((userId) => {
-    return socialState.following.includes(userId);
-  }, [socialState.following]);
+  const isFollowing = useCallback(
+    (userId) => {
+      return socialState.following.includes(userId);
+    },
+    [socialState.following]
+  );
 
   // Check if item is liked
-  const isLiked = useCallback((itemId) => {
-    return socialState.likedItems.includes(itemId);
-  }, [socialState.likedItems]);
+  const isLiked = useCallback(
+    (itemId) => {
+      return socialState.likedItems.includes(itemId);
+    },
+    [socialState.likedItems]
+  );
 
   // Check if item is bookmarked
-  const isBookmarked = useCallback((itemId) => {
-    return socialState.bookmarkedItems.includes(itemId);
-  }, [socialState.bookmarkedItems]);
+  const isBookmarked = useCallback(
+    (itemId) => {
+      return socialState.bookmarkedItems.includes(itemId);
+    },
+    [socialState.bookmarkedItems]
+  );
 
   // Get following count
   const getFollowingCount = useCallback(() => {
@@ -156,7 +183,7 @@ export const useSocialActions = (initialData = {}) => {
 
   // Bulk update social state (useful for initial data loading)
   const updateSocialState = useCallback((newState) => {
-    setSocialState(prev => ({ ...prev, ...newState }));
+    setSocialState((prev) => ({ ...prev, ...newState }));
   }, []);
 
   // Reset social state
@@ -164,7 +191,7 @@ export const useSocialActions = (initialData = {}) => {
     setSocialState({
       following: [],
       likedItems: [],
-      bookmarkedItems: []
+      bookmarkedItems: [],
     });
   }, []);
 
@@ -172,25 +199,25 @@ export const useSocialActions = (initialData = {}) => {
     // State
     socialState,
     loading,
-    
+
     // Actions
     toggleFollow,
     toggleLike,
     toggleBookmark,
-    
+
     // Checkers
     isFollowing,
     isLiked,
     isBookmarked,
-    
+
     // Counters
     getFollowingCount,
     getLikesCount,
     getBookmarksCount,
-    
+
     // Utilities
     updateSocialState,
-    resetSocialState
+    resetSocialState,
   };
 };
 
@@ -201,66 +228,75 @@ export const useSocialShare = () => {
   const { showToast } = useToast();
   const { handleError } = useErrorHandler();
 
-  const shareContent = useCallback(async (platform, shareData) => {
-    const {
-      url = window.location.href,
-      title = document.title,
-      description = '',
-      image = '',
-      hashtags = []
-    } = shareData;
+  const shareContent = useCallback(
+    async (platform, shareData) => {
+      const {
+        url = window.location.href,
+        title = document.title,
+        description = '',
+        image = '',
+        hashtags = [],
+      } = shareData;
 
-    try {
-      if (platform === 'native' && navigator.share) {
-        await navigator.share({
-          title,
-          text: description,
-          url
-        });
-        showToast('Shared successfully!', 'success');
-        return true;
+      try {
+        if (platform === 'native' && navigator.share) {
+          await navigator.share({
+            title,
+            text: description,
+            url,
+          });
+          showToast('Shared successfully!', 'success');
+          return true;
+        }
+
+        if (platform === 'copy') {
+          await navigator.clipboard.writeText(url);
+          showToast('Link copied to clipboard!', 'success');
+          return true;
+        }
+
+        // Generate platform-specific share URLs
+        const shareUrls = {
+          facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+          twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}&hashtags=${hashtags.join(',')}`,
+          linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+          whatsapp: `https://wa.me/?text=${encodeURIComponent(title)}%20${encodeURIComponent(url)}`,
+          telegram: `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
+          reddit: `https://reddit.com/submit?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`,
+          pinterest: `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&description=${encodeURIComponent(title)}${image ? `&media=${encodeURIComponent(image)}` : ''}`,
+          email: `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(description)}%0A%0A${encodeURIComponent(url)}`,
+        };
+
+        const shareUrl = shareUrls[platform];
+        if (shareUrl) {
+          window.open(
+            shareUrl,
+            '_blank',
+            'width=600,height=400,scrollbars=yes,resizable=yes'
+          );
+          return true;
+        }
+
+        throw new Error(`Unsupported platform: ${platform}`);
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          handleError(error, 'Failed to share content');
+        }
+        return false;
       }
-
-      if (platform === 'copy') {
-        await navigator.clipboard.writeText(url);
-        showToast('Link copied to clipboard!', 'success');
-        return true;
-      }
-
-      // Generate platform-specific share URLs
-      const shareUrls = {
-        facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-        twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}&hashtags=${hashtags.join(',')}`,
-        linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
-        whatsapp: `https://wa.me/?text=${encodeURIComponent(title)}%20${encodeURIComponent(url)}`,
-        telegram: `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
-        reddit: `https://reddit.com/submit?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`,
-        pinterest: `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&description=${encodeURIComponent(title)}${image ? `&media=${encodeURIComponent(image)}` : ''}`,
-        email: `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(description)}%0A%0A${encodeURIComponent(url)}`
-      };
-
-      const shareUrl = shareUrls[platform];
-      if (shareUrl) {
-        window.open(shareUrl, '_blank', 'width=600,height=400,scrollbars=yes,resizable=yes');
-        return true;
-      }
-
-      throw new Error(`Unsupported platform: ${platform}`);
-    } catch (error) {
-      if (error.name !== 'AbortError') {
-        handleError(error, 'Failed to share content');
-      }
-      return false;
-    }
-  }, [showToast, handleError]);
+    },
+    [showToast, handleError]
+  );
 
   const canUseNativeShare = useCallback((shareData = {}) => {
-    return navigator.share && navigator.canShare && navigator.canShare(shareData);
+    return (
+      navigator.share && navigator.canShare && navigator.canShare(shareData)
+    );
   }, []);
 
   return {
     shareContent,
-    canUseNativeShare
+    canUseNativeShare,
   };
 };
 
@@ -271,153 +307,177 @@ export const useCommunityInteractions = () => {
   const [interactions, setInteractions] = useState({
     posts: [],
     comments: [],
-    reactions: []
+    reactions: [],
   });
-  
+
   const [loading, setLoading] = useState(false);
   const { handleError } = useErrorHandler();
   const { showToast } = useToast();
 
   // Create a new post
-  const createPost = useCallback(async (postData) => {
-    try {
-      setLoading(true);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const newPost = {
-        id: Date.now(),
-        ...postData,
-        timestamp: new Date().toISOString(),
-        likes: 0,
-        comments: 0,
-        shares: 0
-      };
+  const createPost = useCallback(
+    async (postData) => {
+      try {
+        setLoading(true);
 
-      setInteractions(prev => ({
-        ...prev,
-        posts: [newPost, ...prev.posts]
-      }));
+        // Simulate API call
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      showToast('Post created successfully!', 'success');
-      return newPost;
-    } catch (error) {
-      handleError(error, 'Failed to create post');
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  }, [handleError, showToast]);
-
-  // Add a comment to a post
-  const addComment = useCallback(async (postId, commentData) => {
-    try {
-      setLoading(true);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      const newComment = {
-        id: Date.now(),
-        postId,
-        ...commentData,
-        timestamp: new Date().toISOString(),
-        likes: 0
-      };
-
-      setInteractions(prev => ({
-        ...prev,
-        comments: [...prev.comments, newComment],
-        posts: prev.posts.map(post => 
-          post.id === postId 
-            ? { ...post, comments: post.comments + 1 }
-            : post
-        )
-      }));
-
-      showToast('Comment added!', 'success');
-      return newComment;
-    } catch (error) {
-      handleError(error, 'Failed to add comment');
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  }, [handleError, showToast]);
-
-  // React to content (like, helpful, etc.)
-  const addReaction = useCallback(async (targetId, targetType, reactionType) => {
-    try {
-      const existingReaction = interactions.reactions.find(
-        r => r.targetId === targetId && r.targetType === targetType && r.type === reactionType
-      );
-
-      if (existingReaction) {
-        // Remove reaction
-        setInteractions(prev => ({
-          ...prev,
-          reactions: prev.reactions.filter(r => r.id !== existingReaction.id)
-        }));
-      } else {
-        // Add reaction
-        const newReaction = {
+        const newPost = {
           id: Date.now(),
-          targetId,
-          targetType,
-          type: reactionType,
-          timestamp: new Date().toISOString()
+          ...postData,
+          timestamp: new Date().toISOString(),
+          likes: 0,
+          comments: 0,
+          shares: 0,
         };
 
-        setInteractions(prev => ({
+        setInteractions((prev) => ({
           ...prev,
-          reactions: [...prev.reactions, newReaction]
+          posts: [newPost, ...prev.posts],
         }));
-      }
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      return !existingReaction;
-    } catch (error) {
-      handleError(error, 'Failed to update reaction');
-      throw error;
-    }
-  }, [interactions.reactions, handleError]);
+        showToast('Post created successfully!', 'success');
+        return newPost;
+      } catch (error) {
+        handleError(error, 'Failed to create post');
+        throw error;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [handleError, showToast]
+  );
+
+  // Add a comment to a post
+  const addComment = useCallback(
+    async (postId, commentData) => {
+      try {
+        setLoading(true);
+
+        // Simulate API call
+        await new Promise((resolve) => setTimeout(resolve, 800));
+
+        const newComment = {
+          id: Date.now(),
+          postId,
+          ...commentData,
+          timestamp: new Date().toISOString(),
+          likes: 0,
+        };
+
+        setInteractions((prev) => ({
+          ...prev,
+          comments: [...prev.comments, newComment],
+          posts: prev.posts.map((post) =>
+            post.id === postId ? { ...post, comments: post.comments + 1 } : post
+          ),
+        }));
+
+        showToast('Comment added!', 'success');
+        return newComment;
+      } catch (error) {
+        handleError(error, 'Failed to add comment');
+        throw error;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [handleError, showToast]
+  );
+
+  // React to content (like, helpful, etc.)
+  const addReaction = useCallback(
+    async (targetId, targetType, reactionType) => {
+      try {
+        const existingReaction = interactions.reactions.find(
+          (r) =>
+            r.targetId === targetId &&
+            r.targetType === targetType &&
+            r.type === reactionType
+        );
+
+        if (existingReaction) {
+          // Remove reaction
+          setInteractions((prev) => ({
+            ...prev,
+            reactions: prev.reactions.filter(
+              (r) => r.id !== existingReaction.id
+            ),
+          }));
+        } else {
+          // Add reaction
+          const newReaction = {
+            id: Date.now(),
+            targetId,
+            targetType,
+            type: reactionType,
+            timestamp: new Date().toISOString(),
+          };
+
+          setInteractions((prev) => ({
+            ...prev,
+            reactions: [...prev.reactions, newReaction],
+          }));
+        }
+
+        // Simulate API call
+        await new Promise((resolve) => setTimeout(resolve, 300));
+
+        return !existingReaction;
+      } catch (error) {
+        handleError(error, 'Failed to update reaction');
+        throw error;
+      }
+    },
+    [interactions.reactions, handleError]
+  );
 
   // Get reactions for a specific target
-  const getReactions = useCallback((targetId, targetType) => {
-    return interactions.reactions.filter(
-      r => r.targetId === targetId && r.targetType === targetType
-    );
-  }, [interactions.reactions]);
+  const getReactions = useCallback(
+    (targetId, targetType) => {
+      return interactions.reactions.filter(
+        (r) => r.targetId === targetId && r.targetType === targetType
+      );
+    },
+    [interactions.reactions]
+  );
 
   // Check if user has reacted to content
-  const hasReacted = useCallback((targetId, targetType, reactionType) => {
-    return interactions.reactions.some(
-      r => r.targetId === targetId && r.targetType === targetType && r.type === reactionType
-    );
-  }, [interactions.reactions]);
+  const hasReacted = useCallback(
+    (targetId, targetType, reactionType) => {
+      return interactions.reactions.some(
+        (r) =>
+          r.targetId === targetId &&
+          r.targetType === targetType &&
+          r.type === reactionType
+      );
+    },
+    [interactions.reactions]
+  );
 
   // Get comments for a post
-  const getPostComments = useCallback((postId) => {
-    return interactions.comments.filter(c => c.postId === postId);
-  }, [interactions.comments]);
+  const getPostComments = useCallback(
+    (postId) => {
+      return interactions.comments.filter((c) => c.postId === postId);
+    },
+    [interactions.comments]
+  );
 
   return {
     // State
     interactions,
     loading,
-    
+
     // Actions
     createPost,
     addComment,
     addReaction,
-    
+
     // Getters
     getReactions,
     hasReacted,
-    getPostComments
+    getPostComments,
   };
 };
 
@@ -433,9 +493,9 @@ export const useSocialMetrics = (userId) => {
     likes: 0,
     comments: 0,
     helpfulVotes: 0,
-    badges: []
+    badges: [],
   });
-  
+
   const [loading, setLoading] = useState(true);
   const { handleError } = useErrorHandler();
 
@@ -443,10 +503,10 @@ export const useSocialMetrics = (userId) => {
   const fetchMetrics = useCallback(async () => {
     try {
       setLoading(true);
-      
+
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // Mock metrics data
       const mockMetrics = {
         reputation: Math.floor(Math.random() * 5000) + 100,
@@ -459,8 +519,8 @@ export const useSocialMetrics = (userId) => {
         badges: [
           { id: 1, name: 'Verified Farmer', icon: '✓', color: '#10b981' },
           { id: 2, name: 'Top Contributor', icon: '⭐', color: '#f59e0b' },
-          { id: 3, name: 'Helper', icon: '🤝', color: '#6366f1' }
-        ]
+          { id: 3, name: 'Helper', icon: '🤝', color: '#6366f1' },
+        ],
       };
 
       setMetrics(mockMetrics);
@@ -499,6 +559,6 @@ export const useSocialMetrics = (userId) => {
     loading,
     getReputationLevel,
     getEngagementRate,
-    refetchMetrics: fetchMetrics
+    refetchMetrics: fetchMetrics,
   };
 };

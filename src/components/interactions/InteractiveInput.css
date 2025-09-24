@@ -227,7 +227,9 @@
   height: 100%;
   background: #4a90e2;
   border-radius: 0.0625rem;
-  transition: width 0.3s ease-out, background-color 0.3s ease-out;
+  transition:
+    width 0.3s ease-out,
+    background-color 0.3s ease-out;
 }
 
 .character-count {
@@ -309,33 +311,33 @@
     background: #1f2937;
     border-color: #374151;
   }
-  
+
   .input-wrapper:hover {
     border-color: #4b5563;
   }
-  
+
   .interactive-input {
     color: #f9fafb;
   }
-  
+
   .interactive-input::placeholder {
     color: #6b7280;
   }
-  
+
   .input-label {
     background: #1f2937;
     color: #9ca3af;
   }
-  
+
   .interactive-input-container.is-disabled .input-wrapper {
     background: #111827;
   }
-  
+
   .password-toggle:hover {
     background: #374151;
     color: #d1d5db;
   }
-  
+
   .input-progress {
     background: #374151;
   }
@@ -360,11 +362,11 @@
   .interactive-input {
     font-size: 16px; /* Prevents zoom on iOS */
   }
-  
+
   .input-label {
     font-size: 16px;
   }
-  
+
   .input-label.floating {
     font-size: 0.75rem;
   }

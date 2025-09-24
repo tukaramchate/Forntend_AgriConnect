@@ -92,12 +92,12 @@
     grid-template-columns: 1fr;
     gap: var(--spacing-6);
   }
-  
+
   .dashboard-grid-stats {
     grid-template-columns: 1fr;
     gap: var(--spacing-4);
   }
-  
+
   .quick-actions-grid {
     grid-template-columns: 1fr;
   }

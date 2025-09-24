@@ -17,7 +17,7 @@ export const setupAccessibilityShortcuts = () => {
         toolbar.focus();
       }
     }
-    
+
     // Alt + C toggles high contrast
     if (e.altKey && e.key.toLowerCase() === 'c') {
       e.preventDefault();
@@ -47,7 +47,9 @@ export const setupAccessibilityShortcuts = () => {
 
     // Escape key closes any open accessibility panels
     if (e.key === 'Escape') {
-      const openToolbar = document.querySelector('.accessibility-toolbar [aria-expanded="true"]');
+      const openToolbar = document.querySelector(
+        '.accessibility-toolbar [aria-expanded="true"]'
+      );
       if (openToolbar) {
         openToolbar.click();
       }
@@ -55,7 +57,7 @@ export const setupAccessibilityShortcuts = () => {
   };
 
   document.addEventListener('keydown', handleKeyDown);
-  
+
   return () => {
     document.removeEventListener('keydown', handleKeyDown);
   };

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
  * StaggeredAnimation - Creates staggered animations for lists and grids
  * Perfect for animating multiple items with sequential delays
  */
-const StaggeredAnimation = ({ 
+const StaggeredAnimation = ({
   children,
   staggerDelay = 0.1, // Delay between each item
   duration = 0.6,
@@ -13,7 +13,7 @@ const StaggeredAnimation = ({
   initialDelay = 0,
   triggerOnMount = true,
   className = '',
-  ...props 
+  ...props
 }) => {
   const [isTriggered, setIsTriggered] = useState(!triggerOnMount);
 
@@ -53,21 +53,17 @@ const StaggeredAnimation = ({
   return (
     <div className={`staggered-animation ${className}`} {...props}>
       {childrenArray.map((child, index) => {
-        const animationDelay = initialDelay + (index * staggerDelay);
-        
+        const animationDelay = initialDelay + index * staggerDelay;
+
         const itemStyle = {
           opacity: isTriggered ? 1 : 0,
           transform: getTransform(index, isTriggered),
           transition: `opacity ${duration}s ease-out ${animationDelay}s, transform ${duration}s ease-out ${animationDelay}s`,
-          willChange: 'opacity, transform'
+          willChange: 'opacity, transform',
         };
 
         return (
-          <div
-            key={index}
-            className="staggered-item"
-            style={itemStyle}
-          >
+          <div key={index} className='staggered-item' style={itemStyle}>
             {child}
           </div>
         );

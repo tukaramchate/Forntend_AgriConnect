@@ -27,10 +27,10 @@ const InteractiveButton = ({
     isPressed,
     isHovered,
     handleClick,
-    getButtonStyle
+    getButtonStyle,
   } = useButtonInteractions({
     hapticFeedback,
-    visualFeedback: true
+    visualFeedback: true,
   });
 
   const handleButtonClick = async (event) => {
@@ -91,15 +91,17 @@ const InteractiveButton = ({
     getVariantClasses(),
     getSizeClasses(),
     getStateClasses(),
-    className
-  ].filter(Boolean).join(' ');
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const buttonContent = () => {
     if (loading) {
       return (
         <>
-          <LoadingSpinner size="small" className="btn-spinner" />
-          <span className="btn-text">Loading...</span>
+          <LoadingSpinner size='small' className='btn-spinner' />
+          <span className='btn-text'>Loading...</span>
         </>
       );
     }
@@ -107,8 +109,8 @@ const InteractiveButton = ({
     if (success) {
       return (
         <>
-          <span className="btn-icon">✓</span>
-          <span className="btn-text">Success!</span>
+          <span className='btn-icon'>✓</span>
+          <span className='btn-text'>Success!</span>
         </>
       );
     }
@@ -116,16 +118,16 @@ const InteractiveButton = ({
     if (error) {
       return (
         <>
-          <span className="btn-icon">✗</span>
-          <span className="btn-text">Error</span>
+          <span className='btn-icon'>✗</span>
+          <span className='btn-text'>Error</span>
         </>
       );
     }
 
     return (
       <>
-        {icon && <span className="btn-icon">{icon}</span>}
-        <span className="btn-text">{children}</span>
+        {icon && <span className='btn-icon'>{icon}</span>}
+        <span className='btn-text'>{children}</span>
       </>
     );
   };
@@ -137,9 +139,9 @@ const InteractiveButton = ({
         style={{
           ...getButtonStyle({
             scaleOnPress: 0.98,
-            transition: 'all 0.2s ease-out'
+            transition: 'all 0.2s ease-out',
           }),
-          ...style
+          ...style,
         }}
         onClick={handleButtonClick}
         disabled={disabled || loading}
@@ -147,19 +149,19 @@ const InteractiveButton = ({
         {...props}
       >
         {buttonContent()}
-        
+
         {/* Ripple effects */}
         {ripple && (
-          <div className="btn-ripples">
-            {ripples.map(ripple => (
+          <div className='btn-ripples'>
+            {ripples.map((ripple) => (
               <div
                 key={ripple.id}
-                className="btn-ripple"
+                className='btn-ripple'
                 style={{
                   left: ripple.x,
                   top: ripple.y,
                   width: ripple.size,
-                  height: ripple.size
+                  height: ripple.size,
                 }}
               />
             ))}

@@ -14,16 +14,17 @@ const AccessibilityWrapper = ({ children }) => {
   useEffect(() => {
     // Setup global keyboard shortcuts
     const cleanup = setupAccessibilityShortcuts();
-    
+
     // Announce page loads for screen readers
     const announcePageLoad = () => {
       setTimeout(() => {
         const announcer = document.createElement('div');
         announcer.setAttribute('aria-live', 'polite');
         announcer.className = 'sr-only';
-        announcer.textContent = 'AgriConnect application loaded. Use Alt+A for accessibility options.';
+        announcer.textContent =
+          'AgriConnect application loaded. Use Alt+A for accessibility options.';
         document.body.appendChild(announcer);
-        
+
         setTimeout(() => {
           if (document.body.contains(announcer)) {
             document.body.removeChild(announcer);
@@ -40,15 +41,15 @@ const AccessibilityWrapper = ({ children }) => {
   return (
     <>
       {/* Skip Link for keyboard users */}
-      <SkipLink targetId="main-content" />
-      
+      <SkipLink targetId='main-content' />
+
       {/* Main content wrapper */}
-      <div id="main-content" tabIndex="-1">
+      <div id='main-content' tabIndex='-1'>
         {children}
       </div>
-      
+
       {/* Accessibility Toolbar */}
-      <AccessibilityToolbar position="bottom-right" />
+      <AccessibilityToolbar position='bottom-right' />
     </>
   );
 };

@@ -9,9 +9,9 @@ export const announce = (message, politeness = 'polite') => {
   region.setAttribute('aria-atomic', 'true');
   region.className = 'sr-only';
   region.textContent = message;
-  
+
   document.body.appendChild(region);
-  
+
   // Remove after announcement
   setTimeout(() => {
     if (document.body.contains(region)) {
@@ -28,10 +28,13 @@ export const announceToast = (message, type = 'info') => {
     success: 'Success: ',
     error: 'Error: ',
     warning: 'Warning: ',
-    info: 'Info: '
+    info: 'Info: ',
   };
-  
-  announce(`${typePrefix[type] || ''}${message}`, type === 'error' ? 'assertive' : 'polite');
+
+  announce(
+    `${typePrefix[type] || ''}${message}`,
+    type === 'error' ? 'assertive' : 'polite'
+  );
 };
 
 /**

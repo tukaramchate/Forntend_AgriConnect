@@ -27,15 +27,11 @@ const InteractiveCard = ({
   ripple = false,
   ...props
 }) => {
-  const {
-    interactions,
-    ripples,
-    getCardStyle
-  } = useCardInteractions({
+  const { interactions, ripples, getCardStyle } = useCardInteractions({
     enableHover: hover && !disabled,
     enablePress: press && !disabled,
     liftAmount: 6,
-    scaleAmount: 1.02
+    scaleAmount: 1.02,
   });
 
   const handleClick = (event) => {
@@ -88,17 +84,15 @@ const InteractiveCard = ({
     getVariantClasses(),
     getPaddingClasses(),
     getStateClasses(),
-    className
-  ].filter(Boolean).join(' ');
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const cardContent = (
     <>
       {/* Badge */}
-      {badge && (
-        <div className="card-badge">
-          {badge}
-        </div>
-      )}
+      {badge && <div className='card-badge'>{badge}</div>}
 
       {/* Image */}
       {image && (
@@ -108,19 +102,15 @@ const InteractiveCard = ({
       )}
 
       {/* Header */}
-      {header && (
-        <div className="card-header">
-          {header}
-        </div>
-      )}
+      {header && <div className='card-header'>{header}</div>}
 
       {/* Content */}
-      <div className="card-content">
+      <div className='card-content'>
         {loading ? (
-          <div className="card-loading-state">
-            <div className="loading-shimmer h-4 mb-2"></div>
-            <div className="loading-shimmer h-4 mb-2 w-3/4"></div>
-            <div className="loading-shimmer h-4 w-1/2"></div>
+          <div className='card-loading-state'>
+            <div className='loading-shimmer h-4 mb-2'></div>
+            <div className='loading-shimmer h-4 mb-2 w-3/4'></div>
+            <div className='loading-shimmer h-4 w-1/2'></div>
           </div>
         ) : (
           children
@@ -128,31 +118,23 @@ const InteractiveCard = ({
       </div>
 
       {/* Footer */}
-      {footer && (
-        <div className="card-footer">
-          {footer}
-        </div>
-      )}
+      {footer && <div className='card-footer'>{footer}</div>}
 
       {/* Actions */}
-      {actions && (
-        <div className="card-actions">
-          {actions}
-        </div>
-      )}
+      {actions && <div className='card-actions'>{actions}</div>}
 
       {/* Ripple Effects */}
       {ripple && !disabled && (
-        <div className="card-ripples">
-          {ripples.map(ripple => (
+        <div className='card-ripples'>
+          {ripples.map((ripple) => (
             <div
               key={ripple.id}
-              className="card-ripple"
+              className='card-ripple'
               style={{
                 left: ripple.x,
                 top: ripple.y,
                 width: ripple.size,
-                height: ripple.size
+                height: ripple.size,
               }}
             />
           ))}
@@ -163,7 +145,7 @@ const InteractiveCard = ({
 
   const cardStyle = {
     ...getCardStyle(),
-    ...style
+    ...style,
   };
 
   // Render as link if href provided
@@ -188,7 +170,7 @@ const InteractiveCard = ({
     return (
       <FadeIn>
         <button
-          type="button"
+          type='button'
           className={cardClasses}
           style={cardStyle}
           onClick={handleClick}
@@ -208,7 +190,9 @@ const InteractiveCard = ({
       <div
         className={cardClasses}
         style={cardStyle}
-        {...(onClick && !disabled ? { ...interactions, onClick: handleClick } : {})}
+        {...(onClick && !disabled
+          ? { ...interactions, onClick: handleClick }
+          : {})}
         {...props}
       >
         {cardContent}
@@ -236,19 +220,35 @@ export const CardFooter = ({ children, className = '', ...props }) => (
   </div>
 );
 
-export const CardActions = ({ children, className = '', align = 'right', ...props }) => (
+export const CardActions = ({
+  children,
+  className = '',
+  align = 'right',
+  ...props
+}) => (
   <div className={`card-actions align-${align} ${className}`} {...props}>
     {children}
   </div>
 );
 
-export const CardImage = ({ src, alt, position = 'top', className = '', ...props }) => (
+export const CardImage = ({
+  src,
+  alt,
+  position = 'top',
+  className = '',
+  ...props
+}) => (
   <div className={`card-image ${position} ${className}`} {...props}>
     <img src={src} alt={alt} />
   </div>
 );
 
-export const CardBadge = ({ children, variant = 'primary', className = '', ...props }) => (
+export const CardBadge = ({
+  children,
+  variant = 'primary',
+  className = '',
+  ...props
+}) => (
   <div className={`card-badge variant-${variant} ${className}`} {...props}>
     {children}
   </div>

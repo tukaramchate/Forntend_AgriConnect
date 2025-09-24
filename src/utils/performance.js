@@ -9,11 +9,13 @@ export const trackWebVitals = () => {
     for (const entry of list.getEntries()) {
       // Send metrics to analytics service
       console.log(`${entry.name}: ${entry.value}`);
-      
+
       // You can send to Google Analytics, DataDog, etc.
       if (window.gtag) {
         window.gtag('event', entry.name, {
-          value: Math.round(entry.name === 'CLS' ? entry.value * 1000 : entry.value),
+          value: Math.round(
+            entry.name === 'CLS' ? entry.value * 1000 : entry.value
+          ),
           event_category: 'Web Vitals',
           event_label: entry.id,
           non_interaction: true,
@@ -24,7 +26,9 @@ export const trackWebVitals = () => {
 
   // Observe Core Web Vitals
   try {
-    observer.observe({ entryTypes: ['largest-contentful-paint', 'first-input', 'layout-shift'] });
+    observer.observe({
+      entryTypes: ['largest-contentful-paint', 'first-input', 'layout-shift'],
+    });
   } catch (e) {
     console.warn('Performance Observer not supported:', e);
   }
@@ -32,13 +36,21 @@ export const trackWebVitals = () => {
 
 // Performance marks for custom metrics
 export const performanceMark = (name) => {
-  if (typeof window !== 'undefined' && window.performance && window.performance.mark) {
+  if (
+    typeof window !== 'undefined' &&
+    window.performance &&
+    window.performance.mark
+  ) {
     window.performance.mark(name);
   }
 };
 
 export const performanceMeasure = (name, startMark, endMark) => {
-  if (typeof window !== 'undefined' && window.performance && window.performance.measure) {
+  if (
+    typeof window !== 'undefined' &&
+    window.performance &&
+    window.performance.measure
+  ) {
     try {
       window.performance.measure(name, startMark, endMark);
       const measure = window.performance.getEntriesByName(name, 'measure')[0];
@@ -57,7 +69,8 @@ export const trackResourceLoading = () => {
 
   const observer = new PerformanceObserver((list) => {
     for (const entry of list.getEntries()) {
-      if (entry.duration > 1000) { // Log slow resources (>1s)
+      if (entry.duration > 1000) {
+        // Log slow resources (>1s)
         console.warn(`Slow resource: ${entry.name} took ${entry.duration}ms`);
       }
     }
@@ -90,30 +103,46 @@ export const trackBundlePerformance = () => {
   if (typeof window === 'undefined') return;
 
   window.addEventListener('load', () => {
-    const navigationEntry = window.performance.getEntriesByType('navigation')[0];
-    
+    const navigationEntry =
+      window.performance.getEntriesByType('navigation')[0];
+
     const timing = {
       dns: navigationEntry.domainLookupEnd - navigationEntry.domainLookupStart,
       connection: navigationEntry.connectEnd - navigationEntry.connectStart,
       response: navigationEntry.responseEnd - navigationEntry.responseStart,
-      dom: navigationEntry.domContentLoadedEventEnd - navigationEntry.domContentLoadedEventStart,
+      dom:
+        navigationEntry.domContentLoadedEventEnd -
+        navigationEntry.domContentLoadedEventStart,
       load: navigationEntry.loadEventEnd - navigationEntry.loadEventStart,
       total: navigationEntry.loadEventEnd - navigationEntry.navigationStart,
     };
 
     console.log('Page load timing:', timing);
-    
+
     // Track bundle sizes from resource timing
     const resources = window.performance.getEntriesByType('resource');
-    const jsResources = resources.filter(resource => resource.name.includes('.js'));
-    const cssResources = resources.filter(resource => resource.name.includes('.css'));
-    
+    const jsResources = resources.filter((resource) =>
+      resource.name.includes('.js')
+    );
+    const cssResources = resources.filter((resource) =>
+      resource.name.includes('.css')
+    );
+
     const bundleInfo = {
       jsCount: jsResources.length,
       cssCount: cssResources.length,
-      totalTransferSize: resources.reduce((sum, resource) => sum + (resource.transferSize || 0), 0),
-      jsTransferSize: jsResources.reduce((sum, resource) => sum + (resource.transferSize || 0), 0),
-      cssTransferSize: cssResources.reduce((sum, resource) => sum + (resource.transferSize || 0), 0),
+      totalTransferSize: resources.reduce(
+        (sum, resource) => sum + (resource.transferSize || 0),
+        0
+      ),
+      jsTransferSize: jsResources.reduce(
+        (sum, resource) => sum + (resource.transferSize || 0),
+        0
+      ),
+      cssTransferSize: cssResources.reduce(
+        (sum, resource) => sum + (resource.transferSize || 0),
+        0
+      ),
     };
 
     console.log('Bundle info:', bundleInfo);
@@ -127,7 +156,7 @@ export const createLazyLoadObserver = (callback, options = {}) => {
     root: null,
     rootMargin: '50px',
     threshold: 0.1,
-    ...options
+    ...options,
   };
 
   if (typeof window === 'undefined' || !window.IntersectionObserver) {
@@ -135,7 +164,7 @@ export const createLazyLoadObserver = (callback, options = {}) => {
     return {
       observe: () => {},
       unobserve: () => {},
-      disconnect: () => {}
+      disconnect: () => {},
     };
   }
 
@@ -164,7 +193,7 @@ export const throttle = (func, limit) => {
     if (!inThrottle) {
       func.apply(this, args);
       inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
+      setTimeout(() => (inThrottle = false), limit);
     }
   };
 };
@@ -178,7 +207,7 @@ export const preloadResource = (href, as = 'script', crossorigin = null) => {
   link.href = href;
   link.as = as;
   if (crossorigin) link.crossOrigin = crossorigin;
-  
+
   document.head.appendChild(link);
 };
 
@@ -189,7 +218,7 @@ export const prefetchResource = (href) => {
   const link = document.createElement('link');
   link.rel = 'prefetch';
   link.href = href;
-  
+
   document.head.appendChild(link);
 };
 
@@ -198,7 +227,7 @@ export const initPerformanceMonitoring = () => {
   trackWebVitals();
   trackResourceLoading();
   trackBundlePerformance();
-  
+
   // Track memory usage every 30 seconds in development
   if (import.meta.env.DEV) {
     setInterval(trackMemoryUsage, 30000);
@@ -217,5 +246,5 @@ export default {
   throttle,
   preloadResource,
   prefetchResource,
-  initPerformanceMonitoring
+  initPerformanceMonitoring,
 };

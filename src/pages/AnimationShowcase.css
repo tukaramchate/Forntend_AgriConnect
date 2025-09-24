@@ -45,7 +45,8 @@
 }
 
 @keyframes badgePulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -100,17 +101,17 @@
   .animation-showcase {
     padding: 1rem 0;
   }
-  
+
   .animation-showcase section {
     padding: 1rem;
     margin-bottom: 1rem;
   }
-  
+
   .animation-showcase h1 {
     font-size: 2rem;
     margin-bottom: 2rem;
   }
-  
+
   .animation-showcase .grid {
     grid-template-columns: 1fr;
     gap: 0.75rem;

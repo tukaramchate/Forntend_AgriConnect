@@ -12,8 +12,6 @@ import mockProducts from '../data/products';
 import ReviewSystem from '../components/social/reviews/ReviewSystem';
 import SocialShare from '../components/social/sharing/SocialShare';
 
-
-
 function ProductDetailsSkeleton() {
   return (
     <div className='max-w-7xl mx-auto px-4 py-8'>
@@ -122,35 +120,38 @@ function ProductDetails() {
   useEffect(() => {
     const fetchProduct = async () => {
       if (!id) return;
-      
+
       try {
         setIsLoading(true);
         setError(null);
-        
+
         // Try to fetch from API first, fallback to mock data
         try {
           const productData = await productAPI.getProductById(id);
           setProduct(productData);
-          
+
           // Fetch related products based on category
           try {
             const relatedData = await productAPI.getProducts({
               category: productData.category,
               limit: 4,
-              exclude: [id]
+              exclude: [id],
             });
             setRelatedProducts(relatedData.products || []);
           } catch {
             // Use other mock products as related products
             const related = mockProducts
-              .filter(p => p.id !== parseInt(id) && p.category === productData.category)
+              .filter(
+                (p) =>
+                  p.id !== parseInt(id) && p.category === productData.category
+              )
               .slice(0, 4);
             setRelatedProducts(related);
           }
         } catch (apiError) {
           console.warn('API not available, using mock data:', apiError);
           // Fallback to mock data - find product by ID
-          const mockProduct = mockProducts.find(p => p.id === parseInt(id));
+          const mockProduct = mockProducts.find((p) => p.id === parseInt(id));
           if (mockProduct) {
             // Enhance mock product with additional details for component compatibility
             setProduct({
@@ -163,23 +164,28 @@ function ProductDetails() {
               unit: 'kg',
               isOrganic: mockProduct.organic || false,
               freshness: 'Fresh Today',
-              description: mockProduct.longDescription || mockProduct.description,
+              description:
+                mockProduct.longDescription || mockProduct.description,
               features: [
-                mockProduct.organic ? 'Organically grown without pesticides' : 'Grown with care',
+                mockProduct.organic
+                  ? 'Organically grown without pesticides'
+                  : 'Grown with care',
                 'Harvested at peak ripeness',
                 'Rich in vitamins and antioxidants',
                 'Perfect for cooking and salads',
                 'Fresh from the farm within 24 hours',
               ],
               farmer: {
-                name: typeof mockProduct.farmer === 'string' 
-                  ? mockProduct.farmer 
-                  : mockProduct.farmer?.name || 'Local Farmer',
+                name:
+                  typeof mockProduct.farmer === 'string'
+                    ? mockProduct.farmer
+                    : mockProduct.farmer?.name || 'Local Farmer',
                 farm: 'Green Valley Farm',
                 location: mockProduct.location || 'Local Farm',
                 rating: 4.8,
                 verified: true,
-                image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&auto=format&faces=crop',
+                image:
+                  'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&auto=format&faces=crop',
                 totalProducts: 15,
                 yearsExperience: 8,
               },
@@ -203,22 +209,30 @@ function ProductDetails() {
                   helpful: 8,
                 },
               ],
-              nutritionFacts: mockProduct.nutritionFacts 
-                ? Object.entries(mockProduct.nutritionFacts).map(([name, value]) => ({
-                    name: name.charAt(0).toUpperCase() + name.slice(1),
-                    value: typeof value === 'number' ? `${value}${name === 'calories' ? '' : 'g'}` : value
-                  }))
+              nutritionFacts: mockProduct.nutritionFacts
+                ? Object.entries(mockProduct.nutritionFacts).map(
+                    ([name, value]) => ({
+                      name: name.charAt(0).toUpperCase() + name.slice(1),
+                      value:
+                        typeof value === 'number'
+                          ? `${value}${name === 'calories' ? '' : 'g'}`
+                          : value,
+                    })
+                  )
                 : [
                     { name: 'Calories', value: '18 per 100g' },
                     { name: 'Vitamin C', value: '14mg' },
                     { name: 'Potassium', value: '237mg' },
                     { name: 'Fiber', value: '1.2g' },
-                  ]
+                  ],
             });
-            
+
             // Get related products from mock data
             const related = mockProducts
-              .filter(p => p.id !== parseInt(id) && p.category === mockProduct.category)
+              .filter(
+                (p) =>
+                  p.id !== parseInt(id) && p.category === mockProduct.category
+              )
               .slice(0, 4);
             setRelatedProducts(related);
           } else {
@@ -294,7 +308,9 @@ function ProductDetails() {
       } else if (e.key === 'ArrowRight') {
         setSelectedImage((s) => (s + 1) % product.gallery.length);
       } else if (e.key === 'ArrowLeft') {
-        setSelectedImage((s) => (s - 1 + product.gallery.length) % product.gallery.length);
+        setSelectedImage(
+          (s) => (s - 1 + product.gallery.length) % product.gallery.length
+        );
       }
     };
 
@@ -333,7 +349,9 @@ function ProductDetails() {
             {error || 'Product Not Found'}
           </h2>
           <p className='text-secondary-600 mb-6'>
-            {error ? 'There was an error loading the product.' : "We couldn't find the product you're looking for."}
+            {error
+              ? 'There was an error loading the product.'
+              : "We couldn't find the product you're looking for."}
           </p>
           <div className='flex gap-3 justify-center'>
             <button
@@ -600,11 +618,11 @@ function ProductDetails() {
                   <button
                     type='button'
                     onClick={() => handleQuantityChange(quantity + 1)}
-                      disabled={quantity >= product.stock}
-                      className='p-2 hover:bg-secondary-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200'
-                      aria-label='Increase quantity'
-                      title='Increase quantity'
-                    >
+                    disabled={quantity >= product.stock}
+                    className='p-2 hover:bg-secondary-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200'
+                    aria-label='Increase quantity'
+                    title='Increase quantity'
+                  >
                     <svg
                       className='w-5 h-5'
                       fill='none'
@@ -644,7 +662,9 @@ function ProductDetails() {
                       : 'bg-primary-600 text-white hover:bg-primary-700 transform hover:scale-105'
                 } shadow-lg`}
                 aria-busy={isAddingToCart}
-                aria-label={product.stock === 0 ? 'Out of stock' : 'Add to cart'}
+                aria-label={
+                  product.stock === 0 ? 'Out of stock' : 'Add to cart'
+                }
               >
                 {isAddingToCart ? (
                   <div className='flex items-center justify-center gap-2'>
@@ -679,7 +699,9 @@ function ProductDetails() {
                     : 'border-secondary-300 text-secondary-700 hover:border-secondary-400 hover:bg-secondary-50'
                 }`}
                 aria-pressed={isInWishlist}
-                aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+                aria-label={
+                  isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'
+                }
               >
                 <svg
                   className={`w-5 h-5 ${isInWishlist ? 'fill-current' : ''}`}
@@ -758,7 +780,11 @@ function ProductDetails() {
         {/* Product Details Tabs */}
         <div className='bg-white rounded-xl border border-secondary-200 overflow-hidden'>
           <div className='border-b border-secondary-200'>
-            <nav className='flex' role='tablist' aria-label='Product details tabs'>
+            <nav
+              className='flex'
+              role='tablist'
+              aria-label='Product details tabs'
+            >
               {[
                 { id: 'description', label: 'Description' },
                 { id: 'nutrition', label: 'Nutrition Facts' },
@@ -870,10 +896,13 @@ function ProductDetails() {
                 Similar products from the same category
               </p>
             </div>
-            
+
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
               {relatedProducts.map((relatedProduct) => (
-                <div key={relatedProduct.id} className='bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-200 overflow-hidden'>
+                <div
+                  key={relatedProduct.id}
+                  className='bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-200 overflow-hidden'
+                >
                   <Link to={`/products/${relatedProduct.id}`} className='block'>
                     <div className='aspect-square overflow-hidden'>
                       <img
@@ -887,7 +916,10 @@ function ProductDetails() {
                         {relatedProduct.name}
                       </h3>
                       <p className='text-sm text-secondary-600 mb-2'>
-                        by {typeof relatedProduct.farmer === 'string' ? relatedProduct.farmer : relatedProduct.farmer?.name}
+                        by{' '}
+                        {typeof relatedProduct.farmer === 'string'
+                          ? relatedProduct.farmer
+                          : relatedProduct.farmer?.name}
                       </p>
                       <div className='flex items-center justify-between'>
                         <div className='flex items-center gap-2'>
@@ -946,7 +978,12 @@ function ProductDetails() {
             <div className='absolute inset-x-0 top-1/2 flex items-center justify-between pointer-events-none'>
               <button
                 type='button'
-                onClick={() => setSelectedImage((s) => (s - 1 + product.gallery.length) % product.gallery.length)}
+                onClick={() =>
+                  setSelectedImage(
+                    (s) =>
+                      (s - 1 + product.gallery.length) % product.gallery.length
+                  )
+                }
                 className='pointer-events-auto text-white p-3 bg-black bg-opacity-30 rounded-l'
                 aria-label='Previous image'
               >
@@ -954,7 +991,9 @@ function ProductDetails() {
               </button>
               <button
                 type='button'
-                onClick={() => setSelectedImage((s) => (s + 1) % product.gallery.length)}
+                onClick={() =>
+                  setSelectedImage((s) => (s + 1) % product.gallery.length)
+                }
                 className='pointer-events-auto text-white p-3 bg-black bg-opacity-30 rounded-r'
                 aria-label='Next image'
               >

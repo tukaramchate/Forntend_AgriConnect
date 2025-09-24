@@ -49,7 +49,9 @@
 
 .plan-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .plan-card.popular {
@@ -566,9 +568,15 @@
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-.skeleton-benefit:nth-child(1) { width: 90%; }
-.skeleton-benefit:nth-child(2) { width: 80%; }
-.skeleton-benefit:nth-child(3) { width: 85%; }
+.skeleton-benefit:nth-child(1) {
+  width: 90%;
+}
+.skeleton-benefit:nth-child(2) {
+  width: 80%;
+}
+.skeleton-benefit:nth-child(3) {
+  width: 85%;
+}
 
 .skeleton-button {
   height: 3rem;
@@ -578,7 +586,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {

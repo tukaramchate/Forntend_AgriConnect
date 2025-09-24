@@ -4,14 +4,14 @@ import React, { useState, useRef } from 'react';
  * HoverEffect - Advanced hover effects with customizable animations
  * Supports various hover styles including glow, lift, tilt, and shine
  */
-const HoverEffect = ({ 
+const HoverEffect = ({
   children,
   effect = 'lift', // 'lift', 'glow', 'tilt', 'shine', 'zoom', 'rotate'
   intensity = 'medium', // 'subtle', 'medium', 'strong'
   duration = 0.3,
   className = '',
   disabled = false,
-  ...props 
+  ...props
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -21,7 +21,7 @@ const HoverEffect = ({
   const intensityMap = {
     subtle: 0.5,
     medium: 1,
-    strong: 1.5
+    strong: 1.5,
   };
 
   const multiplier = intensityMap[intensity];
@@ -51,13 +51,13 @@ const HoverEffect = ({
       return {
         transform: 'none',
         boxShadow: 'none',
-        filter: 'none'
+        filter: 'none',
       };
     }
 
     const baseStyles = {
       transition: `all ${duration}s ease-out`,
-      willChange: 'transform, box-shadow, filter'
+      willChange: 'transform, box-shadow, filter',
     };
 
     switch (effect) {
@@ -65,20 +65,20 @@ const HoverEffect = ({
         return {
           ...baseStyles,
           transform: `translateY(-${4 * multiplier}px) scale(${1 + 0.02 * multiplier})`,
-          boxShadow: `0 ${8 * multiplier}px ${24 * multiplier}px rgba(0, 0, 0, 0.15)`
+          boxShadow: `0 ${8 * multiplier}px ${24 * multiplier}px rgba(0, 0, 0, 0.15)`,
         };
 
       case 'glow':
         return {
           ...baseStyles,
           boxShadow: `0 0 ${20 * multiplier}px rgba(59, 130, 246, ${0.5 * multiplier})`,
-          filter: `brightness(${1 + 0.1 * multiplier})`
+          filter: `brightness(${1 + 0.1 * multiplier})`,
         };
 
       case 'tilt':
         return {
           ...baseStyles,
-          transform: `perspective(1000px) rotateX(${mousePosition.y * 10 * multiplier}deg) rotateY(${mousePosition.x * 10 * multiplier}deg) translateZ(${10 * multiplier}px)`
+          transform: `perspective(1000px) rotateX(${mousePosition.y * 10 * multiplier}deg) rotateY(${mousePosition.x * 10 * multiplier}deg) translateZ(${10 * multiplier}px)`,
         };
 
       case 'shine':
@@ -95,20 +95,20 @@ const HoverEffect = ({
             height: '200%',
             background: `linear-gradient(45deg, transparent, rgba(255, 255, 255, ${0.3 * multiplier}), transparent)`,
             transform: `translate(-100%, -100%) rotate(45deg)`,
-            animation: `shine ${duration * 2}s ease-out`
-          }
+            animation: `shine ${duration * 2}s ease-out`,
+          },
         };
 
       case 'zoom':
         return {
           ...baseStyles,
-          transform: `scale(${1 + 0.05 * multiplier})`
+          transform: `scale(${1 + 0.05 * multiplier})`,
         };
 
       case 'rotate':
         return {
           ...baseStyles,
-          transform: `rotate(${2 * multiplier}deg) scale(${1 + 0.02 * multiplier})`
+          transform: `rotate(${2 * multiplier}deg) scale(${1 + 0.02 * multiplier})`,
         };
 
       default:
@@ -131,11 +131,11 @@ const HoverEffect = ({
       {children}
       {effect === 'shine' && isHovered && (
         <div
-          className="absolute inset-0 pointer-events-none overflow-hidden"
+          className='absolute inset-0 pointer-events-none overflow-hidden'
           style={{
             background: `linear-gradient(45deg, transparent, rgba(255, 255, 255, ${0.3 * multiplier}), transparent)`,
             transform: `translateX(-100%) skewX(-45deg)`,
-            animation: `shine-sweep ${duration}s ease-out`
+            animation: `shine-sweep ${duration}s ease-out`,
           }}
         />
       )}
@@ -146,12 +146,12 @@ const HoverEffect = ({
 /**
  * RippleEffect - Material Design ripple effect
  */
-export const RippleEffect = ({ 
+export const RippleEffect = ({
   children,
   color = 'rgba(255, 255, 255, 0.6)',
   duration = 0.6,
   className = '',
-  ...props 
+  ...props
 }) => {
   const [ripples, setRipples] = useState([]);
   const containerRef = useRef();
@@ -168,14 +168,14 @@ export const RippleEffect = ({
       id: Date.now(),
       x,
       y,
-      size
+      size,
     };
 
-    setRipples(prev => [...prev, newRipple]);
+    setRipples((prev) => [...prev, newRipple]);
 
     // Remove ripple after animation
     setTimeout(() => {
-      setRipples(prev => prev.filter(ripple => ripple.id !== newRipple.id));
+      setRipples((prev) => prev.filter((ripple) => ripple.id !== newRipple.id));
     }, duration * 1000);
   };
 
@@ -187,17 +187,17 @@ export const RippleEffect = ({
       {...props}
     >
       {children}
-      {ripples.map(ripple => (
+      {ripples.map((ripple) => (
         <span
           key={ripple.id}
-          className="absolute rounded-full pointer-events-none animate-ping"
+          className='absolute rounded-full pointer-events-none animate-ping'
           style={{
             left: ripple.x,
             top: ripple.y,
             width: ripple.size,
             height: ripple.size,
             backgroundColor: color,
-            animation: `ripple ${duration}s ease-out`
+            animation: `ripple ${duration}s ease-out`,
           }}
         />
       ))}

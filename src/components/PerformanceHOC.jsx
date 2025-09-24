@@ -1,16 +1,23 @@
 // Higher-Order Component for performance monitoring integration
 import React, { useEffect, useRef } from 'react';
-import { initializeMonitoring, trackCustomMetric, markStart, markEnd } from '../utils/monitoring';
+import {
+  initializeMonitoring,
+  trackCustomMetric,
+  markStart,
+  markEnd,
+} from '../utils/monitoring';
 import { metaManager } from '../utils/seo';
 
 // HOC to add performance monitoring to components
 export const withPerformanceMonitoring = (WrappedComponent, options = {}) => {
   const {
-    componentName = WrappedComponent.displayName || WrappedComponent.name || 'Component',
+    componentName = WrappedComponent.displayName ||
+      WrappedComponent.name ||
+      'Component',
     trackRender = true,
     trackMount = true,
     trackUnmount = true,
-    seoData = null
+    seoData = null,
   } = options;
 
   const MonitoredComponent = (props) => {
@@ -25,7 +32,7 @@ export const withPerformanceMonitoring = (WrappedComponent, options = {}) => {
           enableResourceTiming: true,
           enableErrorTracking: true,
           enableCustomMetrics: true,
-          endpoint: import.meta.env.VITE_ANALYTICS_ENDPOINT
+          endpoint: import.meta.env.VITE_ANALYTICS_ENDPOINT,
         });
         window.__AGRICONNECT_MONITORING_INITIALIZED__ = true;
       }
@@ -33,11 +40,11 @@ export const withPerformanceMonitoring = (WrappedComponent, options = {}) => {
       if (trackMount) {
         mountTime.current = performance.now();
         markStart(`${componentName}-mount`);
-        
+
         // Track component mount
         trackCustomMetric(`component-mount`, componentName, {
           timestamp: Date.now(),
-          url: window.location.pathname
+          url: window.location.pathname,
         });
       }
 
@@ -49,15 +56,17 @@ export const withPerformanceMonitoring = (WrappedComponent, options = {}) => {
       return () => {
         if (trackUnmount) {
           const unmountTime = performance.now();
-          const mountDuration = mountTime.current ? unmountTime - mountTime.current : 0;
-          
+          const mountDuration = mountTime.current
+            ? unmountTime - mountTime.current
+            : 0;
+
           markEnd(`${componentName}-mount`);
-          
+
           // Track component unmount and lifetime
           trackCustomMetric(`component-unmount`, componentName, {
             lifetime: mountDuration,
             renderCount: renderCount.current,
-            timestamp: Date.now()
+            timestamp: Date.now(),
           });
         }
       };
@@ -66,20 +75,20 @@ export const withPerformanceMonitoring = (WrappedComponent, options = {}) => {
     useEffect(() => {
       if (trackRender) {
         renderCount.current += 1;
-        
+
         // Track render performance
         const renderStart = performance.now();
-        
+
         // Use requestAnimationFrame to measure actual render time
         requestAnimationFrame(() => {
           const renderEnd = performance.now();
           const renderTime = renderEnd - renderStart;
-          
+
           trackCustomMetric(`component-render`, componentName, {
             renderTime,
             renderCount: renderCount.current,
             timestamp: Date.now(),
-            url: window.location.pathname
+            url: window.location.pathname,
           });
         });
       }
@@ -96,11 +105,7 @@ export const withPerformanceMonitoring = (WrappedComponent, options = {}) => {
 
 // HOC to add error boundary with performance tracking
 export const withErrorBoundary = (WrappedComponent, options = {}) => {
-  const {
-    fallback: FallbackComponent,
-    onError,
-    trackErrors = true
-  } = options;
+  const { fallback: FallbackComponent, onError, trackErrors = true } = options;
 
   class ErrorBoundary extends React.Component {
     constructor(props) {
@@ -120,30 +125,42 @@ export const withErrorBoundary = (WrappedComponent, options = {}) => {
             component: WrappedComponent.displayName || WrappedComponent.name,
             errorInfo,
             props: this.props,
-            url: window.location.href
+            url: window.location.href,
           });
         });
       }
 
       this.setState({ errorInfo });
-      
+
       if (onError) {
         onError(error, errorInfo);
       }
 
-      console.error('Component Error Boundary caught an error:', error, errorInfo);
+      console.error(
+        'Component Error Boundary caught an error:',
+        error,
+        errorInfo
+      );
     }
 
     render() {
       if (this.state.hasError) {
         if (FallbackComponent) {
-          return <FallbackComponent error={this.state.error} errorInfo={this.state.errorInfo} />;
+          return (
+            <FallbackComponent
+              error={this.state.error}
+              errorInfo={this.state.errorInfo}
+            />
+          );
         }
-        
+
         return (
-          <div className="error-boundary">
+          <div className='error-boundary'>
             <h2>Something went wrong</h2>
-            <p>We're sorry, but something went wrong. Please try refreshing the page.</p>
+            <p>
+              We're sorry, but something went wrong. Please try refreshing the
+              page.
+            </p>
             {import.meta.env.DEV && (
               <details style={{ whiteSpace: 'pre-wrap', marginTop: '1rem' }}>
                 <summary>Error Details (Development Only)</summary>
@@ -169,7 +186,7 @@ export const withLazyLoading = (importFunc, options = {}) => {
   const {
     loading: LoadingComponent,
     error: ErrorComponent,
-    trackLoading = true
+    trackLoading = true,
   } = options;
 
   const LazyComponent = React.lazy(async () => {
@@ -179,20 +196,24 @@ export const withLazyLoading = (importFunc, options = {}) => {
 
     try {
       const component = await importFunc();
-      
+
       if (trackLoading) {
         const loadTime = markEnd('lazy-component-load');
-        
+
         // Import tracking function dynamically
         import('../utils/monitoring').then(({ trackCustomMetric }) => {
-          trackCustomMetric('lazy-component-load', component.default?.displayName || 'Unknown', {
-            loadTime,
-            timestamp: Date.now(),
-            url: window.location.pathname
-          });
+          trackCustomMetric(
+            'lazy-component-load',
+            component.default?.displayName || 'Unknown',
+            {
+              loadTime,
+              timestamp: Date.now(),
+              url: window.location.pathname,
+            }
+          );
         });
       }
-      
+
       return component;
     } catch (error) {
       if (trackLoading) {
@@ -200,7 +221,7 @@ export const withLazyLoading = (importFunc, options = {}) => {
           trackError(error, {
             type: 'lazy-loading-error',
             timestamp: Date.now(),
-            url: window.location.pathname
+            url: window.location.pathname,
           });
         });
       }
@@ -229,16 +250,16 @@ export const withImageOptimization = (WrappedComponent) => {
       if (!img) return;
 
       const startTime = performance.now();
-      
+
       const handleLoad = () => {
         const loadTime = performance.now() - startTime;
-        
+
         import('../utils/monitoring').then(({ trackCustomMetric }) => {
           trackCustomMetric('image-load', img.src, {
             loadTime,
             width: img.naturalWidth,
             height: img.naturalHeight,
-            timestamp: Date.now()
+            timestamp: Date.now(),
           });
         });
       };
@@ -248,7 +269,7 @@ export const withImageOptimization = (WrappedComponent) => {
           trackError(new Error(`Image load failed: ${img.src}`), {
             type: 'image-load-error',
             src: img.src,
-            timestamp: Date.now()
+            timestamp: Date.now(),
           });
         });
       };
@@ -275,29 +296,33 @@ export const createMonitoredRoute = (Component, routeOptions = {}) => {
     routeName,
     seoData = null,
     preloadData = null,
-    trackPageView = true
+    trackPageView = true,
   } = routeOptions;
 
   const MonitoredRoute = (props) => {
     useEffect(() => {
       if (trackPageView) {
         import('../utils/monitoring').then(({ trackCustomMetric }) => {
-          trackCustomMetric('page-view', routeName || window.location.pathname, {
-            timestamp: Date.now(),
-            referrer: document.referrer,
-            userAgent: navigator.userAgent
-          });
+          trackCustomMetric(
+            'page-view',
+            routeName || window.location.pathname,
+            {
+              timestamp: Date.now(),
+              referrer: document.referrer,
+              userAgent: navigator.userAgent,
+            }
+          );
         });
       }
 
       // Preload data if specified
       if (preloadData && typeof preloadData === 'function') {
-        preloadData().catch(error => {
+        preloadData().catch((error) => {
           import('../utils/monitoring').then(({ trackError }) => {
             trackError(error, {
               type: 'data-preload-error',
               route: routeName || window.location.pathname,
-              timestamp: Date.now()
+              timestamp: Date.now(),
             });
           });
         });
@@ -311,7 +336,7 @@ export const createMonitoredRoute = (Component, routeOptions = {}) => {
   const EnhancedRoute = withErrorBoundary(
     withPerformanceMonitoring(MonitoredRoute, {
       componentName: routeName || 'Route',
-      seoData
+      seoData,
     })
   );
 
@@ -325,7 +350,7 @@ export const usePerformanceTracking = () => {
       trackCustomMetric(eventName, data.value || eventName, {
         ...data,
         timestamp: Date.now(),
-        url: window.location.pathname
+        url: window.location.pathname,
       });
     });
   };
@@ -335,17 +360,17 @@ export const usePerformanceTracking = () => {
       trackErrorFunc(error, {
         ...context,
         timestamp: Date.now(),
-        url: window.location.pathname
+        url: window.location.pathname,
       });
     });
   };
 
   const measurePerformance = (name, fn) => {
     markStart(name);
-    
+
     try {
       const result = fn();
-      
+
       if (result && typeof result.then === 'function') {
         // Handle async functions
         return result.finally(() => {
@@ -360,10 +385,10 @@ export const usePerformanceTracking = () => {
       }
     } catch (error) {
       const duration = markEnd(name);
-      trackError(error, { 
+      trackError(error, {
         operation: name,
         duration,
-        type: 'performance-measurement-error'
+        type: 'performance-measurement-error',
       });
       throw error;
     }
@@ -372,7 +397,7 @@ export const usePerformanceTracking = () => {
   return {
     trackEvent,
     trackError,
-    measurePerformance
+    measurePerformance,
   };
 };
 
@@ -382,5 +407,5 @@ export default {
   withLazyLoading,
   withImageOptimization,
   createMonitoredRoute,
-  usePerformanceTracking
+  usePerformanceTracking,
 };

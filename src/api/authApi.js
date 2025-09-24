@@ -145,10 +145,10 @@ class AuthAPI {
     try {
       const response = await apiMethods.get(`${this.userEndpoint}/profile`);
       const user = response.data;
-      
+
       // Update local user data
       localStorage.setItem('user', JSON.stringify(user));
-      
+
       return user;
     } catch (error) {
       console.error('Get current user error:', error);
@@ -173,10 +173,10 @@ class AuthAPI {
       });
 
       const user = response.data;
-      
+
       // Update local user data
       localStorage.setItem('user', JSON.stringify(user));
-      
+
       return user;
     } catch (error) {
       console.error('Update profile error:', error);
@@ -214,9 +214,12 @@ class AuthAPI {
    */
   async requestPasswordReset(email) {
     try {
-      const response = await apiMethods.post(`${this.baseEndpoint}/forgot-password`, {
-        email: email.toLowerCase().trim(),
-      });
+      const response = await apiMethods.post(
+        `${this.baseEndpoint}/forgot-password`,
+        {
+          email: email.toLowerCase().trim(),
+        }
+      );
 
       return response.data;
     } catch (error) {
@@ -235,11 +238,14 @@ class AuthAPI {
    */
   async resetPassword(resetData) {
     try {
-      const response = await apiMethods.post(`${this.baseEndpoint}/reset-password`, {
-        token: resetData.token,
-        password: resetData.password,
-        confirmPassword: resetData.confirmPassword,
-      });
+      const response = await apiMethods.post(
+        `${this.baseEndpoint}/reset-password`,
+        {
+          token: resetData.token,
+          password: resetData.password,
+          confirmPassword: resetData.confirmPassword,
+        }
+      );
 
       return response.data;
     } catch (error) {
@@ -255,9 +261,12 @@ class AuthAPI {
    */
   async verifyEmail(token) {
     try {
-      const response = await apiMethods.post(`${this.baseEndpoint}/verify-email`, {
-        token,
-      });
+      const response = await apiMethods.post(
+        `${this.baseEndpoint}/verify-email`,
+        {
+          token,
+        }
+      );
 
       return response.data;
     } catch (error) {
@@ -272,7 +281,9 @@ class AuthAPI {
    */
   async resendEmailVerification() {
     try {
-      const response = await apiMethods.post(`${this.baseEndpoint}/resend-verification`);
+      const response = await apiMethods.post(
+        `${this.baseEndpoint}/resend-verification`
+      );
       return response.data;
     } catch (error) {
       console.error('Resend verification error:', error);
@@ -310,12 +321,13 @@ class AuthAPI {
    */
   handleError(error) {
     const defaultMessage = 'An authentication error occurred.';
-    
+
     if (error.type) {
       switch (error.type) {
         case 'NETWORK_ERROR':
           return {
-            message: 'Unable to connect to the server. Please check your internet connection.',
+            message:
+              'Unable to connect to the server. Please check your internet connection.',
             type: 'network',
             retryable: true,
           };

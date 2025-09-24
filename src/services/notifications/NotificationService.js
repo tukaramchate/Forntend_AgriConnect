@@ -17,9 +17,9 @@ export class NotificationService {
         actions: [
           {
             label: 'Track Order',
-            onClick: () => window.location.href = `/orders/${orderNumber}`
-          }
-        ]
+            onClick: () => (window.location.href = `/orders/${orderNumber}`),
+          },
+        ],
       }
     );
   }
@@ -29,23 +29,31 @@ export class NotificationService {
       processing: 'Your order is being processed',
       shipped: 'Your order has been shipped',
       delivered: 'Your order has been delivered',
-      cancelled: 'Your order has been cancelled'
+      cancelled: 'Your order has been cancelled',
     };
 
-    const type = status === 'cancelled' ? 'error' : 
-                status === 'delivered' ? 'success' : 'info';
+    const type =
+      status === 'cancelled'
+        ? 'error'
+        : status === 'delivered'
+          ? 'success'
+          : 'info';
 
     this.notifications.showNotification({
       type,
       title: `Order #${orderNumber} ${status}`,
-      message: statusMessages[status] + (estimatedDelivery ? ` - Estimated delivery: ${estimatedDelivery}` : ''),
+      message:
+        statusMessages[status] +
+        (estimatedDelivery
+          ? ` - Estimated delivery: ${estimatedDelivery}`
+          : ''),
       persistent: true,
       actions: [
         {
           label: 'View Details',
-          onClick: () => window.location.href = `/orders/${orderNumber}`
-        }
-      ]
+          onClick: () => (window.location.href = `/orders/${orderNumber}`),
+        },
+      ],
     });
   }
 
@@ -54,29 +62,26 @@ export class NotificationService {
       `Payment of ₹${amount} processed successfully via ${method}`,
       {
         title: 'Payment Confirmed',
-        duration: 4000
+        duration: 4000,
       }
     );
   }
 
   paymentFailed(reason = 'Payment processing failed') {
-    this.notifications.showError(
-      reason,
-      {
-        title: 'Payment Failed',
-        persistent: true,
-        actions: [
-          {
-            label: 'Retry Payment',
-            onClick: () => window.location.reload()
-          },
-          {
-            label: 'Contact Support',
-            onClick: () => window.location.href = '/support'
-          }
-        ]
-      }
-    );
+    this.notifications.showError(reason, {
+      title: 'Payment Failed',
+      persistent: true,
+      actions: [
+        {
+          label: 'Retry Payment',
+          onClick: () => window.location.reload(),
+        },
+        {
+          label: 'Contact Support',
+          onClick: () => (window.location.href = '/support'),
+        },
+      ],
+    });
   }
 
   // Farmer-specific notifications
@@ -89,9 +94,10 @@ export class NotificationService {
         actions: [
           {
             label: 'View Order',
-            onClick: () => window.location.href = `/farmer/orders/${orderNumber}`
-          }
-        ]
+            onClick: () =>
+              (window.location.href = `/farmer/orders/${orderNumber}`),
+          },
+        ],
       }
     );
   }
@@ -105,9 +111,9 @@ export class NotificationService {
         actions: [
           {
             label: 'Update Stock',
-            onClick: () => window.location.href = '/farmer/inventory'
-          }
-        ]
+            onClick: () => (window.location.href = '/farmer/inventory'),
+          },
+        ],
       }
     );
   }
@@ -121,9 +127,9 @@ export class NotificationService {
         actions: [
           {
             label: 'View Product',
-            onClick: () => window.location.href = '/farmer/products'
-          }
-        ]
+            onClick: () => (window.location.href = '/farmer/products'),
+          },
+        ],
       }
     );
   }
@@ -138,9 +144,9 @@ export class NotificationService {
         actions: [
           {
             label: 'Review Application',
-            onClick: () => window.location.href = '/admin/farmers'
-          }
-        ]
+            onClick: () => (window.location.href = '/admin/farmers'),
+          },
+        ],
       }
     );
   }
@@ -155,9 +161,9 @@ export class NotificationService {
       actions: [
         {
           label: 'View Details',
-          onClick: () => window.location.href = '/admin/system'
-        }
-      ]
+          onClick: () => (window.location.href = '/admin/system'),
+        },
+      ],
     });
   }
 
@@ -172,18 +178,15 @@ export class NotificationService {
           actions: [
             {
               label: 'Take Tour',
-              onClick: () => this.startOnboardingTour()
-            }
-          ]
+              onClick: () => this.startOnboardingTour(),
+            },
+          ],
         }
       );
     } else {
-      this.notifications.showInfo(
-        `Welcome back, ${userName}!`,
-        {
-          duration: 3000
-        }
-      );
+      this.notifications.showInfo(`Welcome back, ${userName}!`, {
+        duration: 3000,
+      });
     }
   }
 
@@ -191,7 +194,7 @@ export class NotificationService {
     this.notifications.showSuccess(
       'Your profile has been updated successfully',
       {
-        duration: 3000
+        duration: 3000,
       }
     );
   }
@@ -205,9 +208,9 @@ export class NotificationService {
         actions: [
           {
             label: 'Retry',
-            onClick: () => window.location.reload()
-          }
-        ]
+            onClick: () => window.location.reload(),
+          },
+        ],
       }
     );
   }
@@ -218,26 +221,23 @@ export class NotificationService {
       {
         title: 'Maintenance Notice',
         persistent: true,
-        duration: 0
+        duration: 0,
       }
     );
   }
 
   // Promotional notifications
   newPromotion(title, description, discountPercent) {
-    this.notifications.showInfo(
-      `${discountPercent}% off! ${description}`,
-      {
-        title: `🎉 ${title}`,
-        persistent: true,
-        actions: [
-          {
-            label: 'Shop Now',
-            onClick: () => window.location.href = '/products?promo=active'
-          }
-        ]
-      }
-    );
+    this.notifications.showInfo(`${discountPercent}% off! ${description}`, {
+      title: `🎉 ${title}`,
+      persistent: true,
+      actions: [
+        {
+          label: 'Shop Now',
+          onClick: () => (window.location.href = '/products?promo=active'),
+        },
+      ],
+    });
   }
 
   // Helper method to start onboarding tour (placeholder)
@@ -255,8 +255,8 @@ export const createNotificationService = (notificationContext) => {
 // Hook to use notification service
 export const useNotificationService = () => {
   const notifications = useNotifications();
-  return React.useMemo(() => 
-    createNotificationService(notifications), 
+  return React.useMemo(
+    () => createNotificationService(notifications),
     [notifications]
   );
 };

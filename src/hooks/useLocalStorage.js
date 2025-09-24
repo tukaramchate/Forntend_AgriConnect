@@ -22,9 +22,10 @@ export const useLocalStorage = (key, initialValue) => {
   const setValue = (value) => {
     try {
       // Allow value to be a function so we have the same API as useState
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      const valueToStore =
+        value instanceof Function ? value(storedValue) : value;
       setStoredValue(valueToStore);
-      
+
       // Save to localStorage
       if (valueToStore === undefined) {
         window.localStorage.removeItem(key);

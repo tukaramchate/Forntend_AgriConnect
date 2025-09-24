@@ -34,7 +34,8 @@
 }
 
 @keyframes onboarding-highlight-pulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
   }
   50% {
@@ -159,12 +160,12 @@
     max-height: 70vh;
     padding: 1rem;
   }
-  
+
   .onboarding-tooltip {
     max-width: 280px;
     font-size: 0.875rem;
   }
-  
+
   .onboarding-step {
     padding: 1rem;
   }
@@ -178,11 +179,11 @@
   .onboarding-highlight {
     animation: none;
   }
-  
+
   .onboarding-interactive {
     transition: none;
   }
-  
+
   .onboarding-interactive:hover {
     transform: none;
   }
@@ -193,11 +194,11 @@
   .onboarding-modal {
     border: 3px solid;
   }
-  
+
   .onboarding-tooltip {
     border: 2px solid;
   }
-  
+
   .onboarding-highlight {
     border: 3px solid #0066cc;
   }
@@ -252,7 +253,11 @@
 }
 
 @keyframes onboarding-bounce {
-  0%, 20%, 50%, 80%, 100% {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
     transform: translateY(0);
   }
   40% {

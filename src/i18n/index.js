@@ -18,11 +18,11 @@ i18n
       en: { translation: en },
       hi: { translation: hi },
       te: { translation: te },
-      mr: { translation: mr }
+      mr: { translation: mr },
     },
     fallbackLng: 'en',
     debug: import.meta.env.DEV,
-    
+
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],

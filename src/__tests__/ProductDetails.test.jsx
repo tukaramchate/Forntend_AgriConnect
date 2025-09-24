@@ -28,18 +28,19 @@ vi.mock('../data/products', () => ({
       farmer: 'John Doe',
       location: 'California',
       description: 'Fresh, organic tomatoes grown with care',
-      longDescription: 'These premium organic tomatoes are grown using sustainable farming practices in the fertile valleys of California. Hand-picked at peak ripeness, they offer exceptional flavor and nutrition.',
+      longDescription:
+        'These premium organic tomatoes are grown using sustainable farming practices in the fertile valleys of California. Hand-picked at peak ripeness, they offer exceptional flavor and nutrition.',
       images: [
         'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=600&fit=crop&auto=format',
-        'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&h=600&fit=crop&auto=format'
+        'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&h=600&fit=crop&auto=format',
       ],
       inStock: true,
       rating: 4.8,
       reviews: 127,
       organic: true,
-      locallyGrown: true
-    }
-  ]
+      locallyGrown: true,
+    },
+  ],
 }));
 
 const createMockStore = (initialState = {}) => {
@@ -71,34 +72,48 @@ describe('ProductDetails', () => {
 
   it('shows loading skeleton initially', () => {
     renderWithProviders(<ProductDetails />);
-    
+
     // Check for skeleton elements
-    const skeletonElements = screen.getAllByText('', { selector: '.animate-pulse' });
+    const skeletonElements = screen.getAllByText('', {
+      selector: '.animate-pulse',
+    });
     expect(skeletonElements.length).toBeGreaterThan(0);
   });
 
   it('displays product information after loading', async () => {
     renderWithProviders(<ProductDetails />);
-    
+
     // Wait for product to load using the main heading
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /Fresh Organic Tomatoes/i })).toBeInTheDocument();
-    }, { timeout: 2000 });
+    await waitFor(
+      () => {
+        expect(
+          screen.getByRole('heading', { name: /Fresh Organic Tomatoes/i })
+        ).toBeInTheDocument();
+      },
+      { timeout: 2000 }
+    );
 
     // Check for basic product information elements
-    expect(screen.getByRole('heading', { name: /Fresh Organic Tomatoes/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /Fresh Organic Tomatoes/i })
+    ).toBeInTheDocument();
     expect(screen.getByText('🌱 Organic')).toBeInTheDocument();
-    
+
     // Check that images are present (use exact match for main image)
     expect(screen.getByAltText('Fresh Organic Tomatoes')).toBeInTheDocument();
   });
 
   it('handles quantity changes correctly', async () => {
     renderWithProviders(<ProductDetails />);
-    
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /Fresh Organic Tomatoes/i })).toBeInTheDocument();
-    }, { timeout: 2000 });
+
+    await waitFor(
+      () => {
+        expect(
+          screen.getByRole('heading', { name: /Fresh Organic Tomatoes/i })
+        ).toBeInTheDocument();
+      },
+      { timeout: 2000 }
+    );
 
     // Look for quantity input specifically
     const quantityInput = screen.getByLabelText(/Product quantity/i);
@@ -121,10 +136,15 @@ describe('ProductDetails', () => {
   it('renders add to cart button', async () => {
     const store = createMockStore();
     renderWithProviders(<ProductDetails />, { store });
-    
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /Fresh Organic Tomatoes/i })).toBeInTheDocument();
-    }, { timeout: 2000 });
+
+    await waitFor(
+      () => {
+        expect(
+          screen.getByRole('heading', { name: /Fresh Organic Tomatoes/i })
+        ).toBeInTheDocument();
+      },
+      { timeout: 2000 }
+    );
 
     // Check that the add to cart button exists and is clickable
     const addToCartBtn = screen.getByRole('button', { name: /add to cart/i });
@@ -135,10 +155,15 @@ describe('ProductDetails', () => {
   it('toggles wishlist correctly', async () => {
     const store = createMockStore();
     renderWithProviders(<ProductDetails />, { store });
-    
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /Fresh Organic Tomatoes/i })).toBeInTheDocument();
-    }, { timeout: 2000 });
+
+    await waitFor(
+      () => {
+        expect(
+          screen.getByRole('heading', { name: /Fresh Organic Tomatoes/i })
+        ).toBeInTheDocument();
+      },
+      { timeout: 2000 }
+    );
 
     // Check that the wishlist button exists
     const wishlistBtn = screen.getByRole('button', { name: /wishlist|heart/i });
@@ -147,27 +172,39 @@ describe('ProductDetails', () => {
 
   it('renders product tabs', async () => {
     renderWithProviders(<ProductDetails />);
-    
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /Fresh Organic Tomatoes/i })).toBeInTheDocument();
-    }, { timeout: 2000 });
+
+    await waitFor(
+      () => {
+        expect(
+          screen.getByRole('heading', { name: /Fresh Organic Tomatoes/i })
+        ).toBeInTheDocument();
+      },
+      { timeout: 2000 }
+    );
 
     // Check that tabs exist
     const tabs = screen.getAllByRole('tab');
     expect(tabs.length).toBeGreaterThan(0);
-    
+
     // Check that specific tabs are present
-    expect(screen.getByRole('tab', { name: /description/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: /description/i })
+    ).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: /nutrition/i })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: /reviews/i })).toBeInTheDocument();
   });
 
   it('opens and closes lightbox correctly', async () => {
     renderWithProviders(<ProductDetails />);
-    
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /Fresh Organic Tomatoes/i })).toBeInTheDocument();
-    }, { timeout: 2000 });
+
+    await waitFor(
+      () => {
+        expect(
+          screen.getByRole('heading', { name: /Fresh Organic Tomatoes/i })
+        ).toBeInTheDocument();
+      },
+      { timeout: 2000 }
+    );
 
     // Click main image to open lightbox
     const mainImage = screen.getByRole('button', { name: /open gallery/i });
@@ -187,10 +224,15 @@ describe('ProductDetails', () => {
 
   it('navigates gallery images with keyboard', async () => {
     renderWithProviders(<ProductDetails />);
-    
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /Fresh Organic Tomatoes/i })).toBeInTheDocument();
-    }, { timeout: 2000 });
+
+    await waitFor(
+      () => {
+        expect(
+          screen.getByRole('heading', { name: /Fresh Organic Tomatoes/i })
+        ).toBeInTheDocument();
+      },
+      { timeout: 2000 }
+    );
 
     // Open lightbox
     const mainImage = screen.getByRole('button', { name: /open gallery/i });
@@ -209,10 +251,15 @@ describe('ProductDetails', () => {
 
   it('displays product description', async () => {
     renderWithProviders(<ProductDetails />);
-    
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /Fresh Organic Tomatoes/i })).toBeInTheDocument();
-    }, { timeout: 2000 });
+
+    await waitFor(
+      () => {
+        expect(
+          screen.getByRole('heading', { name: /Fresh Organic Tomatoes/i })
+        ).toBeInTheDocument();
+      },
+      { timeout: 2000 }
+    );
 
     // Check that some description text is present
     const descriptionTab = screen.getByRole('tab', { name: /description/i });

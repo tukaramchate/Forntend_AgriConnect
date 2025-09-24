@@ -274,7 +274,9 @@
 
 /* Loading and Animation States */
 .tab-content > div {
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
 }
 
 .tab-content > div.loading {

@@ -20,7 +20,7 @@ class CategoryAPI {
   async getCategories(filters = {}) {
     try {
       const params = new URLSearchParams();
-      
+
       if (filters.includeSubcategories !== undefined) {
         params.append('include_subcategories', filters.includeSubcategories);
       }
@@ -32,8 +32,10 @@ class CategoryAPI {
       }
 
       const queryString = params.toString();
-      const url = queryString ? `${this.baseEndpoint}?${queryString}` : this.baseEndpoint;
-      
+      const url = queryString
+        ? `${this.baseEndpoint}?${queryString}`
+        : this.baseEndpoint;
+
       const response = await apiMethods.get(url);
       return response.data;
     } catch (error) {
@@ -53,7 +55,7 @@ class CategoryAPI {
   async getCategoryById(categoryId, options = {}) {
     try {
       const params = new URLSearchParams();
-      
+
       if (options.includeProducts) {
         params.append('include_products', 'true');
       }
@@ -62,10 +64,10 @@ class CategoryAPI {
       }
 
       const queryString = params.toString();
-      const url = queryString 
-        ? `${this.baseEndpoint}/${categoryId}?${queryString}` 
+      const url = queryString
+        ? `${this.baseEndpoint}/${categoryId}?${queryString}`
         : `${this.baseEndpoint}/${categoryId}`;
-      
+
       const response = await apiMethods.get(url);
       return response.data;
     } catch (error) {
@@ -98,7 +100,7 @@ class CategoryAPI {
   async getPopularCategories(options = {}) {
     try {
       const params = new URLSearchParams();
-      
+
       if (options.limit) {
         params.append('limit', options.limit);
       }
@@ -107,10 +109,10 @@ class CategoryAPI {
       }
 
       const queryString = params.toString();
-      const url = queryString 
-        ? `${this.baseEndpoint}/popular?${queryString}` 
+      const url = queryString
+        ? `${this.baseEndpoint}/popular?${queryString}`
         : `${this.baseEndpoint}/popular`;
-      
+
       const response = await apiMethods.get(url);
       return response.data;
     } catch (error) {
@@ -131,7 +133,7 @@ class CategoryAPI {
     try {
       const params = new URLSearchParams();
       params.append('q', query.trim());
-      
+
       if (options.limit) {
         params.append('limit', options.limit);
       }
@@ -139,7 +141,9 @@ class CategoryAPI {
         params.append('include_inactive', 'true');
       }
 
-      const response = await apiMethods.get(`${this.baseEndpoint}/search?${params.toString()}`);
+      const response = await apiMethods.get(
+        `${this.baseEndpoint}/search?${params.toString()}`
+      );
       return response.data;
     } catch (error) {
       console.error('Search categories error:', error);
@@ -157,16 +161,16 @@ class CategoryAPI {
   async getSubcategories(parentId, options = {}) {
     try {
       const params = new URLSearchParams();
-      
+
       if (options.activeOnly) {
         params.append('active_only', 'true');
       }
 
       const queryString = params.toString();
-      const url = queryString 
-        ? `${this.baseEndpoint}/${parentId}/subcategories?${queryString}` 
+      const url = queryString
+        ? `${this.baseEndpoint}/${parentId}/subcategories?${queryString}`
         : `${this.baseEndpoint}/${parentId}/subcategories`;
-      
+
       const response = await apiMethods.get(url);
       return response.data;
     } catch (error) {
@@ -210,13 +214,16 @@ class CategoryAPI {
    */
   async updateCategory(categoryId, updateData) {
     try {
-      const response = await apiMethods.put(`${this.baseEndpoint}/${categoryId}`, {
-        name: updateData.name?.trim(),
-        description: updateData.description?.trim(),
-        parentId: updateData.parentId,
-        image: updateData.image,
-        isActive: updateData.isActive,
-      });
+      const response = await apiMethods.put(
+        `${this.baseEndpoint}/${categoryId}`,
+        {
+          name: updateData.name?.trim(),
+          description: updateData.description?.trim(),
+          parentId: updateData.parentId,
+          image: updateData.image,
+          isActive: updateData.isActive,
+        }
+      );
 
       return response.data;
     } catch (error) {
@@ -235,16 +242,16 @@ class CategoryAPI {
   async deleteCategory(categoryId, options = {}) {
     try {
       const params = new URLSearchParams();
-      
+
       if (options.force) {
         params.append('force', 'true');
       }
 
       const queryString = params.toString();
-      const url = queryString 
-        ? `${this.baseEndpoint}/${categoryId}?${queryString}` 
+      const url = queryString
+        ? `${this.baseEndpoint}/${categoryId}?${queryString}`
         : `${this.baseEndpoint}/${categoryId}`;
-      
+
       const response = await apiMethods.delete(url);
       return response.data;
     } catch (error) {
@@ -260,7 +267,9 @@ class CategoryAPI {
    */
   async getCategoryStats(categoryId) {
     try {
-      const response = await apiMethods.get(`${this.baseEndpoint}/${categoryId}/stats`);
+      const response = await apiMethods.get(
+        `${this.baseEndpoint}/${categoryId}/stats`
+      );
       return response.data;
     } catch (error) {
       console.error('Get category stats error:', error);
@@ -275,12 +284,13 @@ class CategoryAPI {
    */
   handleError(error) {
     const defaultMessage = 'An error occurred while processing categories.';
-    
+
     if (error.type) {
       switch (error.type) {
         case 'NETWORK_ERROR':
           return {
-            message: 'Unable to connect to the server. Please check your internet connection.',
+            message:
+              'Unable to connect to the server. Please check your internet connection.',
             type: 'network',
             retryable: true,
           };

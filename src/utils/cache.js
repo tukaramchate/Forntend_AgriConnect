@@ -1,9 +1,10 @@
 // Advanced caching utilities for performance optimization
-import { useMemo, useCallback } from 'react';
+import { useCallback } from 'react';
 
 // In-memory cache with TTL and size limits
 class MemoryCache {
-  constructor(maxSize = 100, defaultTTL = 5 * 60 * 1000) { // 5 minutes default
+  constructor(maxSize = 100, defaultTTL = 5 * 60 * 1000) {
+    // 5 minutes default
     this.cache = new Map();
     this.timers = new Map();
     this.maxSize = maxSize;
@@ -24,7 +25,7 @@ class MemoryCache {
 
     // Set value and timer
     this.cache.set(key, value);
-    
+
     if (ttl > 0) {
       const timer = setTimeout(() => {
         this.delete(key);
@@ -74,14 +75,18 @@ export const computeCache = new MemoryCache(100, 30 * 60 * 1000); // 30 minutes 
 export const imageCache = new MemoryCache(50, 60 * 60 * 1000); // 1 hour for image metadata
 
 // Memoization decorator for functions
-export const memoize = (fn, cache = computeCache, keyFn = (...args) => JSON.stringify(args)) => {
+export const memoize = (
+  fn,
+  cache = computeCache,
+  keyFn = (...args) => JSON.stringify(args)
+) => {
   return function memoized(...args) {
     const key = keyFn(...args);
-    
+
     if (cache.has(key)) {
       return cache.get(key);
     }
-    
+
     const result = fn.apply(this, args);
     cache.set(key, result);
     return result;
@@ -100,18 +105,19 @@ export const memoizeWithOptions = (fn, options = {}) => {
   } = options;
 
   // Create dedicated cache if custom options provided
-  const memoCache = maxSize || ttl 
-    ? new MemoryCache(maxSize || 100, ttl || 5 * 60 * 1000)
-    : cache;
+  const memoCache =
+    maxSize || ttl
+      ? new MemoryCache(maxSize || 100, ttl || 5 * 60 * 1000)
+      : cache;
 
   return function memoized(...args) {
     const key = keyFn(...args);
-    
+
     if (memoCache.has(key)) {
       onCacheHit?.(key, args);
       return memoCache.get(key);
     }
-    
+
     onCacheMiss?.(key, args);
     const result = fn.apply(this, args);
     memoCache.set(key, result);
@@ -121,7 +127,8 @@ export const memoizeWithOptions = (fn, options = {}) => {
 
 // localStorage cache with expiration
 export const localStorageCache = {
-  set(key, value, ttl = 24 * 60 * 60 * 1000) { // 24 hours default
+  set(key, value, ttl = 24 * 60 * 60 * 1000) {
+    // 24 hours default
     try {
       const item = {
         value,
@@ -181,13 +188,13 @@ export const localStorageCache = {
   cleanup() {
     try {
       const keys = this.keys();
-      keys.forEach(key => {
+      keys.forEach((key) => {
         this.get(key); // This will remove expired items
       });
     } catch (error) {
       console.warn('Failed to cleanup localStorage cache:', error);
     }
-  }
+  },
 };
 
 // Session storage cache (similar to localStorage but session-scoped)
@@ -224,7 +231,7 @@ export const sessionStorageCache = {
     } catch (error) {
       console.warn('Failed to clear sessionStorage cache:', error);
     }
-  }
+  },
 };
 
 // Cache for API requests with deduplication
@@ -235,7 +242,7 @@ export const createApiCache = (baseURL = '') => {
   return {
     async get(url, options = {}) {
       const cacheKey = `${baseURL}${url}:${JSON.stringify(options)}`;
-      
+
       // Return cached response if available
       if (cache.has(cacheKey)) {
         return cache.get(cacheKey);
@@ -248,18 +255,18 @@ export const createApiCache = (baseURL = '') => {
 
       // Make new request
       const request = fetch(`${baseURL}${url}`, options)
-        .then(response => {
+        .then((response) => {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           return response.json();
         })
-        .then(data => {
+        .then((data) => {
           cache.set(cacheKey, data);
           pendingRequests.delete(cacheKey);
           return data;
         })
-        .catch(error => {
+        .catch((error) => {
           pendingRequests.delete(cacheKey);
           throw error;
         });
@@ -272,7 +279,7 @@ export const createApiCache = (baseURL = '') => {
       if (typeof pattern === 'string') {
         cache.delete(pattern);
       } else if (pattern instanceof RegExp) {
-        cache.keys().forEach(key => {
+        cache.keys().forEach((key) => {
           if (pattern.test(key)) {
             cache.delete(key);
           }
@@ -283,22 +290,23 @@ export const createApiCache = (baseURL = '') => {
     clear() {
       cache.clear();
       pendingRequests.clear();
-    }
+    },
   };
 };
 
 // React hook for cached computations
 export const useMemoizedCallback = (callback, deps = [], options = {}) => {
   const { ttl, maxSize, keyFn } = options;
-  
+
   const memoizedCallback = useCallback(() => {
     const memoized = memoizeWithOptions(callback, {
       ttl,
       maxSize,
       keyFn,
-      cache: new MemoryCache(maxSize || 10, ttl || 5 * 60 * 1000)
+      cache: new MemoryCache(maxSize || 10, ttl || 5 * 60 * 1000),
     });
     return memoized;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [callback, ttl, maxSize, keyFn, ...deps]);
 
   return memoizedCallback;
@@ -307,23 +315,23 @@ export const useMemoizedCallback = (callback, deps = [], options = {}) => {
 // Batch cache operations
 export const batchCache = {
   async setMultiple(items, cache = apiCache) {
-    const promises = items.map(({ key, value, ttl }) => 
+    const promises = items.map(({ key, value, ttl }) =>
       Promise.resolve(cache.set(key, value, ttl))
     );
     return Promise.all(promises);
   },
 
   async getMultiple(keys, cache = apiCache) {
-    return keys.map(key => ({
+    return keys.map((key) => ({
       key,
       value: cache.get(key),
-      hit: cache.has(key)
+      hit: cache.has(key),
     }));
   },
 
   async deleteMultiple(keys, cache = apiCache) {
-    return keys.map(key => cache.delete(key));
-  }
+    return keys.map((key) => cache.delete(key));
+  },
 };
 
 // Cache statistics and monitoring
@@ -333,7 +341,7 @@ export const cacheStats = {
       size: cache.size(),
       maxSize: cache.maxSize,
       keys: cache.keys(),
-      memoryUsage: this.estimateMemoryUsage(cache)
+      memoryUsage: this.estimateMemoryUsage(cache),
     };
   },
 
@@ -352,7 +360,7 @@ export const cacheStats = {
       computeCache: this.getStats(computeCache),
       imageCache: this.getStats(imageCache),
     };
-  }
+  },
 };
 
 export default {
@@ -366,5 +374,5 @@ export default {
   sessionStorageCache,
   createApiCache,
   batchCache,
-  cacheStats
+  cacheStats,
 };

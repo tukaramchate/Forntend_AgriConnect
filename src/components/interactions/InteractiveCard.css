@@ -26,13 +26,17 @@
 /* Card Variants */
 .card-default {
   background: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.06);
   border: 1px solid #e5e7eb;
 }
 
 .card-elevated {
   background: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.07),
+    0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 .card-outlined {
@@ -64,11 +68,15 @@
 }
 
 .card-default.card-interactive:hover {
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.15),
+    0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .card-elevated.card-interactive:hover {
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .card-outlined.card-interactive:hover {
@@ -363,27 +371,27 @@
     background: #1f2937;
     border-color: #374151;
   }
-  
+
   .card-outlined {
     background: #1f2937;
     border-color: #374151;
   }
-  
+
   .card-flat {
     background: #111827;
   }
-  
+
   .card-glass {
     background: rgba(31, 41, 55, 0.8);
     border-color: rgba(75, 85, 99, 0.3);
   }
-  
+
   .card-header,
   .card-footer,
   .card-actions {
     border-color: #374151;
   }
-  
+
   .interactive-card h1,
   .interactive-card h2,
   .interactive-card h3,
@@ -392,15 +400,15 @@
   .interactive-card h6 {
     color: #f9fafb;
   }
-  
+
   .interactive-card p {
     color: #d1d5db;
   }
-  
+
   .card-footer {
     color: #9ca3af;
   }
-  
+
   .loading-shimmer {
     background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
   }
@@ -411,11 +419,11 @@
   .p-md {
     padding: 1rem;
   }
-  
+
   .p-lg {
     padding: 1.5rem;
   }
-  
+
   .card-image.left,
   .card-image.right {
     width: 100%;
@@ -423,12 +431,12 @@
     margin: -1rem -1rem 1rem -1rem;
     border-radius: 0.75rem 0.75rem 0 0;
   }
-  
+
   .card-actions {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .card-actions.align-left,
   .card-actions.align-center,
   .card-actions.align-right,

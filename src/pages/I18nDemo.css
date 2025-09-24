@@ -150,15 +150,15 @@
 }
 
 /* RTL Support */
-[dir="rtl"] .i18n-demo-header {
+[dir='rtl'] .i18n-demo-header {
   direction: rtl;
 }
 
-[dir="rtl"] .product-demo {
+[dir='rtl'] .product-demo {
   direction: rtl;
 }
 
-[dir="rtl"] .product-actions {
+[dir='rtl'] .product-actions {
   direction: rtl;
 }
 
@@ -180,26 +180,26 @@
   .i18n-demo {
     padding: 1rem;
   }
-  
+
   .i18n-demo-header {
     flex-direction: column;
     gap: 1rem;
     align-items: flex-start;
   }
-  
+
   .i18n-demo-header h1 {
     font-size: 1.875rem;
   }
-  
+
   .demo-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .product-demo {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .product-actions {
     width: 100%;
     justify-content: flex-start;

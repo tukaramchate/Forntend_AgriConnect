@@ -39,7 +39,7 @@
     "@tailwindcss/typography": "^0.5.18",
     "@tanstack/react-query-devtools": "^5.90.2",
     "@testing-library/jest-dom": "^6.0.1",
-    "@testing-library/react": "^14.0.0",
+    "@testing-library/react": "^16.0.1",
     "@vitejs/plugin-legacy": "^7.2.1",
     "@vitejs/plugin-react": "^5.0.0",
     "autoprefixer": "^10.4.21",
@@ -57,5 +57,11 @@
     "vite-bundle-analyzer": "^1.2.3",
     "vite-plugin-pwa": "^1.0.3",
     "vitest": "^1.1.6"
+  },
+  "overrides": {
+    "@testing-library/react": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    }
   }
 }

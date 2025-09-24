@@ -62,7 +62,7 @@ function Products() {
       try {
         setIsLoading(true);
         setError(null);
-        
+
         // Try to fetch from API first, fallback to mock data
         try {
           const response = await productAPI.getFeaturedProducts({ limit: 8 });
@@ -123,16 +123,21 @@ function Products() {
   // Filter and sort products
   const processedProducts = React.useMemo(() => {
     // Use search results if we have a query and API results, otherwise filter featured products
-    const baseProducts = query.trim() && searchResults.length > 0 ? searchResults : featuredProducts;
-    
+    const baseProducts =
+      query.trim() && searchResults.length > 0
+        ? searchResults
+        : featuredProducts;
+
     let filtered = baseProducts;
-    
+
     // If using featured products and we have a query, apply local filtering
     if (query.trim() && searchResults.length === 0) {
-      filtered = featuredProducts.filter((p) =>
-        p.name.toLowerCase().includes(query.toLowerCase()) ||
-        p.category.toLowerCase().includes(query.toLowerCase()) ||
-        (p.description && p.description.toLowerCase().includes(query.toLowerCase()))
+      filtered = featuredProducts.filter(
+        (p) =>
+          p.name.toLowerCase().includes(query.toLowerCase()) ||
+          p.category.toLowerCase().includes(query.toLowerCase()) ||
+          (p.description &&
+            p.description.toLowerCase().includes(query.toLowerCase()))
       );
     }
 
@@ -308,11 +313,15 @@ function Products() {
               <span className='text-sm text-secondary-600'>
                 {processedProducts.length} of {featuredProducts.length} products
               </span>
-              <h3 className='text-xl font-semibold text-secondary-900'>Top Picks</h3>
+              <h3 className='text-xl font-semibold text-secondary-900'>
+                Top Picks
+              </h3>
             </div>
 
             <div className='flex items-center gap-3 w-full sm:w-auto'>
-              <label className='sr-only' htmlFor='product-search'>Search products</label>
+              <label className='sr-only' htmlFor='product-search'>
+                Search products
+              </label>
               <input
                 id='product-search'
                 value={query}
@@ -340,10 +349,22 @@ function Products() {
           {error && (
             <div className='text-center py-12'>
               <div className='bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto'>
-                <svg className='w-8 h-8 text-red-500 mx-auto mb-3' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                  <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' />
+                <svg
+                  className='w-8 h-8 text-red-500 mx-auto mb-3'
+                  fill='none'
+                  stroke='currentColor'
+                  viewBox='0 0 24 24'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth={2}
+                    d='M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+                  />
                 </svg>
-                <p className='text-red-700 font-medium mb-2'>Error Loading Products</p>
+                <p className='text-red-700 font-medium mb-2'>
+                  Error Loading Products
+                </p>
                 <p className='text-red-600 text-sm'>{error}</p>
                 <button
                   onClick={() => window.location.reload()}
@@ -358,12 +379,25 @@ function Products() {
           {/* Empty State */}
           {!error && !isLoading && processedProducts.length === 0 && query && (
             <div className='text-center py-12'>
-              <svg className='w-16 h-16 text-secondary-400 mx-auto mb-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' />
+              <svg
+                className='w-16 h-16 text-secondary-400 mx-auto mb-4'
+                fill='none'
+                stroke='currentColor'
+                viewBox='0 0 24 24'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth={2}
+                  d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
+                />
               </svg>
-              <h3 className='text-lg font-medium text-secondary-900 mb-2'>No products found</h3>
+              <h3 className='text-lg font-medium text-secondary-900 mb-2'>
+                No products found
+              </h3>
               <p className='text-secondary-600 mb-4'>
-                No products match your search for "{query}". Try different keywords.
+                No products match your search for "{query}". Try different
+                keywords.
               </p>
               <button
                 onClick={() => setQuery('')}
@@ -376,8 +410,12 @@ function Products() {
 
           {/* Products Grid */}
           {!error && (
-            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8 mb-12' role='list' aria-live='polite'>
-              {(isLoading || isSearching)
+            <div
+              className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8 mb-12'
+              role='list'
+              aria-live='polite'
+            >
+              {isLoading || isSearching
                 ? Array.from({ length: 8 }).map((_, i) => (
                     <CardSkeleton key={i} />
                   ))
@@ -498,7 +536,7 @@ function Products() {
 const MonitoredProducts = createMonitoredRoute(Products, {
   routeName: 'Products',
   seoData: seoData.products,
-  trackPageView: true
+  trackPageView: true,
 });
 
 MonitoredProducts.displayName = 'MonitoredProducts';

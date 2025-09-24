@@ -62,7 +62,9 @@
   border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 4px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   animation: fadeIn 0.15s ease-out;
 }
 
@@ -107,37 +109,37 @@
 }
 
 /* Dark mode support */
-[data-theme="dark"] .language-switcher-button {
+[data-theme='dark'] .language-switcher-button {
   background: var(--color-surface-dark);
   border-color: var(--color-border-dark);
   color: var(--color-text-dark);
 }
 
-[data-theme="dark"] .language-switcher-button:hover {
+[data-theme='dark'] .language-switcher-button:hover {
   background: var(--color-surface-hover-dark);
   border-color: var(--color-border-hover-dark);
 }
 
-[data-theme="dark"] .language-dropdown-content {
+[data-theme='dark'] .language-dropdown-content {
   background: var(--color-surface-dark);
   border-color: var(--color-border-dark);
 }
 
-[data-theme="dark"] .language-option {
+[data-theme='dark'] .language-option {
   color: var(--color-text-dark);
 }
 
-[data-theme="dark"] .language-option:hover {
+[data-theme='dark'] .language-option:hover {
   background: var(--color-surface-hover-dark);
 }
 
 /* RTL Support for Arabic/Hebrew if needed */
-[dir="rtl"] .language-switcher {
+[dir='rtl'] .language-switcher {
   right: 0;
   left: auto;
 }
 
-[dir="rtl"] .language-dropdown {
+[dir='rtl'] .language-dropdown {
   right: 0;
   left: auto;
 }
@@ -149,15 +151,15 @@
     padding: 6px 10px;
     font-size: 0.8rem;
   }
-  
+
   .language-name {
     display: none;
   }
-  
+
   .language-dropdown-content {
     min-width: 150px;
   }
-  
+
   .language-option .language-name {
     display: block;
   }

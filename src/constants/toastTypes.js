@@ -4,5 +4,5 @@ export const TOAST_TYPES = {
   ERROR: 'error',
   WARNING: 'warning',
   INFO: 'info',
-  LOADING: 'loading'
+  LOADING: 'loading',
 };

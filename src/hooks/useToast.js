@@ -9,7 +9,7 @@ export const useToast = () => {
     // Simple implementation using browser notification
     // In a real app, this would integrate with a toast provider/context
     console.log(`Toast [${type}]: ${message}`);
-    
+
     // You can replace this with actual toast implementation
     // For now, we'll use a simple alert for demonstration
     if (type === 'error') {

@@ -9,9 +9,9 @@ export { default as CustomerOnboarding } from '../../pages/onboarding/CustomerOn
 export { default as FarmerOnboarding } from '../../pages/onboarding/FarmerOnboarding';
 
 // Onboarding Context
-export { 
-  OnboardingProvider, 
-  useOnboarding, 
-  OnboardingContext, 
-  ONBOARDING_TYPES 
+export {
+  OnboardingProvider,
+  useOnboarding,
+  OnboardingContext,
+  ONBOARDING_TYPES,
 } from '../../contexts/onboarding/OnboardingContext';

@@ -1,4 +1,9 @@
-import React, { createContext, useContext, useReducer, useCallback } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  useCallback,
+} from 'react';
 
 // Onboarding action types
 const ACTIONS = {
@@ -9,7 +14,7 @@ const ACTIONS = {
   SET_ONBOARDING_TYPE: 'SET_ONBOARDING_TYPE',
   RESET_ONBOARDING: 'RESET_ONBOARDING',
   UPDATE_PROGRESS: 'UPDATE_PROGRESS',
-  SET_USER_PREFERENCES: 'SET_USER_PREFERENCES'
+  SET_USER_PREFERENCES: 'SET_USER_PREFERENCES',
 };
 
 // Onboarding types for different user roles
@@ -17,7 +22,7 @@ const ONBOARDING_TYPES = {
   CUSTOMER: 'customer',
   FARMER: 'farmer',
   ADMIN: 'admin',
-  FIRST_TIME: 'first_time'
+  FIRST_TIME: 'first_time',
 };
 
 // Initial state
@@ -30,10 +35,10 @@ const initialState = {
   userPreferences: {
     showTooltips: true,
     autoAdvance: false,
-    skipAnimations: false
+    skipAnimations: false,
   },
   progress: {},
-  lastCompletedStep: -1
+  lastCompletedStep: -1,
 };
 
 // Onboarding reducer
@@ -46,7 +51,7 @@ function onboardingReducer(state, action) {
         currentStep: 0,
         onboardingType: action.payload.type,
         totalSteps: action.payload.totalSteps || 1,
-        lastCompletedStep: -1
+        lastCompletedStep: -1,
       };
 
     case ACTIONS.COMPLETE_ONBOARDING:
@@ -54,17 +59,19 @@ function onboardingReducer(state, action) {
         ...state,
         isActive: false,
         completedOnboardings: [
-          ...state.completedOnboardings.filter(type => type !== state.onboardingType),
-          state.onboardingType
+          ...state.completedOnboardings.filter(
+            (type) => type !== state.onboardingType
+          ),
+          state.onboardingType,
         ],
         progress: {
           ...state.progress,
           [state.onboardingType]: {
             completed: true,
             completedAt: new Date().toISOString(),
-            totalSteps: state.totalSteps
-          }
-        }
+            totalSteps: state.totalSteps,
+          },
+        },
       };
 
     case ACTIONS.SKIP_ONBOARDING:
@@ -76,29 +83,32 @@ function onboardingReducer(state, action) {
           [state.onboardingType]: {
             skipped: true,
             skippedAt: new Date().toISOString(),
-            skippedAtStep: state.currentStep
-          }
-        }
+            skippedAtStep: state.currentStep,
+          },
+        },
       };
 
     case ACTIONS.SET_CURRENT_STEP:
       return {
         ...state,
         currentStep: action.payload,
-        lastCompletedStep: Math.max(state.lastCompletedStep, action.payload - 1)
+        lastCompletedStep: Math.max(
+          state.lastCompletedStep,
+          action.payload - 1
+        ),
       };
 
     case ACTIONS.SET_ONBOARDING_TYPE:
       return {
         ...state,
-        onboardingType: action.payload
+        onboardingType: action.payload,
       };
 
     case ACTIONS.RESET_ONBOARDING:
       return {
         ...initialState,
         completedOnboardings: state.completedOnboardings,
-        userPreferences: state.userPreferences
+        userPreferences: state.userPreferences,
       };
 
     case ACTIONS.UPDATE_PROGRESS:
@@ -108,9 +118,9 @@ function onboardingReducer(state, action) {
           ...state.progress,
           [action.payload.type]: {
             ...state.progress[action.payload.type],
-            ...action.payload.data
-          }
-        }
+            ...action.payload.data,
+          },
+        },
       };
 
     case ACTIONS.SET_USER_PREFERENCES:
@@ -118,8 +128,8 @@ function onboardingReducer(state, action) {
         ...state,
         userPreferences: {
           ...state.userPreferences,
-          ...action.payload
-        }
+          ...action.payload,
+        },
       };
 
     default:
@@ -138,7 +148,7 @@ export const OnboardingProvider = ({ children }) => {
   const startOnboarding = useCallback((type, totalSteps = 1) => {
     dispatch({
       type: ACTIONS.START_ONBOARDING,
-      payload: { type, totalSteps }
+      payload: { type, totalSteps },
     });
   }, []);
 
@@ -160,7 +170,10 @@ export const OnboardingProvider = ({ children }) => {
   // Go to next step
   const nextStep = useCallback(() => {
     if (state.currentStep < state.totalSteps - 1) {
-      dispatch({ type: ACTIONS.SET_CURRENT_STEP, payload: state.currentStep + 1 });
+      dispatch({
+        type: ACTIONS.SET_CURRENT_STEP,
+        payload: state.currentStep + 1,
+      });
       return true;
     }
     return false;
@@ -169,7 +182,10 @@ export const OnboardingProvider = ({ children }) => {
   // Go to previous step
   const previousStep = useCallback(() => {
     if (state.currentStep > 0) {
-      dispatch({ type: ACTIONS.SET_CURRENT_STEP, payload: state.currentStep - 1 });
+      dispatch({
+        type: ACTIONS.SET_CURRENT_STEP,
+        payload: state.currentStep - 1,
+      });
       return true;
     }
     return false;
@@ -184,7 +200,7 @@ export const OnboardingProvider = ({ children }) => {
   const updateProgress = useCallback((type, data) => {
     dispatch({
       type: ACTIONS.UPDATE_PROGRESS,
-      payload: { type, data }
+      payload: { type, data },
     });
   }, []);
 
@@ -194,24 +210,33 @@ export const OnboardingProvider = ({ children }) => {
   }, []);
 
   // Check if onboarding has been completed
-  const isOnboardingCompleted = useCallback((type) => {
-    return state.completedOnboardings.includes(type);
-  }, [state.completedOnboardings]);
+  const isOnboardingCompleted = useCallback(
+    (type) => {
+      return state.completedOnboardings.includes(type);
+    },
+    [state.completedOnboardings]
+  );
 
   // Check if onboarding should be shown
-  const shouldShowOnboarding = useCallback((type) => {
-    return !isOnboardingCompleted(type) && !state.progress[type]?.skipped;
-  }, [isOnboardingCompleted, state.progress]);
+  const shouldShowOnboarding = useCallback(
+    (type) => {
+      return !isOnboardingCompleted(type) && !state.progress[type]?.skipped;
+    },
+    [isOnboardingCompleted, state.progress]
+  );
 
   // Get onboarding progress
-  const getProgress = useCallback((type) => {
-    return state.progress[type] || null;
-  }, [state.progress]);
+  const getProgress = useCallback(
+    (type) => {
+      return state.progress[type] || null;
+    },
+    [state.progress]
+  );
 
   const value = {
     // State
     ...state,
-    
+
     // Actions
     startOnboarding,
     completeOnboarding,
@@ -222,14 +247,14 @@ export const OnboardingProvider = ({ children }) => {
     resetOnboarding,
     updateProgress,
     setUserPreferences,
-    
+
     // Helpers
     isOnboardingCompleted,
     shouldShowOnboarding,
     getProgress,
-    
+
     // Constants
-    ONBOARDING_TYPES
+    ONBOARDING_TYPES,
   };
 
   return (

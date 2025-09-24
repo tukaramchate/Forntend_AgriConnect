@@ -6,9 +6,9 @@ export { default as NotificationBell } from './NotificationBell';
 export { default as NotificationPreferences } from './NotificationPreferences';
 
 // Notification Context and Hooks
-export { 
-  NotificationProvider, 
-  useNotifications, 
+export {
+  NotificationProvider,
+  useNotifications,
   NOTIFICATION_TYPES,
-  NotificationContext 
+  NotificationContext,
 } from '../../contexts/NotificationContext';

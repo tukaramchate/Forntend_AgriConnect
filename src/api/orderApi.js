@@ -22,7 +22,7 @@ class OrderAPI {
   async createOrder(orderData) {
     try {
       const response = await apiMethods.post(this.baseEndpoint, {
-        items: orderData.items.map(item => ({
+        items: orderData.items.map((item) => ({
           productId: item.productId,
           quantity: item.quantity,
           price: item.price,
@@ -35,13 +35,15 @@ class OrderAPI {
           zipCode: orderData.shippingAddress.zipCode.trim(),
           country: orderData.shippingAddress.country.trim(),
         },
-        billingAddress: orderData.billingAddress ? {
-          street: orderData.billingAddress.street.trim(),
-          city: orderData.billingAddress.city.trim(),
-          state: orderData.billingAddress.state.trim(),
-          zipCode: orderData.billingAddress.zipCode.trim(),
-          country: orderData.billingAddress.country.trim(),
-        } : null,
+        billingAddress: orderData.billingAddress
+          ? {
+              street: orderData.billingAddress.street.trim(),
+              city: orderData.billingAddress.city.trim(),
+              state: orderData.billingAddress.state.trim(),
+              zipCode: orderData.billingAddress.zipCode.trim(),
+              country: orderData.billingAddress.country.trim(),
+            }
+          : null,
         paymentMethod: orderData.paymentMethod,
         notes: orderData.notes?.trim(),
       });
@@ -67,7 +69,7 @@ class OrderAPI {
   async getUserOrders(filters = {}) {
     try {
       const params = new URLSearchParams();
-      
+
       if (filters.status) {
         params.append('status', filters.status);
       }
@@ -88,8 +90,10 @@ class OrderAPI {
       }
 
       const queryString = params.toString();
-      const url = queryString ? `${this.baseEndpoint}?${queryString}` : this.baseEndpoint;
-      
+      const url = queryString
+        ? `${this.baseEndpoint}?${queryString}`
+        : this.baseEndpoint;
+
       const response = await apiMethods.get(url);
       return response.data;
     } catch (error) {
@@ -122,10 +126,13 @@ class OrderAPI {
    */
   async updateOrderStatus(orderId, status, notes = '') {
     try {
-      const response = await apiMethods.put(`${this.baseEndpoint}/${orderId}/status`, {
-        status,
-        notes: notes.trim(),
-      });
+      const response = await apiMethods.put(
+        `${this.baseEndpoint}/${orderId}/status`,
+        {
+          status,
+          notes: notes.trim(),
+        }
+      );
 
       return response.data;
     } catch (error) {
@@ -142,9 +149,12 @@ class OrderAPI {
    */
   async cancelOrder(orderId, reason) {
     try {
-      const response = await apiMethods.put(`${this.baseEndpoint}/${orderId}/cancel`, {
-        reason: reason.trim(),
-      });
+      const response = await apiMethods.put(
+        `${this.baseEndpoint}/${orderId}/cancel`,
+        {
+          reason: reason.trim(),
+        }
+      );
 
       return response.data;
     } catch (error) {
@@ -160,7 +170,9 @@ class OrderAPI {
    */
   async getOrderTracking(orderId) {
     try {
-      const response = await apiMethods.get(`${this.baseEndpoint}/${orderId}/tracking`);
+      const response = await apiMethods.get(
+        `${this.baseEndpoint}/${orderId}/tracking`
+      );
       return response.data;
     } catch (error) {
       console.error('Get order tracking error:', error);
@@ -179,11 +191,14 @@ class OrderAPI {
    */
   async addOrderTracking(orderId, trackingData) {
     try {
-      const response = await apiMethods.post(`${this.baseEndpoint}/${orderId}/tracking`, {
-        carrier: trackingData.carrier.trim(),
-        trackingNumber: trackingData.trackingNumber.trim(),
-        estimatedDelivery: trackingData.estimatedDelivery,
-      });
+      const response = await apiMethods.post(
+        `${this.baseEndpoint}/${orderId}/tracking`,
+        {
+          carrier: trackingData.carrier.trim(),
+          trackingNumber: trackingData.trackingNumber.trim(),
+          estimatedDelivery: trackingData.estimatedDelivery,
+        }
+      );
 
       return response.data;
     } catch (error) {
@@ -199,7 +214,9 @@ class OrderAPI {
    */
   async getOrderInvoice(orderId) {
     try {
-      const response = await apiMethods.get(`${this.baseEndpoint}/${orderId}/invoice`);
+      const response = await apiMethods.get(
+        `${this.baseEndpoint}/${orderId}/invoice`
+      );
       return response.data;
     } catch (error) {
       console.error('Get order invoice error:', error);
@@ -218,15 +235,18 @@ class OrderAPI {
    */
   async requestRefund(orderId, refundData) {
     try {
-      const response = await apiMethods.post(`${this.baseEndpoint}/${orderId}/refund`, {
-        items: refundData.items.map(item => ({
-          orderItemId: item.orderItemId,
-          quantity: item.quantity,
-          reason: item.reason?.trim(),
-        })),
-        reason: refundData.reason,
-        description: refundData.description?.trim(),
-      });
+      const response = await apiMethods.post(
+        `${this.baseEndpoint}/${orderId}/refund`,
+        {
+          items: refundData.items.map((item) => ({
+            orderItemId: item.orderItemId,
+            quantity: item.quantity,
+            reason: item.reason?.trim(),
+          })),
+          reason: refundData.reason,
+          description: refundData.description?.trim(),
+        }
+      );
 
       return response.data;
     } catch (error) {
@@ -246,15 +266,18 @@ class OrderAPI {
    */
   async rateOrder(orderId, ratingData) {
     try {
-      const response = await apiMethods.post(`${this.baseEndpoint}/${orderId}/rating`, {
-        overallRating: ratingData.overallRating,
-        productRatings: ratingData.productRatings.map(rating => ({
-          productId: rating.productId,
-          rating: rating.rating,
-          review: rating.review?.trim(),
-        })),
-        review: ratingData.review?.trim(),
-      });
+      const response = await apiMethods.post(
+        `${this.baseEndpoint}/${orderId}/rating`,
+        {
+          overallRating: ratingData.overallRating,
+          productRatings: ratingData.productRatings.map((rating) => ({
+            productId: rating.productId,
+            rating: rating.rating,
+            review: rating.review?.trim(),
+          })),
+          review: ratingData.review?.trim(),
+        }
+      );
 
       return response.data;
     } catch (error) {
@@ -274,7 +297,7 @@ class OrderAPI {
   async getOrderStats(filters = {}) {
     try {
       const params = new URLSearchParams();
-      
+
       if (filters.startDate) {
         params.append('start_date', filters.startDate.toISOString());
       }
@@ -286,10 +309,10 @@ class OrderAPI {
       }
 
       const queryString = params.toString();
-      const url = queryString 
-        ? `${this.baseEndpoint}/stats?${queryString}` 
+      const url = queryString
+        ? `${this.baseEndpoint}/stats?${queryString}`
         : `${this.baseEndpoint}/stats`;
-      
+
       const response = await apiMethods.get(url);
       return response.data;
     } catch (error) {
@@ -309,7 +332,7 @@ class OrderAPI {
   async getFarmerOrders(filters = {}) {
     try {
       const params = new URLSearchParams();
-      
+
       if (filters.status) {
         params.append('status', filters.status);
       }
@@ -321,10 +344,10 @@ class OrderAPI {
       }
 
       const queryString = params.toString();
-      const url = queryString 
-        ? `${this.baseEndpoint}/farmer?${queryString}` 
+      const url = queryString
+        ? `${this.baseEndpoint}/farmer?${queryString}`
         : `${this.baseEndpoint}/farmer`;
-      
+
       const response = await apiMethods.get(url);
       return response.data;
     } catch (error) {
@@ -340,12 +363,13 @@ class OrderAPI {
    */
   handleError(error) {
     const defaultMessage = 'An error occurred while processing your order.';
-    
+
     if (error.type) {
       switch (error.type) {
         case 'NETWORK_ERROR':
           return {
-            message: 'Unable to connect to the server. Please check your internet connection.',
+            message:
+              'Unable to connect to the server. Please check your internet connection.',
             type: 'network',
             retryable: true,
           };
@@ -382,7 +406,8 @@ class OrderAPI {
           };
         case 'PAYMENT_ERROR':
           return {
-            message: 'Payment processing failed. Please try again or use a different payment method.',
+            message:
+              'Payment processing failed. Please try again or use a different payment method.',
             type: 'payment',
             retryable: true,
           };

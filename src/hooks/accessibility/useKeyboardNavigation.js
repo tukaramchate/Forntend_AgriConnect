@@ -16,7 +16,11 @@ export const useKeyboardNavigation = (isActive = true) => {
       const { key, target, ctrlKey, altKey, shiftKey } = e;
 
       // Skip if typing in input fields
-      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.contentEditable === 'true') {
+      if (
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.contentEditable === 'true'
+      ) {
         return;
       }
 
@@ -26,7 +30,9 @@ export const useKeyboardNavigation = (isActive = true) => {
             e.preventDefault();
             // Go to top of page
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            const firstFocusable = container.querySelector('a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            const firstFocusable = container.querySelector(
+              'a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            );
             firstFocusable?.focus();
           }
           break;
@@ -35,7 +41,10 @@ export const useKeyboardNavigation = (isActive = true) => {
           if (ctrlKey) {
             e.preventDefault();
             // Go to bottom of page
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            window.scrollTo({
+              top: document.body.scrollHeight,
+              behavior: 'smooth',
+            });
           }
           break;
 
@@ -45,7 +54,7 @@ export const useKeyboardNavigation = (isActive = true) => {
         case 'ArrowRight': {
           // Handle arrow key navigation for custom components
           const event = new CustomEvent('keyboardNavigate', {
-            detail: { key, target, ctrlKey, altKey, shiftKey }
+            detail: { key, target, ctrlKey, altKey, shiftKey },
           });
           target.dispatchEvent(event);
           break;
@@ -54,7 +63,7 @@ export const useKeyboardNavigation = (isActive = true) => {
         case 'Escape': {
           // Close any open modals, dropdowns, etc.
           const escapeEvent = new CustomEvent('escapeKey', {
-            detail: { target }
+            detail: { target },
           });
           container.dispatchEvent(escapeEvent);
           break;
@@ -93,9 +102,9 @@ export const useAriaLive = (politeness = 'polite') => {
     region.setAttribute('aria-atomic', 'true');
     region.className = 'sr-only';
     region.textContent = message;
-    
+
     document.body.appendChild(region);
-    
+
     setTimeout(() => {
       if (document.body.contains(region)) {
         document.body.removeChild(region);

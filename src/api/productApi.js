@@ -48,7 +48,9 @@ class ProductAPI {
    */
   async getProductById(productId) {
     try {
-      const response = await apiMethods.get(`${this.baseEndpoint}/${productId}`);
+      const response = await apiMethods.get(
+        `${this.baseEndpoint}/${productId}`
+      );
       return response.data;
     } catch (error) {
       console.error(`Error fetching product ${productId}:`, error);
@@ -91,7 +93,10 @@ class ProductAPI {
       );
       return response.data;
     } catch (error) {
-      console.error(`Error fetching products for category ${categorySlug}:`, error);
+      console.error(
+        `Error fetching products for category ${categorySlug}:`,
+        error
+      );
       throw this.handleError(error);
     }
   }
@@ -205,14 +210,11 @@ class ProductAPI {
    */
   async getProductsByFarmer(farmerId, params = {}) {
     try {
-      const response = await apiMethods.get(
-        `/farmers/${farmerId}/products`,
-        {
-          page: 1,
-          limit: 20,
-          ...params,
-        }
-      );
+      const response = await apiMethods.get(`/farmers/${farmerId}/products`, {
+        page: 1,
+        limit: 20,
+        ...params,
+      });
       return response.data;
     } catch (error) {
       console.error(`Error fetching products for farmer ${farmerId}:`, error);
@@ -227,12 +229,13 @@ class ProductAPI {
    */
   handleError(error) {
     const defaultMessage = 'An error occurred while processing your request.';
-    
+
     if (error.type) {
       switch (error.type) {
         case 'NETWORK_ERROR':
           return {
-            message: 'Unable to connect to the server. Please check your internet connection.',
+            message:
+              'Unable to connect to the server. Please check your internet connection.',
             type: 'network',
             retryable: true,
           };

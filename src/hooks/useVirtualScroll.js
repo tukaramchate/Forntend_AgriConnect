@@ -27,28 +27,42 @@ export const useVirtualScroll = ({
   // Find visible range for dynamic heights
   const getVisibleRange = useMemo(() => {
     const offsets = Array.from(calculateOffsets.entries());
-    
-    const startIndex = offsets.findIndex(([, offset]) => offset + estimatedItemHeight >= scrollTop);
+
+    const startIndex = offsets.findIndex(
+      ([, offset]) => offset + estimatedItemHeight >= scrollTop
+    );
     const start = Math.max(0, startIndex - overscan);
-    
+
     let end = start;
     let currentOffset = calculateOffsets.get(start) || 0;
-    
-    while (end < items.length && currentOffset < scrollTop + containerHeight + overscan * estimatedItemHeight) {
+
+    while (
+      end < items.length &&
+      currentOffset <
+        scrollTop + containerHeight + overscan * estimatedItemHeight
+    ) {
       const height = itemHeights.get(end) || estimatedItemHeight;
       currentOffset += height;
       end++;
     }
-    
-    return { 
-      start, 
+
+    return {
+      start,
       end: Math.min(items.length - 1, end + overscan),
-      totalHeight: currentOffset
+      totalHeight: currentOffset,
     };
-  }, [scrollTop, containerHeight, calculateOffsets, itemHeights, items.length, estimatedItemHeight, overscan]);
+  }, [
+    scrollTop,
+    containerHeight,
+    calculateOffsets,
+    itemHeights,
+    items.length,
+    estimatedItemHeight,
+    overscan,
+  ]);
 
   const measureItem = (index, height) => {
-    setItemHeights(prev => new Map(prev).set(index, height));
+    setItemHeights((prev) => new Map(prev).set(index, height));
   };
 
   return {

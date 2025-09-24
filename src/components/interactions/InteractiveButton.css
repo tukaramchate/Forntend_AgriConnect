@@ -246,7 +246,8 @@
 }
 
 @keyframes errorShake {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0);
   }
   25% {
@@ -273,16 +274,16 @@
     color: #93c5fd;
     border-color: #93c5fd;
   }
-  
+
   .btn-ghost:hover {
     background: #93c5fd;
     color: #1e293b;
   }
-  
+
   .btn-link {
     color: #93c5fd;
   }
-  
+
   .btn-link:hover {
     color: #bfdbfe;
   }

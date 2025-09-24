@@ -28,8 +28,12 @@ const I18nDemo = lazy(() => import('../pages/I18nDemo'));
 const NotFound = lazy(() => import('../pages/NotFound'));
 
 // Lazy load social components
-const FarmerProfile = lazy(() => import('../components/social/profiles/FarmerProfile'));
-const CommunityFeed = lazy(() => import('../components/social/community/CommunityFeed'));
+const FarmerProfile = lazy(
+  () => import('../components/social/profiles/FarmerProfile')
+);
+const CommunityFeed = lazy(
+  () => import('../components/social/community/CommunityFeed')
+);
 
 // Lazy load subscription page
 const Subscription = lazy(() => import('../pages/Subscription'));
@@ -141,11 +145,11 @@ function AppRouter() {
             <Route path='/notifications/demo' element={<NotificationDemo />} />
             <Route path='/onboarding/demo' element={<OnboardingDemo />} />
             <Route path='/i18n/demo' element={<I18nDemo />} />
-            
+
             {/* Social Features Routes */}
             <Route path='/farmers/:farmerId' element={<FarmerProfile />} />
             <Route path='/community' element={<CommunityFeed />} />
-            
+
             {/* Subscription & Loyalty Route */}
             <Route path='/subscription' element={<Subscription />} />
 
@@ -172,7 +176,11 @@ function AppRouter() {
             <Route
               path='/dashboard'
               element={
-                isAuthenticated ? <UserDashboard /> : <Login redirectTo='/dashboard' />
+                isAuthenticated ? (
+                  <UserDashboard />
+                ) : (
+                  <Login redirectTo='/dashboard' />
+                )
               }
             />
 

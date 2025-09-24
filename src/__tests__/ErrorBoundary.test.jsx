@@ -18,11 +18,7 @@ const ThrowError = ({ shouldThrow = false }) => {
 };
 
 const renderWithRouter = (component) => {
-  return render(
-    <BrowserRouter>
-      {component}
-    </BrowserRouter>
-  );
+  return render(<BrowserRouter>{component}</BrowserRouter>);
 };
 
 describe('ErrorBoundary', () => {
@@ -42,7 +38,7 @@ describe('ErrorBoundary', () => {
         <ThrowError shouldThrow={false} />
       </ErrorBoundary>
     );
-    
+
     expect(screen.getByText('No error')).toBeInTheDocument();
   });
 
@@ -52,9 +48,11 @@ describe('ErrorBoundary', () => {
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>
     );
-    
+
     expect(screen.getByText('Oops! Something went wrong')).toBeInTheDocument();
-    expect(screen.getByText(/We encountered an unexpected error/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/We encountered an unexpected error/)
+    ).toBeInTheDocument();
   });
 
   it('shows try again button', () => {
@@ -63,7 +61,7 @@ describe('ErrorBoundary', () => {
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>
     );
-    
+
     expect(screen.getByText('Try Again')).toBeInTheDocument();
   });
 
@@ -73,7 +71,7 @@ describe('ErrorBoundary', () => {
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>
     );
-    
+
     expect(screen.getByText('Go Home')).toBeInTheDocument();
     expect(screen.getByText('Refresh Page')).toBeInTheDocument();
   });
@@ -91,10 +89,10 @@ describe('ErrorBoundary', () => {
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>
     );
-    
+
     // Should show error details toggle in dev mode
     expect(screen.getByText('Error Details (Development)')).toBeInTheDocument();
-    
+
     // Restore original env
     Object.defineProperty(import.meta, 'env', {
       value: originalEnv,
@@ -115,13 +113,13 @@ describe('ErrorBoundary', () => {
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>
     );
-    
+
     const detailsButton = screen.getByText('Error Details (Development)');
     fireEvent.click(detailsButton);
-    
+
     expect(screen.getByText('Error Message:')).toBeInTheDocument();
     expect(screen.getByText('Test error message')).toBeInTheDocument();
-    
+
     // Restore original env
     Object.defineProperty(import.meta, 'env', {
       value: originalEnv,
@@ -148,16 +146,16 @@ describe('ErrorBoundary', () => {
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>
     );
-    
+
     // Expand error details
     const detailsButton = screen.getByText('Error Details (Development)');
     fireEvent.click(detailsButton);
-    
+
     const copyButton = screen.getByText('Copy Error');
     fireEvent.click(copyButton);
-    
+
     expect(navigator.clipboard.writeText).toHaveBeenCalled();
-    
+
     // Restore original env
     Object.defineProperty(import.meta, 'env', {
       value: originalEnv,
@@ -171,13 +169,17 @@ describe('ErrorBoundary', () => {
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>
     );
-    
+
     // Check for proper heading structure
     expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
-    
+
     // Check for proper button roles
-    expect(screen.getByRole('button', { name: 'Try Again' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Try Again' })
+    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Go Home' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Refresh Page' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Refresh Page' })
+    ).toBeInTheDocument();
   });
 });

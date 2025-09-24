@@ -160,11 +160,16 @@ function Home() {
 
               <h1 className='text-4xl lg:text-6xl font-bold text-secondary-900 mb-6 leading-tight'>
                 {t('home.hero.title1', 'Fresh From')}
-                <span className='text-primary-600 block'>{t('home.hero.title2', 'Farm to Table')}</span>
+                <span className='text-primary-600 block'>
+                  {t('home.hero.title2', 'Farm to Table')}
+                </span>
               </h1>
 
               <p className='text-lg lg:text-xl text-secondary-700 mb-8 leading-relaxed max-w-2xl'>
-                {t('home.hero.subtitle', 'Connect directly with local farmers and get fresh, organic produce delivered to your doorstep. Supporting farmers, serving freshness.')}
+                {t(
+                  'home.hero.subtitle',
+                  'Connect directly with local farmers and get fresh, organic produce delivered to your doorstep. Supporting farmers, serving freshness.'
+                )}
               </p>
 
               {/* Hero Features */}
@@ -405,7 +410,7 @@ function Home() {
 const MonitoredHome = createMonitoredRoute(Home, {
   routeName: 'Home',
   seoData: seoData.home,
-  trackPageView: true
+  trackPageView: true,
 });
 
 MonitoredHome.displayName = 'MonitoredHome';

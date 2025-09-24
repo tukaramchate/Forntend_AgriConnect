@@ -4,12 +4,12 @@ import React, { useEffect, useRef } from 'react';
  * FocusTrap - Traps focus within a container for modals and dialogs
  * Essential for keyboard navigation in overlays
  */
-const FocusTrap = ({ 
-  children, 
-  isActive = true, 
+const FocusTrap = ({
+  children,
+  isActive = true,
   restoreFocus = true,
   className = '',
-  ...props 
+  ...props
 }) => {
   const containerRef = useRef(null);
   const previousActiveElement = useRef(null);
@@ -64,7 +64,7 @@ const FocusTrap = ({
     // Cleanup
     return () => {
       container.removeEventListener('keydown', handleKeyDown);
-      
+
       // Restore focus to the previously focused element
       if (restoreFocus && previousActiveElement.current) {
         previousActiveElement.current.focus();
@@ -77,11 +77,7 @@ const FocusTrap = ({
   }
 
   return (
-    <div 
-      ref={containerRef}
-      className={`focus-trap ${className}`}
-      {...props}
-    >
+    <div ref={containerRef} className={`focus-trap ${className}`} {...props}>
       {children}
     </div>
   );

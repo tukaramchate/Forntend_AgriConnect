@@ -96,9 +96,10 @@ function ProductCard({
   const [isAnimating, setIsAnimating] = useState(false);
 
   const isInWishlist = wishlistItems?.some((item) => item.id === id) || false;
-  
+
   // Fallback image for LazyImage component
-  const fallbackSrc = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop&auto=format';
+  const fallbackSrc =
+    'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop&auto=format';
 
   const handleAddToCart = useCallback(async () => {
     if (!inStock || isAddingToCart) return;
@@ -123,7 +124,15 @@ function ProductCard({
     } finally {
       setIsAddingToCart(false);
     }
-  }, [dispatch, product, inStock, isAddingToCart, showSuccess, showError, name]);
+  }, [
+    dispatch,
+    product,
+    inStock,
+    isAddingToCart,
+    showSuccess,
+    showError,
+    name,
+  ]);
 
   const handleWishlistToggle = useCallback(() => {
     if (isInWishlist) {
@@ -216,7 +225,7 @@ function ProductCard({
             errorClassName='w-full h-full bg-secondary-200 flex items-center justify-center text-secondary-400'
             fadeDuration={300}
             quality={85}
-            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+            sizes='(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw'
           />
         </Link>
 
@@ -329,7 +338,10 @@ function ProductCard({
             <span>🧑‍🌾</span>
             <span>by {typeof farmer === 'string' ? farmer : farmer.name}</span>
             {typeof farmer === 'object' && farmer.verified && (
-              <span className="text-green-600 font-medium" title="Verified Farmer">
+              <span
+                className='text-green-600 font-medium'
+                title='Verified Farmer'
+              >
                 ✓
               </span>
             )}

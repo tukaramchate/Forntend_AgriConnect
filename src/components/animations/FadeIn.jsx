@@ -4,16 +4,16 @@ import React, { useEffect, useRef, useState } from 'react';
  * FadeIn - Smooth fade-in animation component
  * Supports intersection observer for scroll-triggered animations
  */
-const FadeIn = ({ 
-  children, 
-  duration = 0.6, 
-  delay = 0, 
+const FadeIn = ({
+  children,
+  duration = 0.6,
+  delay = 0,
   direction = 'up', // 'up', 'down', 'left', 'right', 'none'
   distance = 30,
   triggerOnce = true,
   threshold = 0.1,
   className = '',
-  ...props 
+  ...props
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [hasTriggered, setHasTriggered] = useState(false);
@@ -47,7 +47,7 @@ const FadeIn = ({
   // Calculate transform based on direction
   const getTransform = (visible) => {
     if (direction === 'none') return 'translateX(0)';
-    
+
     const moveDistance = visible ? 0 : distance;
     switch (direction) {
       case 'up':
@@ -67,7 +67,7 @@ const FadeIn = ({
     opacity: isVisible ? 1 : 0,
     transform: getTransform(isVisible),
     transition: `opacity ${duration}s ease-out ${delay}s, transform ${duration}s ease-out ${delay}s`,
-    willChange: 'opacity, transform'
+    willChange: 'opacity, transform',
   };
 
   return (

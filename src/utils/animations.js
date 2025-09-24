@@ -97,7 +97,7 @@ export const easings = {
   // Special easings
   easeInBack: 'cubic-bezier(0.36, 0, 0.66, -0.56)',
   easeOutBack: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
-  easeInOutBack: 'cubic-bezier(0.68, -0.6, 0.32, 1.6)'
+  easeInOutBack: 'cubic-bezier(0.68, -0.6, 0.32, 1.6)',
 };
 
 /**
@@ -109,13 +109,18 @@ export const durations = {
   normal: 300,
   slow: 500,
   slower: 750,
-  slowest: 1000
+  slowest: 1000,
 };
 
 /**
  * Creates a smooth transition string
  */
-export const transition = (property = 'all', duration = durations.normal, easing = easings.easeOut, delay = 0) => {
+export const transition = (
+  property = 'all',
+  duration = durations.normal,
+  easing = easings.easeOut,
+  delay = 0
+) => {
   const durationMs = typeof duration === 'number' ? `${duration}ms` : duration;
   const delayMs = typeof delay === 'number' ? `${delay}ms` : delay;
   return `${property} ${durationMs} ${easing} ${delayMs}`;
@@ -140,22 +145,24 @@ export const transform3d = ({
   rotateZ = 0,
   scaleX = 1,
   scaleY = 1,
-  scaleZ = 1
+  scaleZ = 1,
 } = {}) => {
   const transforms = [];
-  
+
   if (translateX !== 0 || translateY !== 0 || translateZ !== 0) {
-    transforms.push(`translate3d(${translateX}px, ${translateY}px, ${translateZ}px)`);
+    transforms.push(
+      `translate3d(${translateX}px, ${translateY}px, ${translateZ}px)`
+    );
   }
-  
+
   if (rotateX !== 0) transforms.push(`rotateX(${rotateX}deg)`);
   if (rotateY !== 0) transforms.push(`rotateY(${rotateY}deg)`);
   if (rotateZ !== 0) transforms.push(`rotateZ(${rotateZ}deg)`);
-  
+
   if (scaleX !== 1 || scaleY !== 1 || scaleZ !== 1) {
     transforms.push(`scale3d(${scaleX}, ${scaleY}, ${scaleZ})`);
   }
-  
+
   return transforms.join(' ') || 'none';
 };
 

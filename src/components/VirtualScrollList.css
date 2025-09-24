@@ -96,24 +96,24 @@
   .virtual-scroll-loading {
     color: var(--color-text-secondary-dark, #9ca3af);
   }
-  
+
   .loading-spinner {
     border-color: var(--color-border-dark, #374151);
     border-top-color: var(--color-primary, #059669);
   }
-  
+
   .empty-state {
     color: var(--color-text-secondary-dark, #9ca3af);
   }
-  
+
   .virtual-scroll-content {
     scrollbar-color: var(--color-border-dark, #374151) transparent;
   }
-  
+
   .virtual-scroll-content::-webkit-scrollbar-thumb {
     background: var(--color-border-dark, #374151);
   }
-  
+
   .virtual-scroll-content::-webkit-scrollbar-thumb:hover {
     background: var(--color-border-hover-dark, #4b5563);
   }
@@ -124,12 +124,12 @@
   .virtual-scroll-content {
     -webkit-overflow-scrolling: touch;
   }
-  
+
   .virtual-scroll-loading {
     padding: 0.75rem;
     font-size: 0.8rem;
   }
-  
+
   .loading-spinner {
     width: 0.875rem;
     height: 0.875rem;
@@ -141,11 +141,11 @@
   .virtual-scroll-content {
     scroll-behavior: auto;
   }
-  
+
   .loading-spinner {
     animation: none;
   }
-  
+
   .virtual-scroll-list * {
     will-change: auto;
   }

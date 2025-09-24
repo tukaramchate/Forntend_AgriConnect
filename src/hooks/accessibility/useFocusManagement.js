@@ -14,7 +14,10 @@ export const useFocusManagement = () => {
 
   // Restore focus to the previously focused element
   const restoreFocus = useCallback(() => {
-    if (lastFocusedElement.current && typeof lastFocusedElement.current.focus === 'function') {
+    if (
+      lastFocusedElement.current &&
+      typeof lastFocusedElement.current.focus === 'function'
+    ) {
       lastFocusedElement.current.focus();
     }
   }, []);
@@ -53,40 +56,47 @@ export const useFocusManagement = () => {
   const getFocusableElements = useCallback((container) => {
     if (!container) return [];
 
-    return Array.from(container.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"]), [contenteditable="true"]'
-    )).filter(element => {
+    return Array.from(
+      container.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"]), [contenteditable="true"]'
+      )
+    ).filter((element) => {
       // Filter out disabled and hidden elements
-      return !element.disabled && 
-             element.offsetParent !== null && 
-             window.getComputedStyle(element).visibility !== 'hidden';
+      return (
+        !element.disabled &&
+        element.offsetParent !== null &&
+        window.getComputedStyle(element).visibility !== 'hidden'
+      );
     });
   }, []);
 
   // Move focus to next/previous focusable element
-  const moveFocus = useCallback((direction = 'next', container = document) => {
-    const focusableElements = getFocusableElements(container);
-    const currentIndex = focusableElements.indexOf(document.activeElement);
+  const moveFocus = useCallback(
+    (direction = 'next', container = document) => {
+      const focusableElements = getFocusableElements(container);
+      const currentIndex = focusableElements.indexOf(document.activeElement);
 
-    let nextIndex;
-    if (direction === 'next') {
-      nextIndex = currentIndex + 1;
-      if (nextIndex >= focusableElements.length) {
-        nextIndex = 0; // Loop to first
+      let nextIndex;
+      if (direction === 'next') {
+        nextIndex = currentIndex + 1;
+        if (nextIndex >= focusableElements.length) {
+          nextIndex = 0; // Loop to first
+        }
+      } else {
+        nextIndex = currentIndex - 1;
+        if (nextIndex < 0) {
+          nextIndex = focusableElements.length - 1; // Loop to last
+        }
       }
-    } else {
-      nextIndex = currentIndex - 1;
-      if (nextIndex < 0) {
-        nextIndex = focusableElements.length - 1; // Loop to last
-      }
-    }
 
-    if (focusableElements[nextIndex]) {
-      focusableElements[nextIndex].focus();
-      return true;
-    }
-    return false;
-  }, [getFocusableElements]);
+      if (focusableElements[nextIndex]) {
+        focusableElements[nextIndex].focus();
+        return true;
+      }
+      return false;
+    },
+    [getFocusableElements]
+  );
 
   return {
     storeFocus,
@@ -94,7 +104,7 @@ export const useFocusManagement = () => {
     focusFirst,
     focusLast,
     getFocusableElements,
-    moveFocus
+    moveFocus,
   };
 };
 
@@ -106,7 +116,7 @@ export const useFocusVisible = () => {
     let hadKeyboardEvent = true;
 
     const keyboardThrottleTimeout = {
-      current: null
+      current: null,
     };
 
     const detectKeyboard = (e) => {

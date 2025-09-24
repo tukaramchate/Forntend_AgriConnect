@@ -9,14 +9,14 @@ export { default as HoverEffect } from './animations/HoverEffect';
 // Interactive Components
 export { default as InteractiveButton } from './interactions/InteractiveButton';
 export { default as InteractiveInput } from './interactions/InteractiveInput';
-export { 
+export {
   default as InteractiveCard,
   CardHeader,
   CardContent,
   CardFooter,
   CardActions,
   CardImage,
-  CardBadge
+  CardBadge,
 } from './interactions/InteractiveCard';
 
 // Animation Hooks
@@ -27,7 +27,7 @@ export {
   useMicroInteractions,
   useButtonInteractions,
   useFieldInteractions,
-  useCardInteractions
+  useCardInteractions,
 } from '../hooks/useMicroInteractions';
 
 // Animation Utilities

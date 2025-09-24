@@ -21,7 +21,7 @@ export const getContrastRatio = (color1, color2) => {
   const getLuminance = (color) => {
     // Convert color to RGB values
     let r, g, b;
-    
+
     if (color.startsWith('#')) {
       const hex = color.replace('#', '');
       r = parseInt(hex.substr(0, 2), 16) / 255;
@@ -38,7 +38,9 @@ export const getContrastRatio = (color1, color2) => {
 
     // Calculate relative luminance
     const toLinear = (val) => {
-      return val <= 0.03928 ? val / 12.92 : Math.pow((val + 0.055) / 1.055, 2.4);
+      return val <= 0.03928
+        ? val / 12.92
+        : Math.pow((val + 0.055) / 1.055, 2.4);
     };
 
     return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
@@ -60,12 +62,17 @@ export const getContrastRatio = (color1, color2) => {
  * @param {string} textSize - Text size ('normal' or 'large')
  * @returns {boolean} Whether contrast requirement is met
  */
-export const meetsContrastRequirement = (foreground, background, level = 'AA', textSize = 'normal') => {
+export const meetsContrastRequirement = (
+  foreground,
+  background,
+  level = 'AA',
+  textSize = 'normal'
+) => {
   const contrast = getContrastRatio(foreground, background);
-  
+
   const requirements = {
     AA: { normal: 4.5, large: 3 },
-    AAA: { normal: 7, large: 4.5 }
+    AAA: { normal: 7, large: 4.5 },
   };
 
   return contrast >= requirements[level][textSize];
@@ -78,7 +85,7 @@ export const meetsContrastRequirement = (foreground, background, level = 'AA', t
  */
 export const sanitizeAriaLabel = (text) => {
   if (!text || typeof text !== 'string') return '';
-  
+
   return text
     .replace(/[<>]/g, '') // Remove angle brackets
     .replace(/\s+/g, ' ') // Normalize whitespace
@@ -92,7 +99,7 @@ export const sanitizeAriaLabel = (text) => {
  */
 export const formatScreenReaderText = (text) => {
   if (!text || typeof text !== 'string') return '';
-  
+
   return text
     .replace(/\$(\d+(?:\.\d{2})?)/g, '$1 dollars') // Format currency
     .replace(/(\d+)%/g, '$1 percent') // Format percentages
@@ -120,7 +127,7 @@ export const createAriaDescribedBy = (baseId, descriptions = []) => {
   const ids = {};
   const describedByIds = [];
 
-  descriptions.forEach(desc => {
+  descriptions.forEach((desc) => {
     const id = `${baseId}-${desc}`;
     ids[desc] = id;
     describedByIds.push(id);
@@ -128,7 +135,7 @@ export const createAriaDescribedBy = (baseId, descriptions = []) => {
 
   return {
     ids,
-    describedBy: describedByIds.join(' ')
+    describedBy: describedByIds.join(' '),
   };
 };
 
@@ -139,12 +146,13 @@ export const createAriaDescribedBy = (baseId, descriptions = []) => {
  */
 export const isElementInViewport = (element) => {
   if (!element) return false;
-  
+
   const rect = element.getBoundingClientRect();
   return (
     rect.top >= 0 &&
     rect.left >= 0 &&
-    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.bottom <=
+      (window.innerHeight || document.documentElement.clientHeight) &&
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 };
@@ -161,7 +169,7 @@ export const scrollToElement = (element, options = {}) => {
     block = 'center',
     behavior = 'smooth',
     focus = true,
-    announce = true
+    announce = true,
   } = options;
 
   element.scrollIntoView({ behavior, block });
@@ -174,17 +182,18 @@ export const scrollToElement = (element, options = {}) => {
   }
 
   if (announce) {
-    const elementName = element.getAttribute('aria-label') || 
-                       element.textContent?.trim() || 
-                       element.tagName.toLowerCase();
-    
+    const elementName =
+      element.getAttribute('aria-label') ||
+      element.textContent?.trim() ||
+      element.tagName.toLowerCase();
+
     setTimeout(() => {
       const announcer = document.createElement('div');
       announcer.setAttribute('aria-live', 'polite');
       announcer.className = 'sr-only';
       announcer.textContent = `Scrolled to ${elementName}`;
       document.body.appendChild(announcer);
-      
+
       setTimeout(() => {
         if (document.body.contains(announcer)) {
           document.body.removeChild(announcer);

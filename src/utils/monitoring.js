@@ -7,7 +7,7 @@ let performanceData = {
   errors: [],
   resources: [],
   navigation: {},
-  custom: {}
+  custom: {},
 };
 
 // Configuration
@@ -19,7 +19,7 @@ const config = {
   samplingRate: 1.0, // 100% sampling by default
   endpoint: null, // Set this to send data to analytics service
   batchSize: 10,
-  flushInterval: 30000 // 30 seconds
+  flushInterval: 30000, // 30 seconds
 };
 
 // Web Vitals tracking
@@ -34,11 +34,11 @@ export const trackWebVitals = () => {
         value: entry.value,
         rating: getRating(entry.name, entry.value),
         timestamp: Date.now(),
-        id: entry.id
+        id: entry.id,
       };
 
       performanceData.vitals[entry.name] = metric;
-      
+
       // Send real-time vital metrics
       if (config.endpoint) {
         sendMetric('vital', metric);
@@ -53,17 +53,25 @@ export const trackWebVitals = () => {
 
   // Observe different performance entry types
   try {
-    observer.observe({ entryTypes: ['navigation', 'paint', 'largest-contentful-paint', 'first-input', 'layout-shift'] });
+    observer.observe({
+      entryTypes: [
+        'navigation',
+        'paint',
+        'largest-contentful-paint',
+        'first-input',
+        'layout-shift',
+      ],
+    });
   } catch (error) {
     console.warn('Performance Observer not supported:', error);
   }
 
   // CLS tracking
   trackCLS();
-  
+
   // FID tracking
   trackFID();
-  
+
   // LCP tracking
   trackLCP();
 };
@@ -81,7 +89,7 @@ const trackCLS = () => {
           name: 'CLS',
           value: clsValue,
           rating: getRating('CLS', clsValue),
-          timestamp: Date.now()
+          timestamp: Date.now(),
         };
       }
     }
@@ -105,7 +113,7 @@ const trackFID = () => {
         name: 'FID',
         value: fid,
         rating: getRating('FID', fid),
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
     }
   });
@@ -124,13 +132,13 @@ const trackLCP = () => {
   const observer = new PerformanceObserver((list) => {
     const entries = list.getEntries();
     const lastEntry = entries[entries.length - 1];
-    
+
     performanceData.vitals.LCP = {
       name: 'LCP',
       value: lastEntry.startTime,
       rating: getRating('LCP', lastEntry.startTime),
       timestamp: Date.now(),
-      element: lastEntry.element?.tagName || 'unknown'
+      element: lastEntry.element?.tagName || 'unknown',
     };
   });
 
@@ -153,17 +161,18 @@ export const trackResourceTiming = () => {
         duration: entry.duration,
         size: entry.transferSize || 0,
         cached: entry.transferSize === 0 && entry.decodedBodySize > 0,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       performanceData.resources.push(resource);
 
       // Track slow resources
-      if (entry.duration > 1000) { // Slower than 1 second
+      if (entry.duration > 1000) {
+        // Slower than 1 second
         trackCustomMetric('slow-resource', {
           url: entry.name,
           duration: entry.duration,
-          type: entry.initiatorType
+          type: entry.initiatorType,
         });
       }
     }
@@ -187,7 +196,7 @@ export const trackError = (error, context = {}) => {
     url: window.location.href,
     userAgent: navigator.userAgent,
     context,
-    type: error.name || 'Error'
+    type: error.name || 'Error',
   };
 
   performanceData.errors.push(errorData);
@@ -211,7 +220,7 @@ export const trackCustomMetric = (name, value, context = {}) => {
     name,
     value,
     context,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
 
   if (!performanceData.custom[name]) {
@@ -233,14 +242,18 @@ export const markStart = (name) => {
 };
 
 export const markEnd = (name) => {
-  if ('performance' in window && 'mark' in performance && 'measure' in performance) {
+  if (
+    'performance' in window &&
+    'mark' in performance &&
+    'measure' in performance
+  ) {
     const endMark = `${name}-end`;
     performance.mark(endMark);
-    
+
     try {
       performance.measure(name, `${name}-start`, endMark);
       const measure = performance.getEntriesByName(name, 'measure')[0];
-      
+
       trackCustomMetric(`timing-${name}`, measure.duration);
       return measure.duration;
     } catch (error) {
@@ -264,14 +277,14 @@ export const getNavigationTiming = () => {
     request: timing.responseStart - timing.requestStart,
     response: timing.responseEnd - timing.responseStart,
     domProcessing: timing.domComplete - timing.domLoading,
-    
+
     // Total times
     pageLoad: timing.loadEventEnd - timing.navigationStart,
     domReady: timing.domContentLoadedEventEnd - timing.navigationStart,
-    
+
     // Navigation info
     type: navigation.type,
-    redirectCount: navigation.redirectCount
+    redirectCount: navigation.redirectCount,
   };
 };
 
@@ -282,7 +295,10 @@ export const getMemoryUsage = () => {
       used: performance.memory.usedJSHeapSize,
       total: performance.memory.totalJSHeapSize,
       limit: performance.memory.jsHeapSizeLimit,
-      usage: (performance.memory.usedJSHeapSize / performance.memory.jsHeapSizeLimit) * 100
+      usage:
+        (performance.memory.usedJSHeapSize /
+          performance.memory.jsHeapSizeLimit) *
+        100,
     };
   }
   return null;
@@ -290,8 +306,11 @@ export const getMemoryUsage = () => {
 
 // Device and connection info
 export const getDeviceInfo = () => {
-  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-  
+  const connection =
+    navigator.connection ||
+    navigator.mozConnection ||
+    navigator.webkitConnection;
+
   return {
     // Screen info
     screenWidth: screen.width,
@@ -299,18 +318,18 @@ export const getDeviceInfo = () => {
     viewportWidth: window.innerWidth,
     viewportHeight: window.innerHeight,
     pixelRatio: window.devicePixelRatio || 1,
-    
+
     // Connection info
     connectionType: connection?.effectiveType || 'unknown',
     downlink: connection?.downlink || 0,
     rtt: connection?.rtt || 0,
     saveData: connection?.saveData || false,
-    
+
     // Device info
     userAgent: navigator.userAgent,
     platform: navigator.platform,
     hardwareConcurrency: navigator.hardwareConcurrency || 1,
-    maxTouchPoints: navigator.maxTouchPoints || 0
+    maxTouchPoints: navigator.maxTouchPoints || 0,
   };
 };
 
@@ -321,7 +340,7 @@ const getRating = (metric, value) => {
     LCP: { good: 2500, poor: 4000 },
     FID: { good: 100, poor: 250 },
     CLS: { good: 0.1, poor: 0.25 },
-    TTFB: { good: 800, poor: 1800 }
+    TTFB: { good: 800, poor: 1800 },
   };
 
   const threshold = thresholds[metric];
@@ -347,8 +366,8 @@ const sendMetric = async (type, data) => {
         data,
         timestamp: Date.now(),
         sessionId: getSessionId(),
-        deviceInfo: getDeviceInfo()
-      })
+        deviceInfo: getDeviceInfo(),
+      }),
     });
   } catch (error) {
     console.warn('Failed to send metric:', error);
@@ -377,13 +396,13 @@ export const initializeMonitoring = (options = {}) => {
       trackError(event.error || new Error(event.message), {
         filename: event.filename,
         lineno: event.lineno,
-        colno: event.colno
+        colno: event.colno,
       });
     });
 
     window.addEventListener('unhandledrejection', (event) => {
       trackError(new Error(event.reason), {
-        type: 'unhandledrejection'
+        type: 'unhandledrejection',
       });
     });
   }
@@ -414,7 +433,7 @@ export const flushMetrics = async () => {
     deviceInfo: getDeviceInfo(),
     memory: getMemoryUsage(),
     sessionId: getSessionId(),
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
 
   try {
@@ -423,7 +442,7 @@ export const flushMetrics = async () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(dataToSend)
+      body: JSON.stringify(dataToSend),
     });
 
     // Clear sent data
@@ -432,7 +451,7 @@ export const flushMetrics = async () => {
       errors: [],
       resources: [],
       navigation: performanceData.navigation, // Keep navigation
-      custom: {}
+      custom: {},
     };
   } catch (error) {
     console.warn('Failed to flush metrics:', error);
@@ -444,7 +463,7 @@ export const getPerformanceData = () => ({
   ...performanceData,
   deviceInfo: getDeviceInfo(),
   memory: getMemoryUsage(),
-  sessionId: getSessionId()
+  sessionId: getSessionId(),
 });
 
 // Performance budget checker
@@ -468,14 +487,17 @@ export const checkPerformanceBudget = (budgets = {}) => {
         metric,
         actual: data.value,
         budget: activeBudgets[metric],
-        violation: data.value - activeBudgets[metric]
+        violation: data.value - activeBudgets[metric],
       });
     }
   });
 
   // Check resource counts and sizes
   const resourceCount = performanceData.resources.length;
-  const totalResourceSize = performanceData.resources.reduce((sum, r) => sum + r.size, 0);
+  const totalResourceSize = performanceData.resources.reduce(
+    (sum, r) => sum + r.size,
+    0
+  );
 
   if (resourceCount > activeBudgets.resourceCount) {
     violations.push({
@@ -483,7 +505,7 @@ export const checkPerformanceBudget = (budgets = {}) => {
       metric: 'resourceCount',
       actual: resourceCount,
       budget: activeBudgets.resourceCount,
-      violation: resourceCount - activeBudgets.resourceCount
+      violation: resourceCount - activeBudgets.resourceCount,
     });
   }
 
@@ -492,8 +514,8 @@ export const checkPerformanceBudget = (budgets = {}) => {
       type: 'resource',
       metric: 'totalResourceSize',
       actual: totalResourceSize,
-      budget: activeBudgets.totalResourceSize,  
-      violation: totalResourceSize - activeBudgets.totalResourceSize
+      budget: activeBudgets.totalResourceSize,
+      violation: totalResourceSize - activeBudgets.totalResourceSize,
     });
   }
 
@@ -503,8 +525,8 @@ export const checkPerformanceBudget = (budgets = {}) => {
     summary: {
       vitals: performanceData.vitals,
       resourceCount,
-      totalResourceSize
-    }
+      totalResourceSize,
+    },
   };
 };
 
@@ -521,5 +543,5 @@ export default {
   getDeviceInfo,
   getPerformanceData,
   flushMetrics,
-  checkPerformanceBudget
+  checkPerformanceBudget,
 };

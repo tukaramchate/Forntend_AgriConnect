@@ -4,15 +4,15 @@ import React, { useState, useRef } from 'react';
  * ScaleAnimation - Scale animation component for buttons, cards, and interactive elements
  * Provides smooth scaling effects with customizable scale factors
  */
-const ScaleAnimation = ({ 
-  children, 
+const ScaleAnimation = ({
+  children,
   scaleOnHover = 1.05,
   scaleOnActive = 0.95,
   duration = 0.2,
   easing = 'cubic-bezier(0.34, 1.56, 0.64, 1)', // back-out
   className = '',
   disabled = false,
-  ...props 
+  ...props
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isActive, setIsActive] = useState(false);
@@ -29,7 +29,7 @@ const ScaleAnimation = ({
     transform: `scale(${getScale()})`,
     transition: `transform ${duration}s ${easing}`,
     willChange: 'transform',
-    transformOrigin: 'center center'
+    transformOrigin: 'center center',
   };
 
   const handleMouseEnter = () => {

@@ -1018,16 +1018,16 @@
   .about-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .about-sidebar {
     border-right: none;
     border-top: 1px solid #e5e7eb;
   }
-  
+
   .farmer-stats {
     gap: 1.5rem;
   }
-  
+
   .farm-stats {
     grid-template-columns: 1fr;
   }
@@ -1037,7 +1037,7 @@
   .farmer-hero {
     height: 300px;
   }
-  
+
   .farmer-hero-content {
     flex-direction: column;
     align-items: center;
@@ -1045,38 +1045,38 @@
     gap: 1.5rem;
     padding: 1.5rem;
   }
-  
+
   .farmer-name {
     font-size: 2rem;
   }
-  
+
   .farmer-stats {
     gap: 1rem;
   }
-  
+
   .farmer-actions {
     flex-direction: row;
     justify-content: center;
   }
-  
+
   .nav-tabs {
     padding: 0.25rem;
     gap: 0.125rem;
   }
-  
+
   .nav-tab {
     padding: 0.5rem 0.75rem;
   }
-  
+
   .tab-icon {
     width: 16px;
     height: 16px;
   }
-  
+
   .farmer-content {
     padding: 0 1rem;
   }
-  
+
   .about-main,
   .about-sidebar,
   .products-tab,
@@ -1084,31 +1084,31 @@
   .gallery-tab {
     padding: 1.5rem;
   }
-  
+
   .products-header {
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
   }
-  
+
   .products-filters {
     flex-direction: column;
   }
-  
+
   .products-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .gallery-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .rating-overview {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
   }
-  
+
   .form-actions {
     flex-direction: column;
   }
@@ -1118,65 +1118,65 @@
   .farmer-hero-content {
     padding: 1rem;
   }
-  
+
   .farmer-avatar {
     width: 80px;
     height: 80px;
   }
-  
+
   .verification-badge {
     width: 24px;
     height: 24px;
   }
-  
+
   .verification-icon {
     width: 14px;
     height: 14px;
   }
-  
+
   .farmer-name {
     font-size: 1.75rem;
   }
-  
+
   .farmer-location {
     font-size: 1rem;
   }
-  
+
   .farmer-tagline {
     font-size: 1rem;
   }
-  
+
   .nav-tab {
     padding: 0.5rem;
     font-size: 0.875rem;
   }
-  
+
   .nav-tab span {
     display: none;
   }
-  
+
   .tab-icon {
     margin-right: 0;
   }
-  
+
   .specialties-grid {
     gap: 1rem;
   }
-  
+
   .specialty-card {
     padding: 1rem;
   }
-  
+
   .specialty-image {
     width: 60px;
     height: 60px;
   }
-  
+
   .contact-item {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .contact-modal {
     margin: 1rem;
     max-height: calc(100vh - 2rem);
@@ -1188,7 +1188,7 @@
   .farmer-profile {
     background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
   }
-  
+
   .about-tab,
   .products-tab,
   .reviews-tab,
@@ -1203,39 +1203,39 @@
     border-color: #374151;
     color: #f9fafb;
   }
-  
+
   .about-sidebar {
     background: #111827;
   }
-  
+
   .specialty-card {
     background: #111827;
     border-color: #374151;
   }
-  
+
   .certification-item {
     background: #1a3d2e;
     border-color: #047857;
   }
-  
+
   .farm-stat {
     background: #111827;
   }
-  
+
   .farmer-response {
     background: #1a3d2e;
     border-color: #047857;
   }
-  
+
   .nav-tab {
     color: #d1d5db;
   }
-  
+
   .nav-tab:hover {
     background: #374151;
     color: #f9fafb;
   }
-  
+
   .filter-select,
   .sort-select,
   .form-group input,
@@ -1244,7 +1244,7 @@
     border-color: #4b5563;
     color: #f9fafb;
   }
-  
+
   .organic-badge {
     background: #047857;
   }
@@ -1258,24 +1258,24 @@
   .modal-overlay {
     display: none !important;
   }
-  
+
   .farmer-hero {
     height: auto;
     border-radius: 0;
   }
-  
+
   .hero-overlay {
     display: none;
   }
-  
+
   .farmer-hero-content {
     color: #1f2937;
   }
-  
+
   .farmer-profile {
     background: white;
   }
-  
+
   .about-tab,
   .products-tab,
   .reviews-tab,
