@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { addToCart } from '../store/slices/cartSlice';
@@ -7,87 +7,12 @@ import {
   removeFromWishlist,
 } from '../store/slices/wishlistSlice';
 import Loader from '../components/Loader';
+import productAPI from '../api/productApi';
+import mockProducts from '../data/products';
+import ReviewSystem from '../components/social/reviews/ReviewSystem';
+import SocialShare from '../components/social/sharing/SocialShare';
 
-// Enhanced mock data for development
-const mockProduct = {
-  id: 1,
-  name: 'Fresh Organic Tomatoes',
-  price: 45,
-  originalPrice: 60,
-  image:
-    'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=600&fit=crop&auto=format',
-  gallery: [
-    'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=600&fit=crop&auto=format',
-    'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&h=600&fit=crop&auto=format',
-    'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&h=600&fit=crop&auto=format',
-    'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=600&h=600&fit=crop&auto=format',
-  ],
-  rating: 4.5,
-  reviewCount: 24,
-  description:
-    'Fresh organic tomatoes from local farms. These tomatoes are grown without any chemical pesticides and are harvested at peak ripeness for the best flavor and nutritional value. Perfect for salads, cooking, or eating fresh.',
-  features: [
-    'Organically grown without pesticides',
-    'Harvested at peak ripeness',
-    'Rich in vitamins and antioxidants',
-    'Perfect for cooking and salads',
-    'Fresh from the farm within 24 hours',
-  ],
-  category: 'vegetables',
-  stock: 50,
-  unit: 'kg',
-  isOrganic: true,
-  freshness: 'Fresh Today',
-  farmer: {
-    name: 'Rajesh Kumar',
-    farm: 'Green Valley Farm',
-    location: 'Punjab, India',
-    rating: 4.8,
-    verified: true,
-    image:
-      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&auto=format&faces=crop',
-    totalProducts: 15,
-    yearsExperience: 8,
-  },
-  reviews: [
-    {
-      id: 1,
-      customer: 'Priya Sharma',
-      rating: 5,
-      comment:
-        'Excellent quality tomatoes! Very fresh and tasty. The packaging was also great and they arrived in perfect condition.',
-      date: '2025-09-20',
-      verified: true,
-      helpful: 12,
-    },
-    {
-      id: 2,
-      customer: 'Amit Patel',
-      rating: 4,
-      comment:
-        'Good quality, reasonable price. Will order again. Delivered on time and the tomatoes were fresh.',
-      date: '2025-09-18',
-      verified: true,
-      helpful: 8,
-    },
-    {
-      id: 3,
-      customer: 'Sneha Reddy',
-      rating: 5,
-      comment:
-        'Best tomatoes I have purchased online. Great taste and perfect for cooking. Highly recommend!',
-      date: '2025-09-15',
-      verified: false,
-      helpful: 5,
-    },
-  ],
-  nutritionFacts: [
-    { name: 'Calories', value: '18 per 100g' },
-    { name: 'Vitamin C', value: '14mg' },
-    { name: 'Potassium', value: '237mg' },
-    { name: 'Fiber', value: '1.2g' },
-  ],
-};
+
 
 function ProductDetailsSkeleton() {
   return (
@@ -186,18 +111,132 @@ function ProductDetails() {
   const [activeTab, setActiveTab] = useState('description');
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [showFullDescription, setShowFullDescription] = useState(false);
+  const [showLightbox, setShowLightbox] = useState(false);
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [error, setError] = useState(null);
+  const previousActiveElementRef = useRef(null);
 
   const isInWishlist = wishlistItems.some((item) => item.id === product?.id);
   const cartItem = cartItems.find((item) => item.id === product?.id);
 
   useEffect(() => {
-    setIsLoading(true);
-    // Simulate API call
-    const timer = setTimeout(() => {
-      setProduct(mockProduct);
-      setIsLoading(false);
-    }, 1000);
-    return () => clearTimeout(timer);
+    const fetchProduct = async () => {
+      if (!id) return;
+      
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        // Try to fetch from API first, fallback to mock data
+        try {
+          const productData = await productAPI.getProductById(id);
+          setProduct(productData);
+          
+          // Fetch related products based on category
+          try {
+            const relatedData = await productAPI.getProducts({
+              category: productData.category,
+              limit: 4,
+              exclude: [id]
+            });
+            setRelatedProducts(relatedData.products || []);
+          } catch {
+            // Use other mock products as related products
+            const related = mockProducts
+              .filter(p => p.id !== parseInt(id) && p.category === productData.category)
+              .slice(0, 4);
+            setRelatedProducts(related);
+          }
+        } catch (apiError) {
+          console.warn('API not available, using mock data:', apiError);
+          // Fallback to mock data - find product by ID
+          const mockProduct = mockProducts.find(p => p.id === parseInt(id));
+          if (mockProduct) {
+            // Enhance mock product with additional details for component compatibility
+            setProduct({
+              ...mockProduct,
+              image: mockProduct.images?.[0] || mockProduct.image,
+              gallery: mockProduct.images || [mockProduct.image],
+              rating: mockProduct.rating || 0,
+              reviewCount: mockProduct.reviews || 0,
+              stock: mockProduct.stockCount || 50,
+              unit: 'kg',
+              isOrganic: mockProduct.organic || false,
+              freshness: 'Fresh Today',
+              description: mockProduct.longDescription || mockProduct.description,
+              features: [
+                mockProduct.organic ? 'Organically grown without pesticides' : 'Grown with care',
+                'Harvested at peak ripeness',
+                'Rich in vitamins and antioxidants',
+                'Perfect for cooking and salads',
+                'Fresh from the farm within 24 hours',
+              ],
+              farmer: {
+                name: typeof mockProduct.farmer === 'string' 
+                  ? mockProduct.farmer 
+                  : mockProduct.farmer?.name || 'Local Farmer',
+                farm: 'Green Valley Farm',
+                location: mockProduct.location || 'Local Farm',
+                rating: 4.8,
+                verified: true,
+                image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&auto=format&faces=crop',
+                totalProducts: 15,
+                yearsExperience: 8,
+              },
+              reviews: [
+                {
+                  id: 1,
+                  customer: 'Priya Sharma',
+                  rating: 5,
+                  comment: 'Excellent quality! Very fresh and tasty.',
+                  date: '2025-01-20',
+                  verified: true,
+                  helpful: 12,
+                },
+                {
+                  id: 2,
+                  customer: 'Amit Patel',
+                  rating: 4,
+                  comment: 'Good quality, reasonable price. Will order again.',
+                  date: '2025-01-18',
+                  verified: true,
+                  helpful: 8,
+                },
+              ],
+              nutritionFacts: mockProduct.nutritionFacts 
+                ? Object.entries(mockProduct.nutritionFacts).map(([name, value]) => ({
+                    name: name.charAt(0).toUpperCase() + name.slice(1),
+                    value: typeof value === 'number' ? `${value}${name === 'calories' ? '' : 'g'}` : value
+                  }))
+                : [
+                    { name: 'Calories', value: '18 per 100g' },
+                    { name: 'Vitamin C', value: '14mg' },
+                    { name: 'Potassium', value: '237mg' },
+                    { name: 'Fiber', value: '1.2g' },
+                  ]
+            });
+            
+            // Get related products from mock data
+            const related = mockProducts
+              .filter(p => p.id !== parseInt(id) && p.category === mockProduct.category)
+              .slice(0, 4);
+            setRelatedProducts(related);
+          } else {
+            // If product not found in mock data either, show error
+            setProduct(null);
+            setError('Product not found');
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching product:', error);
+        setProduct(null);
+        setError('Failed to load product. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProduct();
   }, [id]);
 
   const handleQuantityChange = (newQuantity) => {
@@ -233,6 +272,36 @@ function ProductDetails() {
     }
   };
 
+  const openLightbox = (index = 0) => {
+    previousActiveElementRef.current = document.activeElement;
+    setSelectedImage(index);
+    setShowLightbox(true);
+  };
+
+  const closeLightbox = () => {
+    setShowLightbox(false);
+    // restore focus to previously focused element when lightbox closes
+    const prev = previousActiveElementRef.current;
+    if (prev && typeof prev.focus === 'function') prev.focus();
+  };
+
+  useEffect(() => {
+    if (!showLightbox) return;
+
+    const handleKey = (e) => {
+      if (e.key === 'Escape') {
+        closeLightbox();
+      } else if (e.key === 'ArrowRight') {
+        setSelectedImage((s) => (s + 1) % product.gallery.length);
+      } else if (e.key === 'ArrowLeft') {
+        setSelectedImage((s) => (s - 1 + product.gallery.length) % product.gallery.length);
+      }
+    };
+
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [showLightbox, product]);
+
   if (isLoading) {
     return (
       <div className='min-h-screen bg-secondary-50'>
@@ -261,17 +330,25 @@ function ProductDetails() {
             </svg>
           </div>
           <h2 className='text-2xl font-bold text-secondary-900 mb-2'>
-            Product Not Found
+            {error || 'Product Not Found'}
           </h2>
           <p className='text-secondary-600 mb-6'>
-            We couldn't find the product you're looking for.
+            {error ? 'There was an error loading the product.' : "We couldn't find the product you're looking for."}
           </p>
-          <Link
-            to='/products'
-            className='inline-flex items-center px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors duration-200'
-          >
-            Browse Products
-          </Link>
+          <div className='flex gap-3 justify-center'>
+            <button
+              onClick={() => window.location.reload()}
+              className='inline-flex items-center px-6 py-3 bg-secondary-600 text-white rounded-lg font-medium hover:bg-secondary-700 transition-colors duration-200'
+            >
+              Try Again
+            </button>
+            <Link
+              to='/products'
+              className='inline-flex items-center px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors duration-200'
+            >
+              Browse Products
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -330,18 +407,28 @@ function ProductDetails() {
           {/* Image Gallery */}
           <div className='space-y-4'>
             <div className='aspect-square bg-white rounded-xl shadow-sm border border-secondary-200 overflow-hidden'>
-              <img
-                src={product.gallery[selectedImage]}
-                alt={product.name}
-                className='w-full h-full object-cover hover:scale-105 transition-transform duration-300'
-              />
+              <button
+                type='button'
+                onClick={() => openLightbox(selectedImage)}
+                className='w-full h-full block text-left'
+                aria-label={`Open gallery for ${product.name}`}
+              >
+                <img
+                  src={product.gallery[selectedImage]}
+                  alt={product.name}
+                  className='w-full h-full object-cover hover:scale-105 transition-transform duration-300'
+                />
+              </button>
             </div>
             <div className='grid grid-cols-4 gap-2'>
               {product.gallery.map((image, index) => (
                 <button
                   key={index}
+                  type='button'
                   onClick={() => setSelectedImage(index)}
-                  className={`aspect-square rounded-lg overflow-hidden border-2 transition-colors duration-200 ${
+                  aria-pressed={selectedImage === index}
+                  aria-label={`${product.name} view ${index + 1}`}
+                  className={`aspect-square rounded-lg overflow-hidden border-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-300 transition-colors duration-200 ${
                     selectedImage === index
                       ? 'border-primary-500'
                       : 'border-secondary-200 hover:border-secondary-300'
@@ -433,8 +520,12 @@ function ProductDetails() {
                   : `${product.description.slice(0, 150)}${product.description.length > 150 ? '...' : ''}`}
                 {product.description.length > 150 && (
                   <button
+                    type='button'
                     onClick={() => setShowFullDescription(!showFullDescription)}
                     className='text-primary-600 hover:text-primary-700 font-medium ml-2'
+                    aria-expanded={showFullDescription}
+                    aria-controls='product-full-description'
+                    title={showFullDescription ? 'Show less' : 'Read more'}
                   >
                     {showFullDescription ? 'Show Less' : 'Read More'}
                   </button>
@@ -474,10 +565,12 @@ function ProductDetails() {
               <div className='flex items-center gap-4'>
                 <div className='flex items-center border border-secondary-300 rounded-lg'>
                   <button
+                    type='button'
                     onClick={() => handleQuantityChange(quantity - 1)}
                     disabled={quantity <= 1}
                     className='p-2 hover:bg-secondary-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200'
                     aria-label='Decrease quantity'
+                    title='Decrease quantity'
                   >
                     <svg
                       className='w-5 h-5'
@@ -505,11 +598,13 @@ function ProductDetails() {
                     aria-label='Product quantity'
                   />
                   <button
+                    type='button'
                     onClick={() => handleQuantityChange(quantity + 1)}
-                    disabled={quantity >= product.stock}
-                    className='p-2 hover:bg-secondary-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200'
-                    aria-label='Increase quantity'
-                  >
+                      disabled={quantity >= product.stock}
+                      className='p-2 hover:bg-secondary-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200'
+                      aria-label='Increase quantity'
+                      title='Increase quantity'
+                    >
                     <svg
                       className='w-5 h-5'
                       fill='none'
@@ -538,6 +633,7 @@ function ProductDetails() {
             {/* Action Buttons */}
             <div className='flex gap-4'>
               <button
+                type='button'
                 onClick={handleAddToCart}
                 disabled={product.stock === 0 || isAddingToCart}
                 className={`flex-1 px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
@@ -547,6 +643,8 @@ function ProductDetails() {
                       ? 'bg-primary-500 text-white cursor-wait'
                       : 'bg-primary-600 text-white hover:bg-primary-700 transform hover:scale-105'
                 } shadow-lg`}
+                aria-busy={isAddingToCart}
+                aria-label={product.stock === 0 ? 'Out of stock' : 'Add to cart'}
               >
                 {isAddingToCart ? (
                   <div className='flex items-center justify-center gap-2'>
@@ -573,12 +671,15 @@ function ProductDetails() {
               </button>
 
               <button
+                type='button'
                 onClick={handleWishlistToggle}
                 className={`px-6 py-3 rounded-lg border-2 font-semibold transition-all duration-200 ${
                   isInWishlist
                     ? 'border-red-500 text-red-500 bg-red-50 hover:bg-red-100'
                     : 'border-secondary-300 text-secondary-700 hover:border-secondary-400 hover:bg-secondary-50'
                 }`}
+                aria-pressed={isInWishlist}
+                aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
               >
                 <svg
                   className={`w-5 h-5 ${isInWishlist ? 'fill-current' : ''}`}
@@ -594,6 +695,16 @@ function ProductDetails() {
                   />
                 </svg>
               </button>
+            </div>
+
+            {/* Social Share */}
+            <div className='mt-6'>
+              <SocialShare
+                title={product.name}
+                description={product.description}
+                url={window.location.href}
+                image={product.images?.[0]}
+              />
             </div>
 
             {/* Farmer Information */}
@@ -647,7 +758,7 @@ function ProductDetails() {
         {/* Product Details Tabs */}
         <div className='bg-white rounded-xl border border-secondary-200 overflow-hidden'>
           <div className='border-b border-secondary-200'>
-            <nav className='flex'>
+            <nav className='flex' role='tablist' aria-label='Product details tabs'>
               {[
                 { id: 'description', label: 'Description' },
                 { id: 'nutrition', label: 'Nutrition Facts' },
@@ -655,6 +766,10 @@ function ProductDetails() {
               ].map((tab) => (
                 <button
                   key={tab.id}
+                  type='button'
+                  role='tab'
+                  aria-selected={activeTab === tab.id}
+                  aria-controls={`tab-panel-${tab.id}`}
                   onClick={() => setActiveTab(tab.id)}
                   className={`px-6 py-4 font-medium transition-colors duration-200 ${
                     activeTab === tab.id
@@ -731,119 +846,124 @@ function ProductDetails() {
             )}
 
             {activeTab === 'reviews' && (
-              <div className='space-y-6'>
-                <div className='flex items-center justify-between'>
-                  <h3 className='text-lg font-semibold text-secondary-900'>
-                    Customer Reviews
-                  </h3>
-                  <div className='flex items-center gap-2'>
-                    <StarRating rating={product.rating} size='sm' />
-                    <span className='text-sm text-secondary-600'>
-                      {product.rating} out of 5 ({product.reviewCount} reviews)
-                    </span>
-                  </div>
-                </div>
-
-                <div className='space-y-4'>
-                  {product.reviews.map((review) => (
-                    <div
-                      key={review.id}
-                      className='border-b border-secondary-200 pb-4 last:border-b-0'
-                    >
-                      <div className='flex items-start justify-between mb-2'>
-                        <div>
-                          <div className='flex items-center gap-2 mb-1'>
-                            <span className='font-semibold text-secondary-900'>
-                              {review.customer}
-                            </span>
-                            {review.verified && (
-                              <span className='inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full'>
-                                Verified Purchase
-                              </span>
-                            )}
-                          </div>
-                          <StarRating
-                            rating={review.rating}
-                            size='sm'
-                            showRating={false}
-                          />
-                        </div>
-                        <time className='text-sm text-secondary-500'>
-                          {new Date(review.date).toLocaleDateString()}
-                        </time>
-                      </div>
-                      <p className='text-secondary-700 mb-2'>
-                        {review.comment}
-                      </p>
-                      <div className='flex items-center gap-4 text-sm'>
-                        <button className='text-secondary-500 hover:text-secondary-700 flex items-center gap-1'>
-                          <svg
-                            className='w-4 h-4'
-                            fill='none'
-                            stroke='currentColor'
-                            viewBox='0 0 24 24'
-                          >
-                            <path
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                              strokeWidth={2}
-                              d='M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5'
-                            />
-                          </svg>
-                          Helpful ({review.helpful})
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Write Review Form */}
-                <div className='bg-secondary-50 rounded-lg p-6'>
-                  <h4 className='text-lg font-semibold text-secondary-900 mb-4'>
-                    Write a Review
-                  </h4>
-                  <form className='space-y-4'>
-                    <div>
-                      <label className='block text-sm font-medium text-secondary-700 mb-2'>
-                        Your Rating
-                      </label>
-                      <div className='flex items-center gap-1'>
-                        {Array.from({ length: 5 }, (_, i) => (
-                          <button
-                            key={i}
-                            type='button'
-                            className='w-8 h-8 text-yellow-400 hover:text-yellow-500 transition-colors duration-200'
-                          >
-                            <svg fill='currentColor' viewBox='0 0 20 20'>
-                              <path d='M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z' />
-                            </svg>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <label className='block text-sm font-medium text-secondary-700 mb-2'>
-                        Your Review
-                      </label>
-                      <textarea
-                        rows={4}
-                        className='w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500'
-                        placeholder='Tell us what you think about this product...'
-                      ></textarea>
-                    </div>
-                    <button
-                      type='submit'
-                      className='px-6 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors duration-200'
-                    >
-                      Submit Review
-                    </button>
-                  </form>
-                </div>
-              </div>
+              <ReviewSystem
+                productId={product.id}
+                productName={product.name}
+                existingReviews={product.reviews}
+                averageRating={product.rating}
+                totalReviews={product.reviewCount}
+              />
             )}
           </div>
         </div>
       </div>
+
+      {/* Related Products Section */}
+      {relatedProducts.length > 0 && (
+        <section className='mt-16 border-t border-secondary-200 pt-16'>
+          <div className='max-w-7xl mx-auto px-4'>
+            <div className='text-center mb-8'>
+              <h2 className='text-2xl font-bold text-secondary-900 mb-2'>
+                You might also like
+              </h2>
+              <p className='text-secondary-600'>
+                Similar products from the same category
+              </p>
+            </div>
+            
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
+              {relatedProducts.map((relatedProduct) => (
+                <div key={relatedProduct.id} className='bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-200 overflow-hidden'>
+                  <Link to={`/products/${relatedProduct.id}`} className='block'>
+                    <div className='aspect-square overflow-hidden'>
+                      <img
+                        src={relatedProduct.image}
+                        alt={relatedProduct.name}
+                        className='w-full h-full object-cover hover:scale-105 transition-transform duration-200'
+                      />
+                    </div>
+                    <div className='p-4'>
+                      <h3 className='font-semibold text-secondary-900 mb-1 line-clamp-2'>
+                        {relatedProduct.name}
+                      </h3>
+                      <p className='text-sm text-secondary-600 mb-2'>
+                        by {typeof relatedProduct.farmer === 'string' ? relatedProduct.farmer : relatedProduct.farmer?.name}
+                      </p>
+                      <div className='flex items-center justify-between'>
+                        <div className='flex items-center gap-2'>
+                          <span className='text-lg font-bold text-primary-600'>
+                            ₹{relatedProduct.price}
+                          </span>
+                          {relatedProduct.originalPrice && (
+                            <span className='text-sm text-secondary-500 line-through'>
+                              ₹{relatedProduct.originalPrice}
+                            </span>
+                          )}
+                        </div>
+                        {relatedProduct.rating && (
+                          <div className='flex items-center gap-1'>
+                            <span className='text-yellow-400'>★</span>
+                            <span className='text-sm text-secondary-600'>
+                              {relatedProduct.rating}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Lightbox modal */}
+      {showLightbox && (
+        <div
+          role='dialog'
+          aria-modal='true'
+          className='fixed inset-0 z-60 bg-black bg-opacity-70 flex items-center justify-center p-4'
+        >
+          <div className='relative max-w-4xl w-full'>
+            <button
+              type='button'
+              onClick={closeLightbox}
+              className='absolute top-2 right-2 p-2 text-white bg-black bg-opacity-30 rounded'
+              aria-label='Close image preview'
+            >
+              ✕
+            </button>
+
+            <div className='bg-black rounded'>
+              <img
+                src={product.gallery[selectedImage]}
+                alt={`${product.name} view ${selectedImage + 1}`}
+                className='w-full h-[70vh] object-contain'
+              />
+            </div>
+
+            <div className='absolute inset-x-0 top-1/2 flex items-center justify-between pointer-events-none'>
+              <button
+                type='button'
+                onClick={() => setSelectedImage((s) => (s - 1 + product.gallery.length) % product.gallery.length)}
+                className='pointer-events-auto text-white p-3 bg-black bg-opacity-30 rounded-l'
+                aria-label='Previous image'
+              >
+                ‹
+              </button>
+              <button
+                type='button'
+                onClick={() => setSelectedImage((s) => (s + 1) % product.gallery.length)}
+                className='pointer-events-auto text-white p-3 bg-black bg-opacity-30 rounded-r'
+                aria-label='Next image'
+              >
+                ›
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

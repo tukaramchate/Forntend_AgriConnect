@@ -3,73 +3,11 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ProductCard from '../components/ProductCard';
 import Loader, { CardSkeleton } from '../components/Loader';
-
-// Mock data for development - TODO: Replace with API calls
-const mockProducts = [
-  {
-    id: 1,
-    name: 'Fresh Organic Tomatoes',
-    price: 45,
-    originalPrice: 60,
-    image:
-      'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop&auto=format',
-    rating: 4.5,
-    description:
-      'Fresh organic tomatoes grown without pesticides from local farms',
-    category: 'Vegetables',
-    farmer: 'Ramesh Kumar',
-    unit: 'kg',
-    inStock: true,
-    isOrganic: true,
-    freshness: 'Fresh Today',
-  },
-  {
-    id: 2,
-    name: 'Sweet Golden Corn',
-    price: 30,
-    image:
-      'https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=400&h=300&fit=crop&auto=format',
-    rating: 4.2,
-    description: 'Sweet and juicy corn perfect for grilling or boiling',
-    category: 'Vegetables',
-    farmer: 'Sunita Devi',
-    unit: 'kg',
-    inStock: true,
-    isOrganic: false,
-    freshness: 'Harvested Today',
-  },
-  {
-    id: 3,
-    name: 'Pure Farm Fresh Milk',
-    price: 60,
-    image:
-      'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&h=300&fit=crop&auto=format',
-    rating: 4.8,
-    description: 'Pure farm fresh milk from grass-fed cows',
-    category: 'Dairy',
-    farmer: 'Gopal Singh',
-    unit: 'liter',
-    inStock: true,
-    isOrganic: true,
-    freshness: 'Fresh Morning',
-  },
-  {
-    id: 4,
-    name: 'Organic Red Apples',
-    price: 120,
-    originalPrice: 150,
-    image:
-      'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=400&h=300&fit=crop&auto=format',
-    rating: 4.6,
-    description: 'Crisp organic apples from the valleys of Kashmir',
-    category: 'Fruits',
-    farmer: 'Mohammad Ali',
-    unit: 'kg',
-    inStock: true,
-    isOrganic: true,
-    freshness: 'Premium Quality',
-  },
-];
+import VirtualScrollList from '../components/VirtualScrollList';
+import { createMonitoredRoute } from '../components/PerformanceHOC';
+import { seoData } from '../utils/seo';
+import productAPI from '../api/productApi';
+import mockProducts from '../data/products';
 
 const heroFeatures = [
   { icon: '🌿', text: 'Organic & Fresh' },
@@ -109,20 +47,36 @@ const whyChooseUs = [
   },
 ];
 
-function Home() {
+function Products() {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { isAuthenticated } = useSelector((state) => state.auth || {});
+  const [query, setQuery] = useState('');
+  const [sortBy, setSortBy] = useState('relevance');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
-    // Simulate API call for featured products
     const fetchFeaturedProducts = async () => {
       try {
-        // Simulate loading time
-        await new Promise((resolve) => setTimeout(resolve, 800));
-        setFeaturedProducts(mockProducts);
+        setIsLoading(true);
+        setError(null);
+        
+        // Try to fetch from API first, fallback to mock data
+        try {
+          const response = await productAPI.getFeaturedProducts({ limit: 8 });
+          setFeaturedProducts(response.products || []);
+        } catch (apiError) {
+          console.warn('API not available, using mock data:', apiError);
+          // Fallback to mock data if API is not available
+          await new Promise((resolve) => setTimeout(resolve, 800));
+          setFeaturedProducts(mockProducts);
+        }
       } catch (error) {
         console.error('Error fetching featured products:', error);
+        setError('Failed to load products. Please try again.');
+        setFeaturedProducts([]);
       } finally {
         setIsLoading(false);
       }
@@ -130,6 +84,79 @@ function Home() {
 
     fetchFeaturedProducts();
   }, []);
+
+  // Debounced search effect
+  useEffect(() => {
+    if (!query.trim()) {
+      setSearchResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    const searchProducts = async () => {
+      try {
+        setIsSearching(true);
+        // Try API search first
+        try {
+          const response = await productAPI.searchProducts(query, {
+            limit: 20,
+            categories: [],
+            sortBy,
+          });
+          setSearchResults(response.products || []);
+        } catch {
+          console.warn('API search not available, using local search');
+          setSearchResults([]);
+        }
+      } catch (error) {
+        console.error('Search error:', error);
+        setSearchResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+
+    const timeoutId = setTimeout(searchProducts, 300);
+    return () => clearTimeout(timeoutId);
+  }, [query, sortBy]);
+
+  // Filter and sort products
+  const processedProducts = React.useMemo(() => {
+    // Use search results if we have a query and API results, otherwise filter featured products
+    const baseProducts = query.trim() && searchResults.length > 0 ? searchResults : featuredProducts;
+    
+    let filtered = baseProducts;
+    
+    // If using featured products and we have a query, apply local filtering
+    if (query.trim() && searchResults.length === 0) {
+      filtered = featuredProducts.filter((p) =>
+        p.name.toLowerCase().includes(query.toLowerCase()) ||
+        p.category.toLowerCase().includes(query.toLowerCase()) ||
+        (p.description && p.description.toLowerCase().includes(query.toLowerCase()))
+      );
+    }
+
+    // Sort products
+    switch (sortBy) {
+      case 'price-asc':
+        filtered.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-desc':
+        filtered.sort((a, b) => b.price - a.price);
+        break;
+      case 'rating':
+        filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+        break;
+      case 'name':
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      default:
+        // Keep relevance order (default)
+        break;
+    }
+
+    return filtered;
+  }, [featuredProducts, searchResults, query, sortBy]);
 
   return (
     <main className='min-h-screen' role='main'>
@@ -275,22 +302,92 @@ function Home() {
             </p>
           </div>
 
-          {/* Products Grid */}
-          <div
-            className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-12'
-            role='list'
-            aria-live='polite'
-          >
-            {isLoading
-              ? Array.from({ length: 4 }).map((_, i) => (
-                  <CardSkeleton key={i} />
-                ))
-              : featuredProducts.map((product) => (
-                  <div key={product.id} role='listitem'>
-                    <ProductCard product={product} />
-                  </div>
-                ))}
+          {/* Search / filter header */}
+          <div className='mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
+            <div className='flex items-center gap-3'>
+              <span className='text-sm text-secondary-600'>
+                {processedProducts.length} of {featuredProducts.length} products
+              </span>
+              <h3 className='text-xl font-semibold text-secondary-900'>Top Picks</h3>
+            </div>
+
+            <div className='flex items-center gap-3 w-full sm:w-auto'>
+              <label className='sr-only' htmlFor='product-search'>Search products</label>
+              <input
+                id='product-search'
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder='Search products or categories...'
+                className='w-full sm:w-64 px-4 py-2 border rounded-lg bg-white text-secondary-900 focus:outline-none focus:ring-2 focus:ring-primary-300'
+              />
+
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className='px-3 py-2 border rounded-lg bg-white text-secondary-900'
+                aria-label='Sort products'
+              >
+                <option value='relevance'>Relevance</option>
+                <option value='price-asc'>Price: Low to High</option>
+                <option value='price-desc'>Price: High to Low</option>
+                <option value='rating'>Highest Rated</option>
+                <option value='name'>Name A-Z</option>
+              </select>
+            </div>
           </div>
+
+          {/* Error State */}
+          {error && (
+            <div className='text-center py-12'>
+              <div className='bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto'>
+                <svg className='w-8 h-8 text-red-500 mx-auto mb-3' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                  <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' />
+                </svg>
+                <p className='text-red-700 font-medium mb-2'>Error Loading Products</p>
+                <p className='text-red-600 text-sm'>{error}</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className='mt-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors'
+                >
+                  Retry
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Empty State */}
+          {!error && !isLoading && processedProducts.length === 0 && query && (
+            <div className='text-center py-12'>
+              <svg className='w-16 h-16 text-secondary-400 mx-auto mb-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' />
+              </svg>
+              <h3 className='text-lg font-medium text-secondary-900 mb-2'>No products found</h3>
+              <p className='text-secondary-600 mb-4'>
+                No products match your search for "{query}". Try different keywords.
+              </p>
+              <button
+                onClick={() => setQuery('')}
+                className='px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors'
+              >
+                Clear Search
+              </button>
+            </div>
+          )}
+
+          {/* Products Grid */}
+          {!error && (
+            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8 mb-12' role='list' aria-live='polite'>
+              {(isLoading || isSearching)
+                ? Array.from({ length: 8 }).map((_, i) => (
+                    <CardSkeleton key={i} />
+                  ))
+                : processedProducts.map((product) => (
+                    <div key={product.id} role='listitem'>
+                      <ProductCard product={product} />
+                    </div>
+                  ))}
+            </div>
+          )}
 
           {/* View All CTA */}
           <div className='text-center'>
@@ -397,4 +494,12 @@ function Home() {
   );
 }
 
-export default Home;
+// Apply performance monitoring and SEO
+const MonitoredProducts = createMonitoredRoute(Products, {
+  routeName: 'Products',
+  seoData: seoData.products,
+  trackPageView: true
+});
+
+MonitoredProducts.displayName = 'MonitoredProducts';
+export default MonitoredProducts;

@@ -1,0 +1,300 @@
+/* Interactive Button Styles */
+.interactive-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: inherit;
+  font-weight: 500;
+  text-decoration: none;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.2s ease-out;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.interactive-btn:focus {
+  outline: none;
+}
+
+.interactive-btn:focus-visible {
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
+}
+
+/* Button Sizes */
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  min-height: 2rem;
+}
+
+.btn-md {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  min-height: 2.5rem;
+}
+
+.btn-lg {
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  min-height: 3rem;
+}
+
+.btn-xl {
+  padding: 1.25rem 2.5rem;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  min-height: 3.5rem;
+}
+
+/* Button Variants */
+.btn-primary {
+  background: linear-gradient(135deg, #4a90e2, #357abd);
+  color: white;
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #357abd, #2c5d9a);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+  color: white;
+  box-shadow: 0 2px 8px rgba(107, 114, 128, 0.3);
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, #4b5563, #374151);
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.4);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.btn-success:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.btn-danger:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.btn-warning {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.btn-warning:hover {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #4a90e2;
+  border: 2px solid #4a90e2;
+  box-shadow: none;
+}
+
+.btn-ghost:hover {
+  background: #4a90e2;
+  color: white;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+.btn-link {
+  background: transparent;
+  color: #4a90e2;
+  box-shadow: none;
+  text-decoration: underline;
+  text-underline-offset: 0.25rem;
+}
+
+.btn-link:hover {
+  color: #357abd;
+  text-decoration-thickness: 2px;
+}
+
+/* Button States */
+.btn-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-loading {
+  cursor: wait;
+}
+
+.btn-success-state {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  color: white !important;
+}
+
+.btn-error-state {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  color: white !important;
+}
+
+.btn-pressed {
+  transform: scale(0.98);
+}
+
+.btn-hovered {
+  transform: translateY(-1px);
+}
+
+/* Button Content */
+.btn-text {
+  display: inline-block;
+  transition: opacity 0.2s ease-out;
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  font-size: 1rem;
+  transition: transform 0.2s ease-out;
+}
+
+.btn-spinner {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Ripple Effects */
+.btn-ripples {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.btn-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%) scale(0);
+  animation: ripple 0.6s linear;
+  pointer-events: none;
+}
+
+@keyframes ripple {
+  to {
+    transform: translate(-50%, -50%) scale(4);
+    opacity: 0;
+  }
+}
+
+/* Loading Animation */
+.btn-loading .btn-text {
+  opacity: 0.7;
+}
+
+.btn-loading .btn-icon {
+  animation: spin 1s linear infinite;
+}
+
+/* Success Animation */
+.btn-success-state .btn-icon {
+  animation: successPop 0.4s ease-out;
+}
+
+@keyframes successPop {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Error Animation */
+.btn-error-state .btn-icon {
+  animation: errorShake 0.4s ease-out;
+}
+
+@keyframes errorShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .btn-lg,
+  .btn-xl {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    min-height: 2.5rem;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .btn-ghost {
+    color: #93c5fd;
+    border-color: #93c5fd;
+  }
+  
+  .btn-ghost:hover {
+    background: #93c5fd;
+    color: #1e293b;
+  }
+  
+  .btn-link {
+    color: #93c5fd;
+  }
+  
+  .btn-link:hover {
+    color: #bfdbfe;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .interactive-btn,
+  .btn-icon,
+  .btn-text,
+  .btn-ripple {
+    animation: none !important;
+    transition: none !important;
+  }
+}

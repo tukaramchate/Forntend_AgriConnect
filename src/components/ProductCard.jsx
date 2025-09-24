@@ -6,6 +6,9 @@ import {
   addToWishlist,
   removeFromWishlist,
 } from '../store/slices/wishlistSlice';
+import { useNotifications } from '../contexts/NotificationContext';
+import { NotificationService } from '../services/notifications/NotificationService';
+import LazyImage from './LazyImage';
 
 // Format currency for Indian market
 function formatINR(value) {
@@ -65,6 +68,7 @@ function ProductCard({
 }) {
   const dispatch = useDispatch();
   const { items: wishlistItems } = useSelector((state) => state.wishlist);
+  const { showSuccess, showError, showInfo } = useNotifications();
 
   const {
     id,
@@ -84,26 +88,17 @@ function ProductCard({
     freshness = 'Fresh',
   } = product;
 
-  const [imgSrc, setImgSrc] = useState(
+  const [imgSrc] = useState(
     image ||
       `https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop&auto=format`
   );
-  const [imageLoading, setImageLoading] = useState(true);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
   const isInWishlist = wishlistItems?.some((item) => item.id === id) || false;
-
-  const handleImgError = useCallback(() => {
-    setImgSrc(
-      'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop&auto=format'
-    );
-    setImageLoading(false);
-  }, []);
-
-  const handleImgLoad = useCallback(() => {
-    setImageLoading(false);
-  }, []);
+  
+  // Fallback image for LazyImage component
+  const fallbackSrc = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop&auto=format';
 
   const handleAddToCart = useCallback(async () => {
     if (!inStock || isAddingToCart) return;
@@ -114,25 +109,31 @@ function ProductCard({
     try {
       dispatch(addToCart({ ...product, quantity: 1 }));
 
+      // Show success notification
+      showSuccess(`${name} has been added to your cart`);
+
       // Visual feedback animation
       setTimeout(() => {
         setIsAnimating(false);
       }, 600);
     } catch (error) {
       console.error('Error adding to cart:', error);
+      showError('Failed to add item to cart. Please try again.');
       setIsAnimating(false);
     } finally {
       setIsAddingToCart(false);
     }
-  }, [dispatch, product, inStock, isAddingToCart]);
+  }, [dispatch, product, inStock, isAddingToCart, showSuccess, showError, name]);
 
   const handleWishlistToggle = useCallback(() => {
     if (isInWishlist) {
       dispatch(removeFromWishlist(id));
+      showInfo(`${name} has been removed from your wishlist`);
     } else {
       dispatch(addToWishlist(product));
+      showSuccess(`${name} has been added to your wishlist`);
     }
-  }, [dispatch, isInWishlist, id, product]);
+  }, [dispatch, isInWishlist, id, product, showSuccess, showInfo, name]);
 
   const discountPercentage =
     originalPrice && price
@@ -178,6 +179,7 @@ function ProductCard({
         {/* Wishlist Button */}
         <button
           onClick={handleWishlistToggle}
+          type='button'
           className={`absolute top-3 right-3 z-10 w-9 h-9 rounded-full flex items-center justify-center 
             transition-all duration-200 ${
               isInWishlist
@@ -185,6 +187,8 @@ function ProductCard({
                 : 'bg-white/80 backdrop-blur-sm text-secondary-600 hover:bg-white hover:text-red-600'
             }`}
           aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+          aria-pressed={isInWishlist}
+          title={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
         >
           <svg
             className={`w-5 h-5 transition-transform ${isInWishlist ? 'scale-110' : 'group-hover:scale-110'}`}
@@ -203,33 +207,17 @@ function ProductCard({
 
         {/* Product Image */}
         <Link to={`/products/${id}`} className='block w-full h-full'>
-          <div className='relative w-full h-full'>
-            {imageLoading && (
-              <div className='absolute inset-0 bg-secondary-200 animate-pulse flex items-center justify-center'>
-                <svg
-                  className='w-12 h-12 text-secondary-400'
-                  fill='currentColor'
-                  viewBox='0 0 20 20'
-                >
-                  <path
-                    fillRule='evenodd'
-                    d='M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z'
-                    clipRule='evenodd'
-                  />
-                </svg>
-              </div>
-            )}
-            <img
-              src={imgSrc}
-              alt={name}
-              className={`w-full h-full object-cover transition-all duration-300 group-hover:scale-105 ${
-                imageLoading ? 'opacity-0' : 'opacity-100'
-              }`}
-              onLoad={handleImgLoad}
-              onError={handleImgError}
-              loading='lazy'
-            />
-          </div>
+          <LazyImage
+            src={imgSrc}
+            fallbackSrc={fallbackSrc}
+            alt={name}
+            className='w-full h-full object-cover transition-all duration-300 group-hover:scale-105'
+            placeholderClassName='w-full h-full bg-secondary-200 flex items-center justify-center'
+            errorClassName='w-full h-full bg-secondary-200 flex items-center justify-center text-secondary-400'
+            fadeDuration={300}
+            quality={85}
+            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+          />
         </Link>
 
         {/* Quick Action Overlay (optional) */}
@@ -237,6 +225,7 @@ function ProductCard({
           <div className='absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center'>
             <div className='transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300'>
               <button
+                type='button'
                 onClick={handleAddToCart}
                 disabled={!inStock || isAddingToCart}
                 className={`px-6 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 ${
@@ -247,6 +236,8 @@ function ProductCard({
                       : 'bg-primary-600 text-white hover:bg-primary-700 active:scale-95'
                 } ${isAnimating ? 'ring-2 ring-primary-300' : ''}`}
                 aria-label={inStock ? 'Add to cart' : 'Out of stock'}
+                aria-busy={isAddingToCart}
+                title={inStock ? 'Add to cart' : 'Out of stock'}
               >
                 {isAddingToCart ? (
                   <>
@@ -336,7 +327,12 @@ function ProductCard({
         {farmer && (
           <div className='flex items-center gap-2 mb-3 text-sm text-secondary-600'>
             <span>🧑‍🌾</span>
-            <span>by {farmer}</span>
+            <span>by {typeof farmer === 'string' ? farmer : farmer.name}</span>
+            {typeof farmer === 'object' && farmer.verified && (
+              <span className="text-green-600 font-medium" title="Verified Farmer">
+                ✓
+              </span>
+            )}
           </div>
         )}
 
@@ -358,6 +354,7 @@ function ProductCard({
 
           {/* Quick Add Button (Mobile) */}
           <button
+            type='button'
             onClick={handleAddToCart}
             disabled={!inStock || isAddingToCart}
             className={`md:hidden w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 ${
@@ -368,6 +365,7 @@ function ProductCard({
                   : 'bg-primary-600 text-white hover:bg-primary-700 active:scale-95'
             }`}
             aria-label={inStock ? 'Add to cart' : 'Out of stock'}
+            aria-busy={isAddingToCart}
           >
             {isAddingToCart ? (
               <svg

@@ -1,3 +1,15 @@
+/* Import notification styles */
+@import './styles/notifications.css';
+
+/* Import onboarding styles */
+@import './styles/onboarding.css';
+
+/* Import accessibility styles */
+@import './styles/accessibility.css';
+
+/* Import animation styles */
+@import './styles/animations.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

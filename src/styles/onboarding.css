@@ -1,0 +1,264 @@
+/* Onboarding Styles */
+
+/* Modal Animations */
+@keyframes onboarding-modal-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes onboarding-backdrop-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Tooltip Animations */
+@keyframes onboarding-tooltip-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes onboarding-highlight-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+  }
+}
+
+/* Step Animations */
+@keyframes onboarding-step-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes onboarding-progress-fill {
+  from {
+    width: 0%;
+  }
+}
+
+/* Onboarding Modal Styles */
+.onboarding-modal {
+  animation: onboarding-modal-enter 0.3s ease-out;
+}
+
+.onboarding-backdrop {
+  animation: onboarding-backdrop-enter 0.3s ease-out;
+}
+
+/* Onboarding Tooltip Styles */
+.onboarding-tooltip {
+  animation: onboarding-tooltip-enter 0.3s ease-out;
+}
+
+.onboarding-highlight {
+  animation: onboarding-highlight-pulse 2s infinite;
+}
+
+/* Onboarding Step Styles */
+.onboarding-step {
+  animation: onboarding-step-slide-in 0.4s ease-out;
+}
+
+.onboarding-step.active {
+  opacity: 1;
+}
+
+.onboarding-step:not(.active) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Progress Bar Animation */
+.onboarding-progress-bar {
+  animation: onboarding-progress-fill 0.5s ease-out;
+}
+
+/* Interactive Elements */
+.onboarding-interactive {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.onboarding-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.onboarding-interactive::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border: 2px solid transparent;
+  border-radius: inherit;
+  transition: border-color 0.3s ease;
+}
+
+.onboarding-interactive.highlighted::before {
+  border-color: #3b82f6;
+  animation: onboarding-highlight-pulse 2s infinite;
+}
+
+/* Accessibility Styles */
+.onboarding-skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #000;
+  color: #fff;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 1000;
+  border-radius: 4px;
+  transition: top 0.3s;
+}
+
+.onboarding-skip-link:focus {
+  top: 6px;
+}
+
+/* Focus Management */
+.onboarding-focus-trap {
+  outline: none;
+}
+
+.onboarding-focus-trap:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .onboarding-modal .onboarding-content {
+    max-height: 70vh;
+    padding: 1rem;
+  }
+  
+  .onboarding-tooltip {
+    max-width: 280px;
+    font-size: 0.875rem;
+  }
+  
+  .onboarding-step {
+    padding: 1rem;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .onboarding-modal,
+  .onboarding-tooltip,
+  .onboarding-step,
+  .onboarding-highlight {
+    animation: none;
+  }
+  
+  .onboarding-interactive {
+    transition: none;
+  }
+  
+  .onboarding-interactive:hover {
+    transform: none;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .onboarding-modal {
+    border: 3px solid;
+  }
+  
+  .onboarding-tooltip {
+    border: 2px solid;
+  }
+  
+  .onboarding-highlight {
+    border: 3px solid #0066cc;
+  }
+}
+
+/* Theme Variables */
+.onboarding-theme-blue {
+  --onboarding-primary: #3b82f6;
+  --onboarding-primary-hover: #2563eb;
+  --onboarding-primary-light: rgba(59, 130, 246, 0.1);
+}
+
+.onboarding-theme-green {
+  --onboarding-primary: #10b981;
+  --onboarding-primary-hover: #059669;
+  --onboarding-primary-light: rgba(16, 185, 129, 0.1);
+}
+
+.onboarding-theme-purple {
+  --onboarding-primary: #8b5cf6;
+  --onboarding-primary-hover: #7c3aed;
+  --onboarding-primary-light: rgba(139, 92, 246, 0.1);
+}
+
+/* Utility Classes */
+.onboarding-fade-in {
+  opacity: 0;
+  animation: onboarding-fade-in 0.3s ease-out forwards;
+}
+
+@keyframes onboarding-fade-in {
+  to {
+    opacity: 1;
+  }
+}
+
+.onboarding-slide-up {
+  transform: translateY(20px);
+  opacity: 0;
+  animation: onboarding-slide-up 0.4s ease-out forwards;
+}
+
+@keyframes onboarding-slide-up {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.onboarding-bounce {
+  animation: onboarding-bounce 0.6s ease-out;
+}
+
+@keyframes onboarding-bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}

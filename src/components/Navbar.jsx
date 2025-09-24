@@ -1,438 +1,392 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import logo from '../assets/logo.png';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { logoutUser } from '@/store/slices/authSlice';
+import { NotificationBell } from './notifications';
 
-/**
- * Modern, accessible Navbar with enhanced UI/UX
- * Features: Search, cart/wishlist indicators, user menu, responsive design
- */
-export default function Navbar() {
-  const [searchQuery, setSearchQuery] = useState('');
+const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const location = useLocation();
   const navigate = useNavigate();
-  const menuRef = useRef(null);
-  const searchRef = useRef(null);
-  const debounceRef = useRef(null);
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const { t } = useTranslation();
 
-  // Get state from Redux store
-  const { user, isAuthenticated } = useSelector((state) => state.auth);
-  const { items: cartItems } = useSelector((state) => state.cart);
-  const { items: wishlistItems } = useSelector((state) => state.wishlist);
+  const user = useSelector((state) => state.auth.user);
+  const cartCount = useSelector((state) => state.cart.items.length);
+  const wishlistCount = useSelector((state) => state.wishlist.items.length);
 
-  const cartCount =
-    cartItems?.reduce((total, item) => total + item.quantity, 0) || 0;
-  const wishlistCount = wishlistItems?.length || 0;
+  const mobileMenuRef = useRef(null);
+  const userMenuRef = useRef(null);
 
-  // Navigation menu items
-  const menuItems = [
-    { to: '/', label: 'Home', icon: '🏠' },
-    { to: '/products', label: 'Products', icon: '🌾' },
-    { to: '/categories', label: 'Categories', icon: '📦' },
-    { to: '/about', label: 'About', icon: 'ℹ️' },
-  ];
+  // Menu items memoized
+  const menuItems = useMemo(
+    () => [
+      { to: '/', label: t('navigation.home') },
+      { to: '/products', label: t('navigation.products') },
+      { to: '/categories', label: t('navigation.categories') },
+      { to: '/about', label: t('navigation.about') },
+    ],
+    [t]
+  );
 
-  // Close mobile menu on route change
+  // Inline SVG icons (small, dependency-free)
+  const IconHeart = ({ className = 'h-6 w-6' }) => (
+    <svg
+      className={className}
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+    >
+      <path
+        strokeWidth='2'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        d='M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z'
+      />
+    </svg>
+  );
+
+  const IconCart = ({ className = 'h-6 w-6' }) => (
+    <svg
+      className={className}
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+    >
+      <path
+        strokeWidth='2'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        d='M3 3h2l.4 2M7 13h10l4-8H5.4'
+      />
+      <circle cx='9' cy='20' r='1' />
+      <circle cx='20' cy='20' r='1' />
+    </svg>
+  );
+
+  const IconUser = ({ className = 'h-6 w-6' }) => (
+    <svg
+      className={className}
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+    >
+      <path
+        strokeWidth='2'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        d='M16 11a4 4 0 10-8 0 4 4 0 008 0z'
+      />
+      <path
+        strokeWidth='2'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        d='M6 20a6 6 0 0112 0'
+      />
+    </svg>
+  );
+
+  const IconMenu = ({ className = 'h-6 w-6' }) => (
+    <svg
+      className={className}
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+    >
+      <path
+        strokeWidth='2'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        d='M4 6h16M4 12h16M4 18h16'
+      />
+    </svg>
+  );
+
+  const IconX = ({ className = 'h-6 w-6' }) => (
+    <svg
+      className={className}
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+    >
+      <path
+        strokeWidth='2'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        d='M6 18L18 6M6 6l12 12'
+      />
+    </svg>
+  );
+
+  // Close menus on outside click and Escape key
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        setIsUserMenuOpen(false);
+      }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    const handleKey = (e) => {
+      if (e.key === 'Escape') {
+        setIsUserMenuOpen(false);
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    document.addEventListener('keydown', handleKey);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener('keydown', handleKey);
+    };
+  }, []);
+
+  // Sync search query with URL
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const query = params.get('search') || '';
+    setSearchQuery(query);
+  }, [location.search]);
+
+  // Debounced search navigation
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (searchQuery.trim()) {
+        navigate(`/products?search=${encodeURIComponent(searchQuery)}`);
+      }
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [searchQuery, navigate]);
+
+  // Close menus when route changes
   useEffect(() => {
     setIsMobileMenuOpen(false);
     setIsUserMenuOpen(false);
   }, [location.pathname]);
 
-  // Handle escape key
-  useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === 'Escape') {
-        setIsMobileMenuOpen(false);
-        setIsUserMenuOpen(false);
-      }
-    };
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, []);
-
-  // Handle click outside to close menus
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setIsMobileMenuOpen(false);
-        setIsUserMenuOpen(false);
-      }
-    };
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, []);
-
-  // Debounced search
-  const handleSearchChange = (value) => {
-    setSearchQuery(value);
-    clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      if (value.trim()) {
-        navigate(`/products?search=${encodeURIComponent(value.trim())}`);
-      }
-    }, 300);
-  };
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    clearTimeout(debounceRef.current);
-    if (searchQuery.trim()) {
-      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
-    }
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-    setIsUserMenuOpen(false);
-  };
-
-  const toggleUserMenu = () => {
-    setIsUserMenuOpen(!isUserMenuOpen);
-    setIsMobileMenuOpen(false);
-  };
-
   const handleLogout = () => {
-    // TODO: Implement logout functionality
-    console.log('Logout clicked');
+    dispatch(logoutUser());
+    navigate('/');
   };
 
   return (
-    <nav className='ac-navbar' role='navigation' aria-label='Main navigation'>
-      <div className='ac-navbar__container' ref={menuRef}>
-        {/* Brand Logo */}
-        <Link to='/' className='ac-navbar__brand' aria-label='AgriConnect home'>
-          <img src={logo} alt='' className='ac-navbar__logo' />
-          <span className='ac-navbar__brand-text'>AgriConnect</span>
-        </Link>
+  <nav className='bg-white shadow-md sticky top-0 z-50' role='navigation' aria-label='Main navigation'>
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+        <div className='flex justify-between h-16 items-center'>
+          {/* Logo */}
+          <Link to='/' className='text-2xl font-bold text-blue-600'>
+            AgriConnect
+          </Link>
 
-        {/* Desktop Navigation */}
-        <div className='hidden md:flex items-center gap-8'>
-          {menuItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                `ac-navbar__link ${isActive ? 'ac-navbar__link--active' : ''}`
-              }
-              aria-current={location.pathname === item.to ? 'page' : undefined}
-            >
-              <span className='mr-2 text-lg' aria-hidden='true'>
-                {item.icon}
-              </span>
-              {item.label}
-            </NavLink>
-          ))}
-        </div>
-
-        {/* Search Bar (Desktop) */}
-        <form
-          className='ac-navbar__search hidden lg:flex'
-          role='search'
-          onSubmit={handleSearchSubmit}
-          aria-label='Search products'
-        >
-          <div className='relative w-full'>
-            <input
-              ref={searchRef}
-              className='ac-navbar__search-input'
-              type='search'
-              placeholder='Search products, seeds, tools...'
-              value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              aria-label='Search products'
-            />
-            <button
-              type='submit'
-              className='absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary-400 hover:text-primary-600 transition-colors'
-              aria-label='Search'
-            >
-              <svg
-                className='w-5 h-5'
-                fill='none'
-                stroke='currentColor'
-                viewBox='0 0 24 24'
+          {/* Desktop Menu */}
+          <div className='hidden md:flex items-center space-x-8'>
+            {menuItems.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={`${
+                  location.pathname === item.to
+                    ? 'text-blue-600'
+                    : 'text-gray-700 hover:text-blue-600'
+                }`}
+                aria-current={
+                  location.pathname === item.to ? 'page' : undefined
+                }
               >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  strokeWidth={2}
-                  d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
-                />
-              </svg>
-            </button>
+                {item.label}
+              </Link>
+            ))}
           </div>
-        </form>
 
-        {/* Action Buttons */}
-        <div className='ac-navbar__actions'>
-          {/* Wishlist */}
-          <Link
-            to='/wishlist'
-            className='ac-navbar__action group'
-            aria-label={`Wishlist (${wishlistCount} items)`}
-          >
-            <svg
-              className='w-6 h-6 group-hover:text-red-500 transition-colors'
-              fill='none'
-              stroke='currentColor'
-              viewBox='0 0 24 24'
+          {/* Search bar */}
+          <div className='hidden md:block flex-1 mx-4'>
+            <form
+              role='search'
+              onSubmit={(e) => {
+                e.preventDefault();
+                navigate(`/products?search=${encodeURIComponent(searchQuery)}`);
+              }}
             >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                strokeWidth={2}
-                d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'
+              <label htmlFor='nav-search' className='sr-only'>Search products</label>
+              <input
+                id='nav-search'
+                name='search'
+                type='search'
+                placeholder='Search products...'
+                className='w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500'
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                aria-label='Search products'
               />
-            </svg>
-            {wishlistCount > 0 && (
-              <span className='ac-navbar__badge bg-red-500'>
-                {wishlistCount}
-              </span>
-            )}
-          </Link>
+            </form>
+          </div>
 
-          {/* Cart */}
-          <Link
-            to='/cart'
-            className='ac-navbar__action group'
-            aria-label={`Shopping cart (${cartCount} items)`}
-          >
-            <svg
-              className='w-6 h-6 group-hover:text-primary-600 transition-colors'
-              fill='none'
-              stroke='currentColor'
-              viewBox='0 0 24 24'
+          {/* Right section */}
+          <div className='flex items-center space-x-2'>
+            {/* Wishlist */}
+            <Link
+              to='/wishlist'
+              className='relative p-2 text-gray-700 hover:text-blue-600'
+              aria-label='Wishlist'
             >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                strokeWidth={2}
-                d='M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01'
-              />
-            </svg>
-            {cartCount > 0 && (
-              <span className='ac-navbar__badge bg-primary-600'>
-                {cartCount}
-              </span>
-            )}
-          </Link>
+              <IconHeart className='h-6 w-6' />
+              {wishlistCount > 0 && (
+                <span className='absolute -top-1 -right-1 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center'>
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
 
-          {/* User Menu */}
-          {isAuthenticated ? (
-            <div className='relative'>
-              <button
-                onClick={toggleUserMenu}
-                className='ac-navbar__action'
-                aria-label={`User menu for ${user?.name || 'User'}`}
-                aria-expanded={isUserMenuOpen}
-                aria-haspopup='true'
-              >
-                <div className='w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white font-medium'>
-                  {user?.name?.[0]?.toUpperCase() || 'U'}
-                </div>
-              </button>
+            {/* Cart */}
+            <Link
+              to='/cart'
+              className='relative p-2 text-gray-700 hover:text-blue-600'
+              aria-label='Cart'
+            >
+              <IconCart className='h-6 w-6' />
+              {cartCount > 0 && (
+                <span className='absolute -top-1 -right-1 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center'>
+                  {cartCount}
+                </span>
+              )}
+            </Link>
 
-              {/* User Dropdown */}
-              {isUserMenuOpen && (
-                <div className='absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-secondary-200 z-50'>
-                  <div className='py-2'>
-                    <div className='px-4 py-3 border-b border-secondary-100'>
-                      <p className='text-sm font-medium text-secondary-900'>
-                        Hi, {user?.name || 'User'}
-                      </p>
-                      <p className='text-xs text-secondary-500'>
-                        {user?.email}
-                      </p>
-                    </div>
+            {/* Notifications */}
+            {user && <NotificationBell />}
 
-                    {user?.role === 'farmer' && (
-                      <Link
-                        to='/farmer-dashboard'
-                        className='block px-4 py-2 text-sm text-secondary-700 hover:bg-secondary-50 transition-colors'
-                        onClick={() => setIsUserMenuOpen(false)}
-                      >
-                        <span className='mr-3'>🌾</span>Dashboard
-                      </Link>
-                    )}
-
-                    {user?.role === 'admin' && (
-                      <Link
-                        to='/admin-dashboard'
-                        className='block px-4 py-2 text-sm text-secondary-700 hover:bg-secondary-50 transition-colors'
-                        onClick={() => setIsUserMenuOpen(false)}
-                      >
-                        <span className='mr-3'>⚙️</span>Admin Panel
-                      </Link>
-                    )}
-
-                    <Link
-                      to='/orders'
-                      className='block px-4 py-2 text-sm text-secondary-700 hover:bg-secondary-50 transition-colors'
-                      onClick={() => setIsUserMenuOpen(false)}
-                    >
-                      <span className='mr-3'>📦</span>My Orders
-                    </Link>
-
+            {/* Auth section */}
+            {!user ? (
+              <>
+                <Link
+                  to='/login'
+                  className='px-4 py-2 rounded-md border border-blue-600 text-blue-600 hover:bg-blue-50 transition'
+                >
+                  Login
+                </Link>
+                <Link
+                  to='/register'
+                  className='px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition'
+                >
+                  Register
+                </Link>
+              </>
+            ) : (
+              <div className='relative' ref={userMenuRef}>
+                <button
+                  type='button'
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className='p-2 text-gray-700 hover:text-blue-600'
+                  aria-haspopup='true'
+                  aria-expanded={isUserMenuOpen}
+                  aria-controls='user-menu'
+                  aria-label='User menu'
+                >
+                  <IconUser className='h-6 w-6' />
+                </button>
+                {isUserMenuOpen && (
+                  <div id='user-menu' className='absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg py-1 z-50' role='menu' aria-label='User menu'>
                     <Link
                       to='/profile'
-                      className='block px-4 py-2 text-sm text-secondary-700 hover:bg-secondary-50 transition-colors'
-                      onClick={() => setIsUserMenuOpen(false)}
+                      className='block px-4 py-2 text-gray-700 hover:bg-gray-100'
+                      role='menuitem'
                     >
-                      <span className='mr-3'>👤</span>Profile Settings
+                      Profile
                     </Link>
-
-                    <div className='border-t border-secondary-100 mt-2'>
-                      <button
-                        onClick={handleLogout}
-                        className='w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors'
+                    {(user.role === 'farmer' || user.role === 'admin') && (
+                      <Link
+                        to='/dashboard'
+                        className='block px-4 py-2 text-gray-700 hover:bg-gray-100'
+                        role='menuitem'
                       >
-                        <span className='mr-3'>🚪</span>Logout
-                      </button>
-                    </div>
+                        Dashboard
+                      </Link>
+                    )}
+                    <button
+                      onClick={handleLogout}
+                      type='button'
+                      className='block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100'
+                      role='menuitem'
+                    >
+                      Logout
+                    </button>
                   </div>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className='hidden sm:flex items-center gap-3'>
-              <Link to='/login' className='ac-btn ac-btn--ghost ac-btn--sm'>
-                Login
-              </Link>
-              <Link
-                to='/register'
-                className='ac-btn ac-btn--primary ac-btn--sm'
-              >
-                Register
-              </Link>
-            </div>
-          )}
+                )}
+              </div>
+            )}
 
-          {/* Mobile menu toggle */}
-          <button
-            className='ac-navbar__mobile-toggle'
-            onClick={toggleMobileMenu}
-            aria-label='Toggle mobile menu'
-            aria-expanded={isMobileMenuOpen}
-            aria-controls='mobile-navigation'
-          >
-            <svg
-              className='w-6 h-6'
-              fill='none'
-              stroke='currentColor'
-              viewBox='0 0 24 24'
+            {/* Mobile Menu Button */}
+            <button
+              type='button'
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className='md:hidden p-2 text-gray-700 hover:text-blue-600'
+              aria-label='Toggle mobile menu'
+              aria-controls='mobile-menu'
+              aria-expanded={isMobileMenuOpen}
             >
               {isMobileMenuOpen ? (
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  strokeWidth={2}
-                  d='M6 18L18 6M6 6l12 12'
-                />
+                <IconX className='h-6 w-6' />
               ) : (
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  strokeWidth={2}
-                  d='M4 6h16M4 12h16M4 18h16'
-                />
+                <IconMenu className='h-6 w-6' />
               )}
-            </svg>
-          </button>
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div
-          className='ac-navbar__mobile-menu'
-          id='mobile-navigation'
-          role='region'
-          aria-label='Mobile navigation menu'
+          ref={mobileMenuRef}
+          id='mobile-menu'
+          className='md:hidden bg-white border-t'
         >
-          {/* Mobile Search */}
-          <div className='ac-navbar__mobile-search lg:hidden'>
-            <form onSubmit={handleSearchSubmit} role='search'>
-              <div className='relative'>
-                <input
-                  type='search'
-                  placeholder='Search products...'
-                  value={searchQuery}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                  className='ac-navbar__search-input'
-                  aria-label='Search products'
-                />
-                <button
-                  type='submit'
-                  className='absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary-400 hover:text-primary-600 transition-colors'
-                  aria-label='Search'
-                >
-                  <svg
-                    className='w-5 h-5'
-                    fill='none'
-                    stroke='currentColor'
-                    viewBox='0 0 24 24'
-                  >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeWidth={2}
-                      d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
-                    />
-                  </svg>
-                </button>
-              </div>
-            </form>
-          </div>
-
-          {/* Mobile Navigation Links */}
-          <nav className='ac-navbar__mobile-nav'>
+          <div className='px-4 py-3 space-y-2'>
             {menuItems.map((item) => (
-              <NavLink
+              <Link
                 key={item.to}
                 to={item.to}
-                className='ac-navbar__mobile-link'
-                onClick={() => setIsMobileMenuOpen(false)}
+                className={`block ${
+                  location.pathname === item.to
+                    ? 'text-blue-600'
+                    : 'text-gray-700 hover:text-blue-600'
+                }`}
                 aria-current={
                   location.pathname === item.to ? 'page' : undefined
                 }
               >
-                <span className='mr-3' aria-hidden='true'>
-                  {item.icon}
-                </span>
                 {item.label}
-              </NavLink>
+              </Link>
             ))}
-
-            {!isAuthenticated && (
-              <>
-                <NavLink
-                  to='/login'
-                  className='ac-navbar__mobile-link'
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <span className='mr-3' aria-hidden='true'>
-                    🔑
-                  </span>
-                  Login
-                </NavLink>
-                <NavLink
-                  to='/register'
-                  className='ac-navbar__mobile-link'
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <span className='mr-3' aria-hidden='true'>
-                    📝
-                  </span>
-                  Register
-                </NavLink>
-              </>
-            )}
-          </nav>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                navigate(`/products?search=${encodeURIComponent(searchQuery)}`);
+                setIsMobileMenuOpen(false);
+              }}
+            >
+              <label htmlFor='mobile-search' className='sr-only'>Search products</label>
+              <input
+                id='mobile-search'
+                type='search'
+                placeholder='Search products...'
+                className='w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500'
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                aria-label='Search products'
+              />
+            </form>
+          </div>
         </div>
       )}
     </nav>
   );
-}
+};
+
+export default Navbar;

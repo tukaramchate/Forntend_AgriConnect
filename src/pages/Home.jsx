@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import ProductCard from '../components/ProductCard';
 import Loader, { CardSkeleton } from '../components/Loader';
+import { Button, Card, CardBody, Badge } from '../components/ui';
+import { createMonitoredRoute } from '../components/PerformanceHOC';
+import { seoData } from '../utils/seo';
+import '../styles/design-system.css';
 
 // Mock data for development - TODO: Replace with API calls
 const mockProducts = [
@@ -113,6 +118,7 @@ function Home() {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { isAuthenticated } = useSelector((state) => state.auth || {});
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Simulate API call for featured products
@@ -153,14 +159,12 @@ function Home() {
               </div>
 
               <h1 className='text-4xl lg:text-6xl font-bold text-secondary-900 mb-6 leading-tight'>
-                Fresh From
-                <span className='text-primary-600 block'>Farm to Table</span>
+                {t('home.hero.title1', 'Fresh From')}
+                <span className='text-primary-600 block'>{t('home.hero.title2', 'Farm to Table')}</span>
               </h1>
 
               <p className='text-lg lg:text-xl text-secondary-700 mb-8 leading-relaxed max-w-2xl'>
-                Connect directly with local farmers and get fresh, organic
-                produce delivered to your doorstep. Supporting farmers, serving
-                freshness.
+                {t('home.hero.subtitle', 'Connect directly with local farmers and get fresh, organic produce delivered to your doorstep. Supporting farmers, serving freshness.')}
               </p>
 
               {/* Hero Features */}
@@ -397,4 +401,12 @@ function Home() {
   );
 }
 
-export default Home;
+// Apply performance monitoring and SEO
+const MonitoredHome = createMonitoredRoute(Home, {
+  routeName: 'Home',
+  seoData: seoData.home,
+  trackPageView: true
+});
+
+MonitoredHome.displayName = 'MonitoredHome';
+export default MonitoredHome;
