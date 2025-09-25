@@ -1,34 +1,19 @@
-// Animation Components
-export { default as FadeIn } from './animations/FadeIn';
-export { default as SlideIn } from './animations/SlideIn';
-export { default as ScaleAnimation } from './animations/ScaleAnimation';
-export { default as LoadingSpinner } from './animations/LoadingSpinner';
-export { default as StaggeredAnimation } from './animations/StaggeredAnimation';
-export { default as HoverEffect } from './animations/HoverEffect';
+// Common Components
+export { default as Header } from './common/Header';
+export { default as Footer } from './common/Footer';
+export { default as Navbar } from './common/Navbar';
+export { default as Loader } from './common/Loader';
+export { default as HeroSection } from './common/HeroSection';
+export { default as ErrorBoundary } from './common/ErrorBoundary';
 
-// Interactive Components
-export { default as InteractiveButton } from './interactions/InteractiveButton';
-export { default as InteractiveInput } from './interactions/InteractiveInput';
-export {
-  default as InteractiveCard,
-  CardHeader,
-  CardContent,
-  CardFooter,
-  CardActions,
-  CardImage,
-  CardBadge,
-} from './interactions/InteractiveCard';
+// Layout Components
+export { default as LocalizedLayout } from './layout/LocalizedLayout';
+export { default as LanguageSwitcher } from './layout/LanguageSwitcher';
 
-// Animation Hooks
-export * from '../hooks/animations/useAnimations';
+// Optimization Components
+export { default as LazyImage } from './optimization/LazyImage';
+export { default as VirtualScrollList } from './optimization/VirtualScrollList';
+export { default as PerformanceHOC } from './optimization/PerformanceHOC';
 
-// Micro-interaction Hooks
-export {
-  useMicroInteractions,
-  useButtonInteractions,
-  useFieldInteractions,
-  useCardInteractions,
-} from '../hooks/useMicroInteractions';
-
-// Animation Utilities
-export * from '../utils/animations';
+// Product Components
+export { default as ProductCard } from './ProductCard';

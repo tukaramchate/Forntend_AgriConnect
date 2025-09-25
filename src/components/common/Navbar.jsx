@@ -3,7 +3,6 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { logoutUser } from '@/store/slices/authSlice';
-import { NotificationBell } from './notifications';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -264,8 +263,7 @@ const Navbar = () => {
               )}
             </Link>
 
-            {/* Notifications */}
-            {user && <NotificationBell />}
+            {/* Notifications removed for simplified structure */}
 
             {/* Auth section */}
             {!user ? (

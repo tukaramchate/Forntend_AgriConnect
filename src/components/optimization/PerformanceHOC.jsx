@@ -1,86 +1,205 @@
-// Higher-Order Component for performance monitoring integration
+// Simple Performance HOC - No monitoring for simplified structure// Simplified Performance HOC// Simplified Higher-Order Component for basic performance tracking// Higher-Order Component for performance monitoring integration (simplified)
+
+import React from 'react';
+
 import React, { useEffect, useRef } from 'react';
-import {
-  initializeMonitoring,
-  trackCustomMetric,
-  markStart,
-  markEnd,
-} from '../utils/monitoring';
-import { metaManager } from '../utils/seo';
 
-// HOC to add performance monitoring to components
-export const withPerformanceMonitoring = (WrappedComponent, options = {}) => {
-  const {
-    componentName = WrappedComponent.displayName ||
-      WrappedComponent.name ||
-      'Component',
-    trackRender = true,
-    trackMount = true,
-    trackUnmount = true,
-    seoData = null,
-  } = options;
+export const withPerformanceMonitoring = (WrappedComponent) => {
 
-  const MonitoredComponent = (props) => {
-    const mountTime = useRef(null);
-    const renderCount = useRef(0);
+  return WrappedComponent;import React, { useEffect, useRef } from 'react';import React, { useEffect, useRef } from 'react';
+
+};
+
+export const withPerformanceMonitoring = (WrappedComponent) => {
+
+export const createMonitoredRoute = (routeName) => {
+
+  return (Component) => Component;  const componentName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
+
+};
+
+
+
+export default withPerformanceMonitoring;
+  const MonitoredComponent = (props) => {// Simple HOC for basic performance monitoring// HOC to add performance monitoring to components
+
+    const mountTimeRef = useRef(performance.now());
+
+export const withPerformanceMonitoring = (WrappedComponent, options = {}) => {export const withPerformanceMonitoring = (WrappedComponent, options = {}) => {
 
     useEffect(() => {
-      // Initialize monitoring on first mount
-      if (!window.__AGRICONNECT_MONITORING_INITIALIZED__) {
-        initializeMonitoring({
-          enableVitals: true,
-          enableResourceTiming: true,
-          enableErrorTracking: true,
-          enableCustomMetrics: true,
-          endpoint: import.meta.env.VITE_ANALYTICS_ENDPOINT,
-        });
-        window.__AGRICONNECT_MONITORING_INITIALIZED__ = true;
-      }
 
-      if (trackMount) {
-        mountTime.current = performance.now();
-        markStart(`${componentName}-mount`);
+      console.log(`Component ${componentName} mounted`);  const componentName = WrappedComponent.displayName || WrappedComponent.name || 'Component';  const {
 
-        // Track component mount
-        trackCustomMetric(`component-mount`, componentName, {
-          timestamp: Date.now(),
-          url: window.location.pathname,
-        });
-      }
+      
 
-      // Set SEO data if provided
-      if (seoData) {
-        metaManager.setSEOData(seoData);
-      }
+      return () => {    componentName = WrappedComponent.displayName ||
 
-      return () => {
-        if (trackUnmount) {
-          const unmountTime = performance.now();
-          const mountDuration = mountTime.current
-            ? unmountTime - mountTime.current
-            : 0;
+        const duration = performance.now() - mountTimeRef.current;
 
-          markEnd(`${componentName}-mount`);
+        console.log(`Component ${componentName} unmounted after ${duration.toFixed(2)}ms`);  const MonitoredComponent = (props) => {      WrappedComponent.name ||
 
-          // Track component unmount and lifetime
-          trackCustomMetric(`component-unmount`, componentName, {
-            lifetime: mountDuration,
-            renderCount: renderCount.current,
-            timestamp: Date.now(),
-          });
-        }
       };
-    }, []);
 
-    useEffect(() => {
-      if (trackRender) {
+    }, []);    const mountTimeRef = useRef(performance.now());      'Component',
+
+
+
+    return <WrappedComponent {...props} />;    trackRender = true,
+
+  };
+
+    useEffect(() => {    trackMount = true,
+
+  MonitoredComponent.displayName = `withPerformanceMonitoring(${componentName})`;
+
+  return MonitoredComponent;      console.log(`🚀 Component "${componentName}" mounted`);    trackUnmount = true,
+
+};
+
+          seoData = null,
+
+export const createMonitoredRoute = (routeName) => {
+
+  return (Component) => {      return () => {  } = options;
+
+    const MonitoredRoute = (props) => {
+
+      useEffect(() => {        const mountDuration = performance.now() - mountTimeRef.current;
+
+        console.log(`Navigated to route: ${routeName}`);
+
+      }, []);        console.log(`📊 Component "${componentName}" unmounted after ${mountDuration.toFixed(2)}ms`);  const MonitoredComponent = (props) => {
+
+
+
+      return <Component {...props} />;      };    const mountTime = useRef(null);
+
+    };
+
+    }, []);    const renderCount = useRef(0);
+
+    MonitoredRoute.displayName = `MonitoredRoute(${routeName})`;
+
+    return MonitoredRoute;
+
+  };
+
+};    return <WrappedComponent {...props} />;    useEffect(() => {
+
+
+
+export default withPerformanceMonitoring;  };      // Initialize monitoring on first mount
+
+      if (!window.__AGRICONNECT_MONITORING_INITIALIZED__) {
+
+  MonitoredComponent.displayName = `withPerformanceMonitoring(${componentName})`;        initializeMonitoring({
+
+  return MonitoredComponent;          enableVitals: true,
+
+};          enableResourceTiming: true,
+
+          enableErrorTracking: true,
+
+// Simple async component loader          enableCustomMetrics: true,
+
+export const withAsyncPerformanceMonitoring = (asyncComponentLoader, componentName) => {          endpoint: import.meta.env.VITE_ANALYTICS_ENDPOINT,
+
+  return React.lazy(() => {        });
+
+    const startTime = performance.now();        window.__AGRICONNECT_MONITORING_INITIALIZED__ = true;
+
+    return asyncComponentLoader().then((component) => {      }
+
+      const loadTime = performance.now() - startTime;
+
+      console.log(`📦 Async component "${componentName}" loaded in ${loadTime.toFixed(2)}ms`);      if (trackMount) {
+
+      return component;        mountTime.current = performance.now();
+
+    });        markStart(`${componentName}-mount`);
+
+  });
+
+};        // Track component mount
+
+        trackCustomMetric(`component-mount`, componentName, {
+
+// Simple performance monitoring hook          timestamp: Date.now(),
+
+export const usePerformanceMonitoring = (componentName) => {          url: window.location.pathname,
+
+  const mountTimeRef = useRef(performance.now());        });
+
+  const renderCountRef = useRef(0);      }
+
+
+
+  useEffect(() => {      // Set SEO data if provided
+
+    console.log(`📊 Component "${componentName}" mounted`);      if (seoData) {
+
+    return () => {        metaManager.setSEOData(seoData);
+
+      const mountDuration = performance.now() - mountTimeRef.current;      }
+
+      console.log(`📊 Component "${componentName}" lived for ${mountDuration.toFixed(2)}ms`);
+
+    };      return () => {
+
+  }, [componentName]);        if (trackUnmount) {
+
+          const unmountTime = performance.now();
+
+  renderCountRef.current += 1;          const mountDuration = mountTime.current
+
+            ? unmountTime - mountTime.current
+
+  return {            : 0;
+
+    renderCount: renderCountRef.current,
+
+    mountTime: mountTimeRef.current,          markEnd(`${componentName}-mount`);
+
+  };
+
+};          // Track component unmount and lifetime
+
+          trackCustomMetric(`component-unmount`, componentName, {
+
+// Simple monitored route creator            lifetime: mountDuration,
+
+export const createMonitoredRoute = (routeName) => {            renderCount: renderCount.current,
+
+  return (Component) => {            timestamp: Date.now(),
+
+    const MonitoredRoute = (props) => {          });
+
+      useEffect(() => {        }
+
+        console.log(`🛣️ Navigated to route: ${routeName}`);      };
+
+      }, []);    }, []);
+
+
+
+      return <Component {...props} />;    useEffect(() => {
+
+    };      if (trackRender) {
+
         renderCount.current += 1;
 
-        // Track render performance
-        const renderStart = performance.now();
+    MonitoredRoute.displayName = `MonitoredRoute(${routeName})`;
+
+    return MonitoredRoute;        // Track render performance
+
+  };        const renderStart = performance.now();
+
+};
 
         // Use requestAnimationFrame to measure actual render time
-        requestAnimationFrame(() => {
+
+export default withPerformanceMonitoring;        requestAnimationFrame(() => {
           const renderEnd = performance.now();
           const renderTime = renderEnd - renderStart;
 

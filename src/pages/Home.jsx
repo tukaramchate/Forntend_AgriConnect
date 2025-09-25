@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import ProductCard from '../components/ProductCard';
-import Loader, { CardSkeleton } from '../components/Loader';
+import Loader, { CardSkeleton } from '../components/common/Loader';
 import { Button, Card, CardBody, Badge } from '../components/ui';
-import { createMonitoredRoute } from '../components/PerformanceHOC';
+// Performance monitoring removed for simplified structure
 import { seoData } from '../utils/seo';
 import '../styles/design-system.css';
 
@@ -406,12 +406,4 @@ function Home() {
   );
 }
 
-// Apply performance monitoring and SEO
-const MonitoredHome = createMonitoredRoute(Home, {
-  routeName: 'Home',
-  seoData: seoData.home,
-  trackPageView: true,
-});
-
-MonitoredHome.displayName = 'MonitoredHome';
-export default MonitoredHome;
+export default Home;

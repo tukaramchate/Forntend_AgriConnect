@@ -8,7 +8,7 @@ import {
 } from '../store/slices/wishlistSlice';
 import { useNotifications } from '../contexts/NotificationContext';
 import { NotificationService } from '../services/notifications/NotificationService';
-import LazyImage from './LazyImage';
+import LazyImage from './optimization/LazyImage';
 
 // Format currency for Indian market
 function formatINR(value) {

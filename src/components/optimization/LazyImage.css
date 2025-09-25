@@ -1,0 +1,22 @@
+/* Lazy Image Styles */
+.lazy-image-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.lazy-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+  opacity: 0.7;
+}
+
+.lazy-image.loaded {
+  opacity: 1;
+}
+
+.lazy-image.error {
+  opacity: 0.5;
+  filter: grayscale(100%);
+}

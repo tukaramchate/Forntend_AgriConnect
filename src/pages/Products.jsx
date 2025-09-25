@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ProductCard from '../components/ProductCard';
-import Loader, { CardSkeleton } from '../components/Loader';
-import VirtualScrollList from '../components/VirtualScrollList';
-import { createMonitoredRoute } from '../components/PerformanceHOC';
+import Loader, { CardSkeleton } from '../components/common/Loader';
+import VirtualScrollList from '../components/optimization/VirtualScrollList';
+// Performance monitoring removed for simplified structure
 import { seoData } from '../utils/seo';
 import productAPI from '../api/productApi';
 import mockProducts from '../data/products';
@@ -533,11 +533,4 @@ function Products() {
 }
 
 // Apply performance monitoring and SEO
-const MonitoredProducts = createMonitoredRoute(Products, {
-  routeName: 'Products',
-  seoData: seoData.products,
-  trackPageView: true,
-});
-
-MonitoredProducts.displayName = 'MonitoredProducts';
-export default MonitoredProducts;
+export default Products;

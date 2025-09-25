@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Loader from '../components/Loader';
+import Loader from '../components/common/Loader';
 // Tailwind-only styling
 
 const EMAIL_RE = /^\S+@\S+\.\S+$/;

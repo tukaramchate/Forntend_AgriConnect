@@ -6,11 +6,11 @@ import {
   addToWishlist,
   removeFromWishlist,
 } from '../store/slices/wishlistSlice';
-import Loader from '../components/Loader';
+import Loader from '../components/common/Loader';
 import productAPI from '../api/productApi';
 import mockProducts from '../data/products';
-import ReviewSystem from '../components/social/reviews/ReviewSystem';
-import SocialShare from '../components/social/sharing/SocialShare';
+// Review system removed for simplified structure
+// Social sharing removed for simplified structure
 
 function ProductDetailsSkeleton() {
   return (
@@ -719,15 +719,7 @@ function ProductDetails() {
               </button>
             </div>
 
-            {/* Social Share */}
-            <div className='mt-6'>
-              <SocialShare
-                title={product.name}
-                description={product.description}
-                url={window.location.href}
-                image={product.images?.[0]}
-              />
-            </div>
+            {/* Social sharing removed for simplified structure */}
 
             {/* Farmer Information */}
             <div className='bg-white rounded-xl border border-secondary-200 p-6'>
@@ -872,13 +864,9 @@ function ProductDetails() {
             )}
 
             {activeTab === 'reviews' && (
-              <ReviewSystem
-                productId={product.id}
-                productName={product.name}
-                existingReviews={product.reviews}
-                averageRating={product.rating}
-                totalReviews={product.reviewCount}
-              />
+              <div className="p-6">
+                <p className="text-gray-600">Reviews feature coming soon!</p>
+              </div>
             )}
           </div>
         </div>

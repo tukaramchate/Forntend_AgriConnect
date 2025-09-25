@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Loader from '../components/Loader';
+import Loader from '../components/common/Loader';
 
 function Register() {
   const navigate = useNavigate();
